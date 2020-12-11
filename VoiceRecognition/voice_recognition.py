@@ -7,7 +7,7 @@ from picovoice import Picovoice
 import sys
 
 _keyword_path="sparky.ppn" #sparky hotword (to initiate)
-_context_path="smart_lighting_raspberry-pi.rhn" #uses the smart lighting intents ( we changing it to our own) 
+_context_path="sparky.rhn" #uses the smart lighting intents ( we changing it to our own) 
 pa = None
 audio_stream = None
 
