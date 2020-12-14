@@ -84,7 +84,7 @@ targetPerson = "John"
 
 while True:
 
-    ret, img =cam.read()
+    ret, img = cam.read()
     img = cv2.flip(img, -1) # Flip vertically
 
     frame_gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -103,15 +103,15 @@ while True:
 
         # cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 2)
         center = (x + w//2, y + h//2)
-        frame = cv2.ellipse(frame, center, (w//2, h//2), 0, 0, 360, (255, 0, 255), 4)
+        img = cv2.ellipse(img, center, (w//2, h//2), 0, 0, 360, (255, 0, 255), 4)
 
         id, mismatch = recognizer.predict(frame_gray[y:y+h,x:x+w])
         
-        # Check if confidence is less them 100 ==> "0" is perfect match 
+        # Check if mismatch is less them 100 ==> "0" is perfect match 
         if (mismatch < 100):
-            id = names[id]
+            id = names[id] # determine name of face
             confidence = "  {0}%".format(round(100 - mismatch))
-            if id == names.index(targetPerson):
+            if id == targetPerson:
                 target = True
                 driveTime = time.time() + 0.05
                 midX = (x + w/2)/width * 100
@@ -121,7 +121,7 @@ while True:
 
         else:
             id = "unknown"
-            confidence = "  {0}%".format(round(100 - confidence))
+            confidence = "  {0}%".format(round(100 - mismatch))
         
         cv2.putText(img, str(id), (x+5,y-5), font, 1, (255,255,255), 2)
         cv2.putText(img, str(confidence), (x+5,y+h-5), font, 1, (255,255,0), 1)  
