@@ -3,8 +3,9 @@ Real Time Face Recogition
 	==> Each face stored on dataset/ dir, should have a unique numeric integer ID as 1, 2, 3, etc                       
 	==> LBPH computed model (trained faces) should be on trainer/ dir
 Based on original code by Anirban Kar: https://github.com/thecodacus/Face-Recognition    
+Based on code by Marcelo Rovai: https://github.com/Mjrovai/OpenCV-Face-Recognition
 
-Developed by Marcelo Rovai - MJRoBot.org @ 21Feb18  
+Written by John Ly
 
 '''
 
@@ -57,7 +58,7 @@ faceCascade = cv2.CascadeClassifier(cascadePath)
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 
-#iniciate id counter
+#initiate id counter
 id = 0
 
 # names related to ids: example ==> Marcelo: id=1,  etc
@@ -79,37 +80,42 @@ speed = 90
 midX = width/2
 driveTime = time.time()
 
+targetPerson = "John"
+
 while True:
 
     ret, img =cam.read()
     img = cv2.flip(img, -1) # Flip vertically
 
-    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    frame_gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    frame_gray = cv2.equalizeHist(frame_gray)
 
     faces = faceCascade.detectMultiScale( 
-        gray,
-        scaleFactor = 1.2,
-        minNeighbors = 5,
-        minSize = (int(minW), int(minH)),
+        frame_gray,
+        # scaleFactor = 1.2,
+        # minNeighbors = 5,
+        # minSize = (int(minW), int(minH)),
        )
 
     # target = False
 
     for(x,y,w,h) in faces:
 
-        cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 2)
+        # cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 2)
+        center = (x + w//2, y + h//2)
+        frame = cv2.ellipse(frame, center, (w//2, h//2), 0, 0, 360, (255, 0, 255), 4)
 
-        id, confidence = recognizer.predict(gray[y:y+h,x:x+w])
+        id, mismatch = recognizer.predict(frame_gray[y:y+h,x:x+w])
         
         # Check if confidence is less them 100 ==> "0" is perfect match 
-        if (confidence < 100):
+        if (mismatch < 100):
             id = names[id]
-            confidence = "  {0}%".format(round(100 - confidence))
-            target = True
-            driveTime = time.time() + 0.05
+            confidence = "  {0}%".format(round(100 - mismatch))
+            if id == names.index(targetPerson):
+                target = True
+                driveTime = time.time() + 0.05
+                midX = (x + w/2)/width * 100
 
-            # Send relavent data to a text document
-            midX = (x + w/2)/width * 100
             # record = f"echo {midX} >> face_position.txt"
             # print(subprocess.check_output(record, shell=True))
 
@@ -122,11 +128,11 @@ while True:
     
     cv2.imshow('camera',img) 
 
-
+    # when we see a known target, have robot travel towards face
     if target: 
-        print(f"X:{midX}")
+        print(f"Target: {targetPerson}, X:{midX}")
         slowSpeed = speed-(np.abs(50-midX))
-        print(f"Speed:{slowSpeed}")
+        # print(f"Speed:{slowSpeed}")
         if midX < 45:
             tw.drive("forward", slowSpeed, speed)
             print("Lean left")
