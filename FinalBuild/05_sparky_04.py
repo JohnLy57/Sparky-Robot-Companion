@@ -8,8 +8,7 @@ import sys
 import two_wheel_mod as tw
 import time
 import cv2
-# import pygame
-#import face_recognition_pursuit as fr
+import numpy as np
 import pygame
 from pygame.locals import *
 ###################
@@ -254,7 +253,7 @@ def find_faces(targetPerson, img):
 
 
 
-def identify_faces(targetPerson,img):
+def identify_faces(targetPerson, img, mode = "None"):
 	# Reads from camera and detects faces
 	# 
 	# Params:
@@ -281,16 +280,16 @@ def identify_faces(targetPerson,img):
 
 	faces = faceCascade.detectMultiScale( 
 	img_gray,
-	# scaleFactor = 1.2,
-	# minNeighbors = 5,
-	# minSize = (int(minW), int(minH)),
+	scaleFactor = 1.4, # higher scaleFactor increases speed of detection for smaller faces but reduces accuarcy
+	minNeighbors = 3, # number of matching rectangles required before allowing detection
+	minSize = (int(minW), int(minH)), # minimum Size allowed for object detection
 	)
 
 	for(x,y,w,h) in faces:
 
 		# cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 2)
-		center = (x + w//2, y + h//2)
-		img = cv2.ellipse(img, center, (w//2, h//2), 0, 0, 360, (255, 0, 255), 4)
+		centerX, centerY = x + w//2, y + h//2
+		img = cv2.ellipse(img, (centerX, centerY), (w//2, h//2), 0, 0, 360, (255, 0, 255), 2)			
 
 		id, mismatch = recognizer.predict(img_gray[y:y+h,x:x+w])
 		
@@ -298,6 +297,27 @@ def identify_faces(targetPerson,img):
 		if (mismatch < 100):
 			person = names[id] # determine name of face
 			confidence = "  {0}%".format(round(100 - mismatch))
+
+			if mode is "party_time":
+				# Icon made by "https://www.flaticon.com/authors/freepik"
+				hat = cv2.imread('party-hat.png', cv2.IMREAD_UNCHANGED)
+				hat = cv2.resize(hat,(h,h))
+				hatY, hatX, _ = hat.shape
+				offsetY, offsetX = y-hatY, centerX-hatX//2 # top left corner of hat position
+				yStartImg = np.amax([0,offsetY])
+				yEndImg = np.amax([0,y])
+
+				yStartHat = np.amax([0,hatY-y])
+				alpha_hat = hat[:,:,3] / 255.0
+				alpha_img = 1.0 - alpha_hat
+				# alpha will either be 0 or 1 here
+				# merge images using alpha value to remove hat bkgd
+				for c in range(0,3):
+					img[yStartImg:yEndImg, offsetX:offsetX+hatX, c] = \
+						alpha_hat[yStartHat:, :] * hat[yStartHat:, :, c] + \
+						alpha_img[yStartHat:, :] * img[yStartImg:yEndImg, offsetX:offsetX+hatX, c]
+
+
 			# determine if person detected is our desired target
 			if person == targetPerson:
 				target = True
@@ -314,9 +334,14 @@ def identify_faces(targetPerson,img):
 		else:		
 			person = "unknown"
 			confidence = "  {0}%".format(round(100 - mismatch))
+
+			if mode is "party_time":
+				# Draw Triangle Hat
+				pts = np.array([[x+w//8,y], [x+w-w//8,y], [x+w//2,y-w]], np.int32).reshape((-1,1,2))
+				img = cv2.polylines(img,[pts],True,(0,255,255),2)
         
 		cv2.putText(img, str(person), (x+5,y-5), font, 1, (255,255,255), 2)
-		cv2.putText(img, str(confidence), (x+5,y+h-5), font, 1, (255,255,0), 1)
+		cv2.putText(img, str(confidence), (x+5,y+h-5), font, 1, (255,255,0), 2)
 
 	return target, stopCondition, img
 
@@ -399,30 +424,20 @@ try:
 					print(f"Found {instruction.word}")
 					instruction.v_search = False
 
+		
+		if instruction.v_tricks:
+			# if instruction.word is "party":
+			_,_,img = identify_faces(None, img, mode = "party_time")
 
-			# target_found, stopCondition,img = identify_faces(instruction.word, img)
+			# if instruction.word is "breakdance":
+			# 	pass
 
-			# print(target_found)
-			# print(stopCondition)
-			# if target_found:
-			# 	pursue_target(target_found)
-			# if stopCondition:
-			# 	instruction.v_search = False
-			# 	print('stop')
-				
-			
 
-	
-			
 		resized=cv2.resize(img,(240,160))
 		cv2.imwrite('tmp.jpg',resized)
 		image=pygame.image.load('tmp.jpg')
 		screen.blit(image,(0,0))
 		pygame.display.update(pygame.Rect((0,0), (240,160)))
-		
-		if instruction.v_tricks:
-			pass
-			
 			
 finally:
 	if _picovoice is not None:
