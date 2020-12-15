@@ -213,8 +213,10 @@ try:
 			#use instruction.word for the user pass to FaceRec
 			#variable contains name of the user asked for
 			#change instruction.v_search to False after user found
-		
+			pass
+
 		if instruction.v_tricks:
+			pass
 			
 			
 finally:

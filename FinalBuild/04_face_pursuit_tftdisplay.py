@@ -40,7 +40,10 @@ def GPIO_callback(channel):
         if (not GPIO.input(pin)):
             print("falling edge detected on {}".format(pin))
             if pin is 27:
+                print("\n [INFO] Exiting Program and cleanup stuff")
                 GPIO.cleanup()
+                cam.release()
+                cv2.destroyAllWindows()
                 pygame.quit()
                 sys.exit()
 
@@ -74,8 +77,8 @@ names = ['None', 'John', 'Carlos']
 # Initialize and start realtime video capture
 cam = cv2.VideoCapture(0)
 width, height = 320, 240 
-# cam.set(3, width) # set video width
-# cam.set(4, height) # set video height
+cam.set(3, width) # set video width
+cam.set(4, height) # set video height
 
 # Define min window size to be recognized as a face
 minW = 0.05*cam.get(3)

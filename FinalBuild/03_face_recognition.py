@@ -36,7 +36,7 @@ minH = 0.1*cam.get(4)
 
 while True:
 
-    ret, img =cam.read()
+    ret, img = cam.read()
     # img = cv2.flip(img, -1) # Flip vertically
 
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)

@@ -8,7 +8,7 @@ import sys
 import two_wheel_mod as tw
 import time
 import cv2
-import pygame
+# import pygame
 import face_recognition_pursuit as fr
 
 ###################
@@ -36,9 +36,13 @@ def GPIO_callback(channel):
         if (not GPIO.input(pin)):
             print("falling edge detected on {}".format(pin))
             if pin is 27:
+                print("\n [INFO] Exiting Program and cleanup stuff")
                 GPIO.cleanup()
-                #pygame.quit()
+                cam.release()
+                cv2.destroyAllWindows()
+                # pygame.quit()
                 sys.exit()
+
 
 
 buttonControls = {17:"start", 22:"search", 23:"add_face", 27:"quit"}
@@ -55,7 +59,7 @@ for pin in tw.piTFT_Buttons:
 GPIO.setup(13,GPIO.OUT) # LED pin
 
 
-
+	
 
 
 #===============================================
@@ -196,14 +200,19 @@ def main():
 			movement_1sec(instruction.word,30,30)
 	'''		
 		
+cam = cv2.VideoCapture(0)
+width, height = 640, 480 
+cam.set(3, width) # set video width
+cam.set(4, height) # set video height
 
 
 try:
-	
+
 	while True:
 		pcm = audio_stream.read(_picovoice.frame_length)
 		pcm = struct.unpack_from("h" * _picovoice.frame_length, pcm)
 		_picovoice.process(pcm)
+
 		
 		if instruction.led_on:
 			if time.time() > led_endtime:
@@ -231,15 +240,14 @@ try:
 			#use instruction.word for the user pass to FaceRec
 			#variable contains name of the user asked for
 			#change instruction.v_search to False after user found
-			instruction.word = "John"
-			target_found = fr.identify_faces(instruction.word)
-			fr.pursue_target(target_found)
-			k = cv2.waitKey(10) & 0xff # Press 'ESC' for exiting video
-			if k == 27:
-				cam.release()
-				cv2.destroyAllWindows()
-				break
-		
+			
+			target_found, stopCondition = fr.identify_faces(instruction.word)
+			if stopCondition:
+				instruction.v_search = False
+			if target_found:
+				fr.pursue_target(target_found)
+
+				
 		if instruction.v_tricks:
 			pass
 			

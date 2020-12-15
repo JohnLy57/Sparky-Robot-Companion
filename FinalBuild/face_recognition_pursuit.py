@@ -5,7 +5,7 @@ import os
 import time
 import RPi.GPIO as GPIO
 import two_wheel_mod as tw
-import pygame
+# import pygame
 
 ########################
 #-- FACE RECOGNITION --#
@@ -26,16 +26,16 @@ names = ['None', 'John', 'Carlos']
 
 # Initialize and start realtime video capture
 cam = cv2.VideoCapture(0)
-width, height = 320, 240 
-# cam.set(3, width) # set video width
-# cam.set(4, height) # set video height
+width, height = 640, 480 
+cam.set(3, width) # set video width
+cam.set(4, height) # set video height
 
 # Define min window size to be recognized as a face
 minW = 0.05*cam.get(3)
 minH = 0.05*cam.get(4)
 
 # Define parameters for pursuit
-target = False
+# target = False
 speed = 90
 midX = width/2
 driveTime = time.time()
@@ -45,13 +45,29 @@ targetPerson = "John" # change to output of voice input
 
 
 def identify_faces(targetPerson):
-    global target, speed, midX, driveTime
+    # " Reads from camera and detects faces
+    # " 
+    # " Params:
+    # "    targetPerson: (string) name of person we wish to find
+    # " Return:
+    # "   target: (boolean) determines if targetPerson is in view and recognized
+    # "   stopCondition: (boolean) determines if targetPerson is close enough to the camera 
+    # "
 
+    global speed, midX, driveTime
+    
+    target = False
+    stopCondition = False
+    
     time.sleep(0.005)
     ret, img =cam.read()
+    # if frame is read correctly ret is True
+    if not ret:
+        print("Can't receive frame (stream end?). Exiting ...")
+        return
     img = cv2.flip(img, -1) # Flip vertically
 
-    img_gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     img_gray = cv2.equalizeHist(img_gray)
 
     faces = faceCascade.detectMultiScale( 
@@ -78,6 +94,10 @@ def identify_faces(targetPerson):
                 driveTime = time.time() + 0.05
                 midX = (x + w/2)/width * 100
 
+                # reached destination so stop tracking
+                if w > width/4 or h > height/4:
+                    stopCondition = True
+
 
         else:
             person = "unknown"
@@ -92,9 +112,9 @@ def identify_faces(targetPerson):
         # image=pygame.image.load('tmp.jpg')
         # screen.blit(image,(0,0))
         # pygame.display.update()
-        # # cv2.imshow('camera',img) 
+    cv2.imshow('camera',img) 
 
-        return target
+    return target, stopCondition
 
 def pursue_target(target):
     # when we see a known target, have robot travel towards face
@@ -118,19 +138,37 @@ def pursue_target(target):
             target = False
     else:
         tw.drive("stop")
+    
 
-        
+
+# testTime = time.time()
+# while time.time() < testTime + 10:
+#     # Capture frame-by-frame
+#     ret, frame = cam.read()
+#     frame = cv2.flip(frame, -1) # Flip vertically
+#     # if frame is read correctly ret is True
+#     if not ret:
+#         print("Can't receive frame (stream end?). Exiting ...")
+#         break
+#     # Our operations on the frame come here
+    
+#     # Display the resulting frame
+#     cv2.imshow('frame', frame)
+#     if cv2.waitKey(1) == ord('q'):
+#         break
+
 
 # while True:
 
-#     target = identify_faces()
+#     target,stopCondition = identify_faces("John")
+#     print(stopCondition)
 #     pursue_target(target)
 
 #     k = cv2.waitKey(10) & 0xff # Press 'ESC' for exiting video
 #     if k == 27:
 #         break
 
-# # Do a bit of cleanup
+# Do a bit of cleanup
 # print("\n [INFO] Exiting Program and cleanup stuff")
-# cam.release()
-# cv2.destroyAllWindows()
+cam.release()
+cv2.destroyAllWindows()
