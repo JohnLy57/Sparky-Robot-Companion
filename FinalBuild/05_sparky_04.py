@@ -221,31 +221,59 @@ midX = width/2
 driveTime = time.time()
 
 #targetPerson = "John" # change to output of voice input
+findFaceInit = True
+search = True
+
+# Rotate until we find an identifiable face
+# Return true if the desired person is found
+def find_faces(init, targetPerson, img):
+    global findFaceInit
+    print(f"Init: {findFaceInit}")
+    target = False
+    print("search mode")
+    # Do a fun search init maneuver
+    # quickly spin ~180 left then right
+    if init:
+        findFaceInit = False
+        for turn in ['left', 'right']:
+            startTime = time.time()
+            tw.drive('stop', speed, speed)
+            while time.time() < startTime + 1:
+                tw.drive(turn, 70, 70)
+                target,_,_ = identify_faces(targetPerson, img)
+                if target:
+                    return True
+
+    # slowly turn left to find the desired person
+    tw.drive('left', 40, 40)
+    target,_,_ = identify_faces(targetPerson, img)
+    if target:
+        return True
+    else:
+        return False
 
 
 
 def identify_faces(targetPerson,img):
-	
-	# " Reads from camera and detects faces
-	# " 
-	# " Params:
-	# "    targetPerson: (string) name of person we wish to find
-	# " Return:
-	# "   target: (boolean) determines if targetPerson is in view and recognized
-	# "   stopCondition: (boolean) determines if targetPerson is close enough to the camera 
-	# "
+	# Reads from camera and detects faces
+	# 
+	# Params:
+	#    targetPerson: (string) name of person we wish to find
+	# Return:
+	#   target: (boolean) determines if targetPerson is in view and recognized
+	#   stopCondition: (boolean) determines if targetPerson is close enough to the camera 
 
-	global speed, midX, driveTime
+	global speed, midX, driveTime, findFaceInit
 
 	target = False
 	stopCondition = False
 
-	time.sleep(0.005)
+	# time.sleep(0.005)
 	#ret, img =cam.read()
 	# if frame is read correctly ret is True
-	if not ret:
-		print("Can't receive frame (stream end?). Exiting ...")
-		return
+	# if not ret:
+	# 	print("Can't receive frame (stream end?). Exiting ...")
+	# 	return
 	
 
 	img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -268,53 +296,50 @@ def identify_faces(targetPerson,img):
 		
 		# Check if mismatch is less them 100 ==> "0" is perfect match 
 		if (mismatch < 100):
-			
 			person = names[id] # determine name of face
 			confidence = "  {0}%".format(round(100 - mismatch))
+			# determine if person detected is our desired target
 			if person == targetPerson:
 				target = True
 				driveTime = time.time() + 0.05
 				midX = (x + w/2)/width * 100
 
 			# reached destination so stop tracking
-			if w > width/4 or h > height/4:
+			if w > width/4 or h > height/2:
+				target = False
 				stopCondition = True
+				findFaceInit = True
+				tw.drive("stop")
 
-
-		else:
-			
+		else:		
 			person = "unknown"
 			confidence = "  {0}%".format(round(100 - mismatch))
         
 		cv2.putText(img, str(person), (x+5,y-5), font, 1, (255,255,255), 2)
-		cv2.putText(img, str(confidence), (x+5,y+h-5), font, 1, (255,255,0), 1)  
+		cv2.putText(img, str(confidence), (x+5,y+h-5), font, 1, (255,255,0), 1)
 
-
-	
 	return target, stopCondition, img
 
 def pursue_target(target):
-	
 	# when we see a known target, have robot travel towards face
 	if target:
-		 
-	# print(f"Target: {targetPerson}, X:{midX}")
+		# print(f"Target: {targetPerson}, X:{midX}")
 		slowSpeed = speed-(np.abs(50-midX))
-	if slowSpeed <= 0:
-		slowSpeed=0
-	# print(f"Speed:{slowSpeed}")
-	if midX < 45:
-		tw.drive("forward", slowSpeed, speed)
-		print("Lean left")
-	elif midX > 55:
-		tw.drive("forward", speed, slowSpeed)
-		print("Lean right")
-	else:
-		tw.drive("forward", speed, speed)
+		if slowSpeed <= 0:
+			slowSpeed=0
+		# print(f"Speed:{slowSpeed}")
+		if midX < 45:
+			tw.drive("forward", slowSpeed, speed)
+			print("Lean left")
+		elif midX > 55:
+			tw.drive("forward", speed, slowSpeed)
+			print("Lean right")
+		else:
+			tw.drive("forward", speed, speed)
 
-	# step through to a new motion when enough time has elapsed
-	if time.time() > driveTime:
-		target = False
+		# step through to a new motion when enough time has elapsed
+		if time.time() > driveTime:
+			target = False
 	else:
 		tw.drive("stop")
 
@@ -360,20 +385,32 @@ try:
 			#variable contains name of the user asked for
 			#change instruction.v_search to False after user found
 			
+			if search:
+				foundFace = find_faces(findFaceInit, instruction.word, img)
+				if foundFace:
+					search=False
 
-			
-		#	instruction.word='John'
-			target_found, stopCondition,img = identify_faces('John',img)
+			if foundFace:
+				target, stopCondition, img = identify_faces(instruction.word, img)
+				pursue_target(target)
+				if stopCondition:
+					foundFace = False
+					search = True
+					print(f"Found {instruction.word}")
+					instruction.v_search = False
 
-			print(target_found)
-			print(stopCondition)
-			if stopCondition:
-				tw.drive("stop")
-				instruction.v_search = False
-				print('stop')
+
+			# target_found, stopCondition,img = identify_faces(instruction.word, img)
+
+			# print(target_found)
+			# print(stopCondition)
+			# if target_found:
+			# 	pursue_target(target_found)
+			# if stopCondition:
+			# 	instruction.v_search = False
+			# 	print('stop')
 				
-			if target_found:
-				pursue_target(target_found)
+			
 
 	
 			

@@ -8,7 +8,7 @@ import sys
 import two_wheel_mod as tw
 import time
 import cv2
-# import pygame
+import pygame
 import face_recognition_pursuit as fr
 
 ###################
@@ -19,11 +19,11 @@ import face_recognition_pursuit as fr
 # os.putenv('SDL_FBDEV', '/dev/fb1')
 # #os.putenv('SDL_MOUSEDRV', 'TSLIB') # Track mouse clicks on piTFT
 # #os.putenv('SDL_MOUSEDEV', '/dev/input/touchscreen')
-# pygame.init()
-# screen=pygame.display.set_mode((240,320))
-# BLACK = 0,0,0
+pygame.init()
+screen=pygame.display.set_mode((240,320))
+BLACK = 0,0,0
 
-# screen.fill(BLACK)
+screen.fill(BLACK)
 
 #============================================================
 #TFT Button Operation
@@ -76,8 +76,9 @@ class v_instructions:
 	led_on=False
 	word=''
 	
+global instruction
 instruction=v_instructions()
-global instructions
+
 
 
 
@@ -204,14 +205,18 @@ cam = cv2.VideoCapture(0)
 width, height = 640, 480 
 cam.set(3, width) # set video width
 cam.set(4, height) # set video height
+search = True
 
 
 try:
 
 	while True:
-		pcm = audio_stream.read(_picovoice.frame_length)
+		pcm = audio_stream.read(_picovoice.frame_length, exception_on_overflow=False)
 		pcm = struct.unpack_from("h" * _picovoice.frame_length, pcm)
 		_picovoice.process(pcm)
+
+		ret, img = cam.read()
+		img = cv2.flip(img, -1) # Flip camera vertically		
 
 		
 		if instruction.led_on:
@@ -240,17 +245,49 @@ try:
 			#use instruction.word for the user pass to FaceRec
 			#variable contains name of the user asked for
 			#change instruction.v_search to False after user found
-			
-			target_found, stopCondition = fr.identify_faces(instruction.word)
-			if stopCondition:
-				instruction.v_search = False
-			if target_found:
-				fr.pursue_target(target_found)
 
-				
+			if search:
+				foundFace = fr.find_faces(fr.findFaceInit, instruction.word, img)
+				if foundFace:
+					search=False
+
+			if foundFace:
+				target, stopCondition, img = fr.identify_faces(instruction.word, img)
+				fr.pursue_target(target)
+				if stopCondition:
+					foundFace = False
+					print(f"Found {targetPerson}")
+					instruction.v_search = False
+
+
+
+			# target_found, stopCondition, img = fr.identify_faces(instruction.word, img)
+			# if stopCondition:
+			# 	instruction.v_search = False
+			# if target_found:
+			# 	fr.pursue_target(target_found)
+			
+
 		if instruction.v_tricks:
 			pass
-			
+
+
+
+		# Display on TFT
+		resized=cv2.resize(img,(240,160))
+		cv2.imwrite('tmp.jpg',resized)
+		image=pygame.image.load('tmp.jpg')
+		screen.blit(image,(0,0))
+		pygame.display.update(pygame.Rect((0,0), (240,160)))
+
+		k = cv2.waitKey(30) & 0xff
+		if k == 27: # press 'ESC' to quit
+			break
+			cam.release()
+			cv2.destroyAllWindows()
+
+
+		
 			
 finally:
 	if _picovoice is not None:

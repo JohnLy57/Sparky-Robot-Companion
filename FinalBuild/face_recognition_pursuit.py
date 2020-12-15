@@ -11,45 +11,45 @@ import pygame
 #-- PYGAME INIT --#
 ###################
 
-os.putenv('SDL_VIDEODRIVER', 'fbcon') # Display on piTFT
-os.putenv('SDL_FBDEV', '/dev/fb1')
+# os.putenv('SDL_VIDEODRIVER', 'fbcon') # Display on piTFT
+# os.putenv('SDL_FBDEV', '/dev/fb1')
 #os.putenv('SDL_MOUSEDRV', 'TSLIB') # Track mouse clicks on piTFT
 #os.putenv('SDL_MOUSEDEV', '/dev/input/touchscreen')
 
-pygame.init()
-screen = pygame.display.set_mode((240,320))
-BLACK = 0,0,0
+# pygame.init()
+# screen = pygame.display.set_mode((240,320))
+# BLACK = 0,0,0
 
-screen.fill(BLACK)
+# screen.fill(BLACK)
 
 #============================================================
 #TFT Button Operation
 #============================================================
-panicStop = False
-GPIO.setmode(GPIO.BCM)
-# on pin interrupt signal, handle motor functions
-def GPIO_callback(channel):
-    global search, TFT, screen
-    for pin in tw.piTFT_Buttons:
-        if (not GPIO.input(pin)):
-            # print("falling edge detected on {}".format(pin))
-            if pin is 27:
-                print("\n [INFO] Exiting Program and cleanup stuff")
-                GPIO.cleanup()
-                cam.release()
-                cv2.destroyAllWindows()
-                pygame.quit()
-                sys.exit()
+# panicStop = False
+# GPIO.setmode(GPIO.BCM)
+# # on pin interrupt signal, handle motor functions
+# def GPIO_callback(channel):
+#     global search, TFT, screen
+#     for pin in tw.piTFT_Buttons:
+#         if (not GPIO.input(pin)):
+#             # print("falling edge detected on {}".format(pin))
+#             if pin is 27:
+#                 print("\n [INFO] Exiting Program and cleanup stuff")
+#                 GPIO.cleanup()
+#                 cam.release()
+#                 cv2.destroyAllWindows()
+#                 pygame.quit()
+#                 sys.exit()
 
 
-buttonControls = {17:"start", 22:"search", 23:"add face", 27:"quit"}
+# buttonControls = {17:"start", 22:"search", 23:"add face", 27:"quit"}
 
-# setup for all piTFT buttons as inputs using pull up resistors
-print("setting up piTFT buttons")
-for pin in tw.piTFT_Buttons:
-    GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    print("GPIO {} setup".format(pin))
-    GPIO.add_event_detect(pin, GPIO.FALLING, callback=GPIO_callback, bouncetime=300)
+# # setup for all piTFT buttons as inputs using pull up resistors
+# print("setting up piTFT buttons")
+# for pin in tw.piTFT_Buttons:
+#     GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+#     print("GPIO {} setup".format(pin))
+#     GPIO.add_event_detect(pin, GPIO.FALLING, callback=GPIO_callback, bouncetime=300)
 
 ########################
 #-- FACE RECOGNITION --#
@@ -89,7 +89,7 @@ findFaceInit = True
 
 # Rotate until we find an identifiable face
 # Return true if the desired person is found
-def find_faces(init, targetPerson):
+def find_faces(init, targetPerson, img):
     global findFaceInit
     print(f"Init: {findFaceInit}")
     target = False
@@ -98,19 +98,18 @@ def find_faces(init, targetPerson):
     # quickly spin ~180 left then right
     if init:
         findFaceInit = False
-        # print(findFaceInit)
         for turn in ['left', 'right']:
             startTime = time.time()
             tw.drive('stop', speed, speed)
             while time.time() < startTime + 1:
                 tw.drive(turn, 70, 70)
-                target, _ = identify_faces(targetPerson)
+                target, _ = identify_faces(targetPerson, img)
                 if target:
                     return True
 
     # slowly turn left to find the desired person
     tw.drive('left', 40, 40)
-    target, _ = identify_faces(targetPerson)
+    target, _ = identify_faces(targetPerson, img)
     if target:
         return True
     else:
@@ -118,7 +117,7 @@ def find_faces(init, targetPerson):
 
 
 
-def identify_faces(targetPerson):
+def identify_faces(targetPerson, img):
     # " Reads from camera and detects faces
     # " 
     # " Params:
@@ -133,13 +132,13 @@ def identify_faces(targetPerson):
     target = False
     stopCondition = False
     
-    time.sleep(0.005)
-    ret, img =cam.read()
-    # if frame is read correctly ret is True
-    if not ret:
-        print("Can't receive frame (stream end?). Exiting ...")
-        return
-    img = cv2.flip(img, -1) # Flip vertically
+    # time.sleep(0.005)
+    # ret, img =cam.read()
+    # # if frame is read correctly ret is True
+    # if not ret:
+    #     print("Can't receive frame (stream end?). Exiting ...")
+    #     return
+    # img = cv2.flip(img, -1) # Flip vertically
 
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     img_gray = cv2.equalizeHist(img_gray)
@@ -185,14 +184,14 @@ def identify_faces(targetPerson):
         cv2.putText(img, str(confidence), (x+5,y+h-5), font, 1, (255,255,0), 1)  
 
         # Display on TFT
-        resized=cv2.resize(img,(240,160))
-        cv2.imwrite('tmp.jpg',resized)
-        image=pygame.image.load('tmp.jpg')
-        screen.blit(image,(0,0))
-        pygame.display.update(pygame.Rect((0,0), (240,160)))
+        # resized=cv2.resize(img,(240,160))
+        # cv2.imwrite('tmp.jpg',resized)
+        # image=pygame.image.load('tmp.jpg')
+        # screen.blit(image,(0,0))
+        # pygame.display.update(pygame.Rect((0,0), (240,160)))
         # cv2.imshow('camera',img) 
 
-    return target, stopCondition
+    return target, stopCondition, img
 
 def pursue_target(target):
     # when we see a known target, have robot travel towards face
@@ -235,25 +234,25 @@ def pursue_target(target):
 #     if cv2.waitKey(1) == ord('q'):
 #         break
 
-search = True
-# foundFace = True
-while True:
-    if search:
-        foundFace = find_faces(findFaceInit, targetPerson)
-        if foundFace:
-            search = False
-    if foundFace:
-        target,stopCondition = identify_faces(targetPerson)
-        pursue_target(target)
-        if stopCondition:
-            foundFace = False
-            print(f"Found {targetPerson}")
-    if not search and not foundFace:
-        identify_faces("None")
+### Not yet Updated Test Code
+# search = True
+# while True:
+#     if search:
+#         foundFace = find_faces(findFaceInit, targetPerson)
+#         if foundFace:
+#             search = False
+#     if foundFace:
+#         target,stopCondition = identify_faces(targetPerson)
+#         pursue_target(target)
+#         if stopCondition:
+#             foundFace = False
+#             print(f"Found {targetPerson}")
+#     if not search and not foundFace:
+#         identify_faces("None")
 
-    k = cv2.waitKey(10) & 0xff # Press 'ESC' for exiting video
-    if k == 27:
-        break
+#     k = cv2.waitKey(10) & 0xff # Press 'ESC' for exiting video
+#     if k == 27:
+#         break
 
 # Do a bit of cleanup
 print("\n [INFO] Exiting Program and cleanup stuff")
