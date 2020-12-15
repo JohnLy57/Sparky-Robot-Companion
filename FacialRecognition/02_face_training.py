@@ -20,7 +20,7 @@ path = 'dataset'
 
 # https://docs.opencv.org/3.4/dd/d65/classcv_1_1face_1_1FaceRecognizer.html
 recognizer = cv2.face.LBPHFaceRecognizer_create() # LOCAL BINARY PATTERNS HISTOGRAMS Face Recognizer
-detector = cv2.CascadeClassifier("haarcascade_frontalface_default.xml");
+detector = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 
 # function to get the images and label data
 def getImagesAndLabels(path):

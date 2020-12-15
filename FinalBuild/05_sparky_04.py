@@ -280,7 +280,7 @@ def identify_faces(targetPerson, img, mode = "None"):
 
 	faces = faceCascade.detectMultiScale( 
 	img_gray,
-	scaleFactor = 1.4, # higher scaleFactor increases speed of detection for smaller faces but reduces accuarcy
+	scaleFactor = 1.3, # higher scaleFactor increases speed of detection for smaller faces but reduces accuarcy
 	minNeighbors = 3, # number of matching rectangles required before allowing detection
 	minSize = (int(minW), int(minH)), # minimum Size allowed for object detection
 	)
