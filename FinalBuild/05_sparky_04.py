@@ -226,31 +226,31 @@ search = True
 
 # Rotate until we find an identifiable face
 # Return true if the desired person is found
-def find_faces(init, targetPerson, img):
-    global findFaceInit
-    print(f"Init: {findFaceInit}")
-    target = False
-    print("search mode")
-    # Do a fun search init maneuver
-    # quickly spin ~180 left then right
-    if init:
-        findFaceInit = False
-        for turn in ['left', 'right']:
-            startTime = time.time()
-            tw.drive('stop', speed, speed)
-            while time.time() < startTime + 1:
-                tw.drive(turn, 70, 70)
-                target,_,_ = identify_faces(targetPerson, img)
-                if target:
-                    return True
+def find_faces(targetPerson, img):
+	global findFaceInit
+	print(f"Init: {findFaceInit}")
+	target = False
+	print("search mode")
+	# Do a fun search init maneuver
+	# quickly spin ~180 left then right
+	if findFaceInit:
+		findFaceInit = False
+		for turn in ['left', 'right']:
+			startTime = time.time()
+			tw.drive('stop', speed, speed)
+			while time.time() < startTime + 1:
+				tw.drive(turn, 70, 70)
+				target,_,_ = identify_faces(targetPerson, img)
+				if target:
+					return True
 
     # slowly turn left to find the desired person
-    tw.drive('left', 40, 40)
-    target,_,_ = identify_faces(targetPerson, img)
-    if target:
-        return True
-    else:
-        return False
+	tw.drive('left', 40, 40)
+	target,_,_ = identify_faces(targetPerson, img)
+	if target:
+		return True
+	else:
+		return False
 
 
 
@@ -304,12 +304,12 @@ def identify_faces(targetPerson,img):
 				driveTime = time.time() + 0.05
 				midX = (x + w/2)/width * 100
 
-			# reached destination so stop tracking
-			if w > width/4 or h > height/2:
-				target = False
-				stopCondition = True
-				findFaceInit = True
-				tw.drive("stop")
+				# reached destination so stop tracking
+				if (not search) and (w > width/4 or h > height/2):
+					target = False
+					stopCondition = True
+					findFaceInit = True
+					tw.drive("stop")
 
 		else:		
 			person = "unknown"
@@ -386,7 +386,7 @@ try:
 			#change instruction.v_search to False after user found
 			
 			if search:
-				foundFace = find_faces(findFaceInit, instruction.word, img)
+				foundFace = find_faces(instruction.word, img)
 				if foundFace:
 					search=False
 
@@ -418,7 +418,7 @@ try:
 		cv2.imwrite('tmp.jpg',resized)
 		image=pygame.image.load('tmp.jpg')
 		screen.blit(image,(0,0))
-		pygame.display.update()
+		pygame.display.update(pygame.Rect((0,0), (240,160)))
 		
 		if instruction.v_tricks:
 			pass

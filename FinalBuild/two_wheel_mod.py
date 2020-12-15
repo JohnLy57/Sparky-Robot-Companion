@@ -103,8 +103,8 @@ def servo(motor: 'Motor', direction: 'MotorState', duty: "int" = 75):
 # test sequence to test motor operation
 def drive(direction: 'string', speedL: "int" =75, speedR: "int" =75):
     # Stop by default
-    servo(motorA, MotorState.STOP)
-    servo(motorB, MotorState.STOP)
+    # servo(motorA, MotorState.STOP)
+    # servo(motorB, MotorState.STOP)
     if direction is "forward":
         servo(motorA, MotorState.CCW, speedL)
         servo(motorB, MotorState.CW, speedR)
