@@ -27,8 +27,8 @@ names = ['None', 'John', 'Carlos', 'X', 'Y', 'Z']
 
 # Initialize and start realtime video capture
 cam = cv2.VideoCapture(0)
-cam.set(3, 640) # set video widht
-cam.set(4, 480) # set video height
+cam.set(3, 1280) # set video width
+cam.set(4, 720) # set video height
 
 # Define min window size to be recognized as a face
 minW = 0.1*cam.get(3)
@@ -43,7 +43,7 @@ while True:
 
     faces = faceCascade.detectMultiScale( 
         gray,
-        scaleFactor = 1.2,
+        scaleFactor = 1.3,
         minNeighbors = 5,
         minSize = (int(minW), int(minH)),
        )
