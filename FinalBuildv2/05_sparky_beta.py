@@ -336,7 +336,7 @@ def detect_faces_quick(img):
 	)
 
 	# determine number of faces seen
-	print(np.asarray(faces))
+	# print(np.asarray(faces))
 	if np.shape(np.asarray(faces))[0] != 1:
 		tw.drive("stop")
 		return False
@@ -554,7 +554,7 @@ try:
 			if updateText:
 					updateText = False
 					search = True
-					#screen.fill(BLACK, textAreaRect)
+					# screen.fill(BLACK, textAreaRect)
 					text = fontLg.render(f'Looking for {instruction.word} . . .', True, WHITE, BLACK)
 					textRect = text.get_rect(center=(0.5*dispW, 0.75*dispH))
 					screen.fill(BLACK, textRect.inflate(240,0))
@@ -593,17 +593,18 @@ try:
 								search = True
 								foundFace = False
 
-					if stopCondition:
-						foundFace = False
-						search = True
-						instruction.v_search = False
-						print(f"Found {instruction.word}")
-						#screen.fill(BLACK, textAreaRect)
-						text = fontLg.render(f'Found {instruction.word}!', True, WHITE, BLACK)
-						textRect = text.get_rect(center=(0.5*dispW, 0.75*dispH))
-						screen.fill(BLACK, textRect.inflate(240,0))
-						screen.blit(text,textRect)
-						pygame.display.update(textRect)
+						if stopCondition:
+							foundFace = False
+							search = True
+							instruction.v_search = False
+							updateText = True
+							print(f"Found {instruction.word}")
+							#screen.fill(BLACK, textAreaRect)
+							text = fontLg.render(f'Found {instruction.word}!', True, WHITE, BLACK)
+							textRect = text.get_rect(center=(0.5*dispW, 0.75*dispH))
+							screen.fill(BLACK, textRect.inflate(240,0))
+							screen.blit(text,textRect)
+							pygame.display.update(textRect)
 
 				counter = int(time.time() - timerStart)
 				if prevCount != counter:
@@ -620,7 +621,7 @@ try:
 			if instruction.word == 'party':
 				if updateText:
 					imgCount += 1
-					
+					updateText = False
 					#screen.fill(BLACK, textAreaRect)
 					text = fontLg.render('Party Time!', True, WHITE, BLACK)
 					textRect = text.get_rect(center=(0.5*dispW, 0.75*dispH))
