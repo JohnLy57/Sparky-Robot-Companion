@@ -343,7 +343,7 @@ def detect_faces_quick(img):
 	
 	else:
 		chance = np.random.rand(1)
-		if chance < 0.98:
+		if chance < 0.99:
 			for (x,y,w,h) in faces:
 				# when very close, force a face recgnition check
 				if (not search) and (w > camW/4 or h > camH/2):
@@ -621,7 +621,7 @@ try:
 			if instruction.word == 'party':
 				if updateText:
 					imgCount += 1
-					updateText = False
+					
 					#screen.fill(BLACK, textAreaRect)
 					text = fontLg.render('Party Time!', True, WHITE, BLACK)
 					textRect = text.get_rect(center=(0.5*dispW, 0.75*dispH))
