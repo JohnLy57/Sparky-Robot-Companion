@@ -18,8 +18,8 @@ from pygame.locals import *
 #-- PYGAME INIT --#
 ###################
 
-# os.putenv('SDL_VIDEODRIVER', 'fbcon') # Display on piTFT
-# os.putenv('SDL_FBDEV', '/dev/fb1')
+os.putenv('SDL_VIDEODRIVER', 'fbcon') # Display on piTFT
+os.putenv('SDL_FBDEV', '/dev/fb1')
 # #os.putenv('SDL_MOUSEDRV', 'TSLIB') # Track mouse clicks on piTFT
 # #os.putenv('SDL_MOUSEDEV', '/dev/input/touchscreen')
 pygame.init()
@@ -283,14 +283,15 @@ driveTime = time.time()
 #targetPerson = "John" # change to output of voice input
 findFaceInit = True
 search = True
+misses = 0
 
 # Rotate until we find an identifiable face
 # Return true if the desired person is found
 def find_faces(targetPerson, img):
 	global findFaceInit
-	print(f"Init: {findFaceInit}")
+	# print(f"Init: {findFaceInit}")
 	target = False
-	print("search mode")
+	# print("search mode")
 	# Do a fun search init maneuver
 	# quickly spin ~180 left then right
 	if findFaceInit:
@@ -305,33 +306,25 @@ def find_faces(targetPerson, img):
 					return True
 
     # slowly turn left to find the desired person
-	tw.drive('left', 40, 40)
+	tw.drive('left', 50, 50)
 	target,_,_ = identify_faces(targetPerson, img)
 	if target:
 		return True
 	else:
 		return False
 
-def identify_faces_quick(targetPerson, img,):
+def detect_faces_quick(img):
 	# Reads from camera and detects faces quickly
 	#
 	# Params:
 	#    targetPerson: (string) name of person we wish to find
 	# Return:
-	#   target: (boolean) determines if targetPerson is in view and recognized
-	#   stopCondition: (boolean) determines if targetPerson is close enough to the camera 
+	#   boolean: True if single face present, False if too many faces or none
 
 	global speed, midX, driveTime, findFaceInit
 
-	target = False
-	stopCondition = False
-	
-	# convert the input frame from (1) BGR to grayscale (for face detection) and 
-	# (2) from BGR to RGB (for face recognition)
+	# convert the input frame from (1) BGR to grayscale (for face detection)
 	img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-	img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-	# img_gray = cv2.equalizeHist(img_gray)
 
 	# simple face detection
 	faces = detector.detectMultiScale( 
@@ -342,9 +335,29 @@ def identify_faces_quick(targetPerson, img,):
 	flags = cv2.CASCADE_SCALE_IMAGE
 	)
 
-	for (x,y,w,h) in faces:
-		centerX, centerY = x + w//2, y + h//2
-		img = cv2.ellipse(img, (centerX, centerY), (w//2, h//2), 0, 0, 360, (255, 0, 255), 4)			
+	# determine number of faces seen
+	print(np.asarray(faces))
+	if np.shape(np.asarray(faces))[0] != 1:
+		tw.drive("stop")
+		return False
+	
+	else:
+		chance = np.random.rand(1)
+		if chance < 0.98:
+			for (x,y,w,h) in faces:
+				# when very close, force a face recgnition check
+				if (not search) and (w > camW/4 or h > camH/2):
+					tw.drive("stop")
+					return False
+
+				centerX, centerY = x + w//2, y + h//2
+				img = cv2.ellipse(img, (centerX, centerY), (w//2, h//2), 0, 0, 360, (255, 0, 255), 4)	
+
+				driveTime = time.time() + 0.2
+				midX = (x + w/2)/camW * 100	
+				return True
+		else:
+			return False
 
 
 def identify_faces(targetPerson, img, mode = "None"):
@@ -362,9 +375,10 @@ def identify_faces(targetPerson, img, mode = "None"):
 	target = False
 	stopCondition = False
 	
-	# convert the input frame from (1) BGR to grayscale (for face detection)
+	# convert the input frame from (1) BGR to grayscale (for face detection) and
+	# (2) from BGR to RGB for (face recogniton)
 	img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-	# img_gray = cv2.equalizeHist(img_gray)
+	img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
 	# simple face detection
 	faces = detector.detectMultiScale( 
@@ -468,26 +482,22 @@ def identify_faces(targetPerson, img, mode = "None"):
 
 def pursue_target(target):
 	# when we see a known target, have robot travel towards face
-	if target:
+	while target and time.time() < driveTime:
 		# print(f"Target: {targetPerson}, X:{midX}")
-		slowSpeed = speed-(np.abs(50-midX))
+		slowSpeed = speed-(np.abs(50-midX//4))
 		if slowSpeed <= 0:
 			slowSpeed=0
 		# print(f"Speed:{slowSpeed}")
 		if midX < 45:
 			tw.drive("forward", slowSpeed, speed)
-			print("Lean left")
+			# print("Lean left")
 		elif midX > 55:
 			tw.drive("forward", speed, slowSpeed)
-			print("Lean right")
+			# print("Lean right")
 		else:
 			tw.drive("forward", speed, speed)
-
-		# step through to a new motion when enough time has elapsed
-		if time.time() > driveTime:
-			target = False
 	else:
-		tw.drive("stop")
+		tw.drive("forward", 40, 40)
 
 
 
@@ -556,11 +566,33 @@ try:
 					foundFace = find_faces(instruction.word, img)
 					if foundFace:
 						print("spotted...")
+						tw.drive("stop")
+						# time.sleep(0.5)
 						search=False
+						misses = 0
 
 				elif foundFace:
-					target, stopCondition, img = identify_faces(instruction.word, img)
-					pursue_target(target)
+					# after finding our target, move to face 90% of time with face detection only
+					# use face recognition for the other 10% of the time
+					search = False
+					facePresent = detect_faces_quick(img)
+					if facePresent:
+						pursue_target(True)
+					else: 
+						tw.drive("stop")
+						target, stopCondition, img = identify_faces(instruction.word, img)
+						if target:
+							misses = 0
+							pursue_target(target)
+						else:
+							misses += 1
+							if misses > 10:
+								tw.drive("right", 75, 75)
+								_, _, img = identify_faces(instruction.word, img)
+								foundFace = find_faces(instruction.word, img) # delay
+								search = True
+								foundFace = False
+
 					if stopCondition:
 						foundFace = False
 						search = True
@@ -578,9 +610,10 @@ try:
 					prevCount = counter
 					draw_counter(counter)
 			else:
+				tw.drive("stop")
 				findFaceInit = True
 				prevCount = 0
-				instruction.v_tricks = False
+				instruction.v_search = False
 
 		
 		if instruction.v_tricks:
