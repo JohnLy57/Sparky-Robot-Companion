@@ -76,6 +76,10 @@ GPIO.setup(13,GPIO.OUT) # LED pin
 #===============================================
 #Voice Recognition 
 #===============================================
+timerStart = time.time()
+prevCount = 0
+imgCount = 0
+
 _keyword_path="sparky.ppn" #sparky hotword (to initiate)
 _context_path="sparky.rhn" #uses the smart lighting intents ( we changing it to our own) 
 pa = None
@@ -105,13 +109,15 @@ def wake_word_callback():
 
 #### Example: Sparky, turn all the lights on 
 def inference_callback(inference):
-	global updateText
+	global updateText, timerStart
+	timerStart = time.time()
 
 	if inference.is_understood:
 		instruction.v_search=False
 		instruction.v_direction=False
 		instruction.v_tricks=False
 		print(inference)
+		updateText = True
 		
 		if inference.intent == 'search':
 			instruction.v_search=True
@@ -126,7 +132,6 @@ def inference_callback(inference):
 				elif slot == 'tricks':
 					instruction.v_tricks=True
 					instruction.word=value
-					updateText = True
 				else:
 					instruction.word=''
 
@@ -199,6 +204,7 @@ def movement_3sec(direction: 'string', speedL: "int" =75, speedR: "int" =75):
 
 
 
+
 ########################
 #-- FACE RECOGNITION --#
 ########################
@@ -225,6 +231,8 @@ camW, camH = 640,480 #960,720 # 1280,720
 cam.set(3, camW) # set video width
 cam.set(4, camH) # set video height
 camRect = pygame.Rect((0,0), (camW,camH))
+camWs, camHs = 240, 180  
+textAreaRect = pygame.Rect((0,camHs), (dispW,dispH-camHs))
 
 # fps = FPS().start()
 
@@ -358,8 +366,8 @@ def identify_faces(targetPerson, img, mode = "None"):
 		center = ((leftX+rightX)//2, (bottomY+topY)//2)
 		w,h = rightX-leftX, bottomY-topY
 
-		cv2.ellipse(img, (center[0], center[1]), (w//2, h//2), 0, 0, 360, (255, 0, 255), 4)	
-		cv2.putText(img, str(name), (leftX,bottomY), font, 1, (255,255,255), 4)
+		cv2.ellipse(img, (center[0], center[1]), (w//2, h//2), 0, 0, 360, (255, 0, 255), 2)	
+		cv2.putText(img, str(name), (leftX-15,bottomY+30), font, 1.2, (255,255,255), 2)
 
 		if mode is "party_time":
 			if name is not "Unknown":
@@ -467,42 +475,81 @@ try:
 			#use instruction.word for the user pass to FaceRec
 			#variable contains name of the user asked for
 			#change instruction.v_search to False after user found
-			
-			if search:
-				foundFace = find_faces(instruction.word, img)
-				if foundFace:
-					search=False
 
-			if foundFace:
-				target, stopCondition, img = identify_faces(instruction.word, img)
-				pursue_target(target)
-				if stopCondition:
-					foundFace = False
-					search = True
-					print(f"Found {instruction.word}")
-					instruction.v_search = False
+			if updateText:
+					updateText = False
+					screen.fill(BLACK, textAreaRect)
+					text = fontLg.render(f'Looking for {instruction.word} . . .', True, WHITE, BLACK)
+					textRect = text.get_rect(center=(0.5*dispW, 0.75*dispH))
+					screen.blit(text,textRect)
+					pygame.display.update(textRect)
+
+			if time.time() < timerStart + 20:			
+				if search:
+					foundFace = find_faces(instruction.word, img)
+					if foundFace:
+						search=False
+
+				elif foundFace:
+					target, stopCondition, img = identify_faces(instruction.word, img)
+					pursue_target(target)
+					if stopCondition:
+						foundFace = False
+						search = True
+						print(f"Found {instruction.word}")
+						screen.fill(BLACK, textAreaRect)
+						text = fontLg.render(f'Found {instruction.word}!', True, WHITE, BLACK)
+						textRect = text.get_rect(center=(0.5*dispW, 0.75*dispH))
+						screen.blit(text,textRect)
+						pygame.display.update(textRect)
+						instruction.v_search = False
+			else:
+				findFaceInit = True
+				instruction.v_tricks = False
 
 		
 		if instruction.v_tricks:
-			# if instruction.word is "party":
-			_,_,img = identify_faces(None, img, mode = "party_time")
+			if instruction.word == 'party':
+				if updateText:
+					imgCount += 1
+					updateText = False
+					screen.fill(BLACK, textAreaRect)
+					text = fontLg.render('Party Time!', True, WHITE, BLACK)
+					textRect = text.get_rect(center=(0.5*dispW, 0.75*dispH))
+					screen.blit(text,textRect)
+					pygame.display.update(textRect)
 
-			if updateText:
-				updateText = False
-				text = fontLg.render('Party Time!', True, WHITE)
-				textRect = text.get_rect(center=(0.5*dispW, 0.75*dispH))
-				screen.blit(text,textRect)
-				pygame.display.update(textRect)
+				if time.time() < timerStart + 10:
+					_,_,img = identify_faces(None, img, mode = "party_time")
+					counter = int(time.time() - timerStart)
+					if prevCount != counter:
+						prevCount = counter
+						text = fontLg.render(f'{counter}', True, WHITE, BLACK)
+						textRect = text.get_rect(center=(0.5*dispW, 0.90*dispH))
+						screen.fill(BLACK, textRect.inflate(20,0))
+						screen.blit(text,textRect)
+						pygame.display.update(textRect)
+
+				else:
+					instruction.v_tricks = False
+					prevCount = 0
+					cv2.imwrite('party_time/image_' + str(imgCount) +'.jpg',img)
+					screen.fill(BLACK, textAreaRect)
+					photo = cv2.resize(img,(187,140))
+					cv2.imwrite('tmp_photo.jpg',photo)
+					photo = pygame.image.load('tmp_photo.jpg')
+					screen.blit(photo,(0,camHs))
+					pygame.display.update(textAreaRect)
 				
 
-			# if instruction.word is "breakdance":
+			# if instruction.word is "break dance":
 			# 	pass
 
 		# Aspect Ratios
 		# 16/9 = 1280,720 -> 640,360 -> 320,180 -> 160,90 -> 240,135
 		# 4/3 = 960,720 -> 720,540 -> 240,180
 		
-		resized=cv2.resize(img,(240,180)) # PiTFT Mode
+		resized=cv2.resize(img,(camWs,camHs)) # PiTFT Mode (240,180)
 		# resized=cv2.resize(img,(360,270)) # Desktop Mode
 		cv2.imwrite('tmp.jpg',resized)
 		image=pygame.image.load('tmp.jpg')
