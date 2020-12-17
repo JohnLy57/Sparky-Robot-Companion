@@ -209,7 +209,32 @@ def movement_3sec(direction: 'string', speedL: "int" =75, speedR: "int" =75):
 		else:
 			endtime=time.time()+3
 
-
+c=0
+def move_breakdance():
+	global c,endtime
+	
+	if (c % 2) ==0:
+		tw.drive('stop')
+		tw.drive("left",50,50)
+		
+	else:
+		tw.drive('stop')
+		tw.drive("right",60,60)
+		
+		
+	if time.time() > endtime:
+		
+		
+		if endtime >0:
+			c+=1
+			endtime=0
+			if c >= 10:
+				tw.drive('stop')
+				instruction.v_tricks=False
+				c=0
+				
+		else:
+			endtime=time.time()+0.5
 
 
 ########################
@@ -578,8 +603,8 @@ try:
 					pygame.display.update(textAreaRect)
 				
 
-			# if instruction.word is "break dance":
-			# 	pass
+			if instruction.word == 'break dance':
+				move_breakdance()
 
 		# Aspect Ratios
 		# 16/9 = 1280,720 -> 640,360 -> 320,180 -> 160,90 -> 240,135
