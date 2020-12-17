@@ -13,7 +13,7 @@
 * sudo apt install libatlas-base-dev liblapacke-dev gfortran
 * sudo apt install libhdf5-dev libhdf5-103
 * sudo apt install python3-dev python3-pip python3-numpy
-* sudo pip3 install face_recogntion
+* sudo pip3 install face_recognition
 * sudo pip3 install imutils
 
 ### Voice libraries
