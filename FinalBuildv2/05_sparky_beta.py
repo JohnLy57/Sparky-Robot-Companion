@@ -312,7 +312,7 @@ def find_faces(targetPerson, img):
 					return True
 
     # slowly turn left to find the desired person
-	tw.drive('left', 45, 45)
+	tw.drive('left', 50, 50)
 	target,_,_ = identify_faces(targetPerson, img)
 	if target:
 		driveTime = time.time() + 0.2
@@ -321,7 +321,7 @@ def find_faces(targetPerson, img):
 		tw.drive("stop")
 		return True
 	else:
-		# tw.drive("stop")
+		tw.drive("stop")
 		return False
 
 def detect_faces_quick(img):
