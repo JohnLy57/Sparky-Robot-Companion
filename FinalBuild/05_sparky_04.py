@@ -20,8 +20,16 @@ from pygame.locals import *
 # #os.putenv('SDL_MOUSEDRV', 'TSLIB') # Track mouse clicks on piTFT
 # #os.putenv('SDL_MOUSEDEV', '/dev/input/touchscreen')
 pygame.init()
-screen=pygame.display.set_mode((240,320))
-BLACK = 0,0,0
+# screen=pygame.display.set_mode((240,320)) # PiTFT Mode
+screen=pygame.display.set_mode((360,360)) # Desktop Mode
+dispW, dispH = screen.get_size()
+dispRect = pygame.Rect((0,0), (dispW,dispH))
+BLACK = (0,0,0)
+WHITE = (255,255,255)
+fontSm = pygame.font.SysFont(None, 12)
+fontLg = pygame.font.SysFont(None, 24)
+
+updateText = False
 
 screen.fill(BLACK)
 
@@ -94,7 +102,8 @@ def wake_word_callback():
 
 #### Example: Sparky, turn all the lights on 
 def inference_callback(inference):
-	
+	global updateText
+
 	if inference.is_understood:
 		instruction.v_search=False
 		instruction.v_direction=False
@@ -114,6 +123,7 @@ def inference_callback(inference):
 				elif slot == 'tricks':
 					instruction.v_tricks=True
 					instruction.word=value
+					updateText = True
 				else:
 					instruction.word=''
 
@@ -205,9 +215,10 @@ names = ['None', 'John', 'Carlos']
 
 # Initialize and start realtime video capture
 cam = cv2.VideoCapture(0)
-width, height = 640, 480 
-cam.set(3, width) # set video width
-cam.set(4, height) # set video height
+camW, camH = 960,720 #640,480 # 1280,720 
+cam.set(3, camW) # set video width
+cam.set(4, camH) # set video height
+camRect = pygame.Rect((0,0), (camW,camH))
 
 # Define min window size to be recognized as a face
 minW = 0.05*cam.get(3)
@@ -216,7 +227,7 @@ minH = 0.05*cam.get(4)
 # Define parameters for pursuit
 # target = False
 speed = 90
-midX = width/2
+midX = camW/2
 driveTime = time.time()
 
 #targetPerson = "John" # change to output of voice input
@@ -281,7 +292,7 @@ def identify_faces(targetPerson, img, mode = "None"):
 	faces = faceCascade.detectMultiScale( 
 	img_gray,
 	scaleFactor = 1.3, # higher scaleFactor increases speed of detection for smaller faces but reduces accuarcy
-	minNeighbors = 3, # number of matching rectangles required before allowing detection
+	minNeighbors = 5, # number of matching rectangles required before allowing face detection
 	minSize = (int(minW), int(minH)), # minimum Size allowed for object detection
 	)
 
@@ -289,7 +300,7 @@ def identify_faces(targetPerson, img, mode = "None"):
 
 		# cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 2)
 		centerX, centerY = x + w//2, y + h//2
-		img = cv2.ellipse(img, (centerX, centerY), (w//2, h//2), 0, 0, 360, (255, 0, 255), 2)			
+		img = cv2.ellipse(img, (centerX, centerY), (w//2, h//2), 0, 0, 360, (255, 0, 255), 4)			
 
 		id, mismatch = recognizer.predict(img_gray[y:y+h,x:x+w])
 		
@@ -322,10 +333,10 @@ def identify_faces(targetPerson, img, mode = "None"):
 			if person == targetPerson:
 				target = True
 				driveTime = time.time() + 0.05
-				midX = (x + w/2)/width * 100
+				midX = (x + w/2)/camW * 100
 
 				# reached destination so stop tracking
-				if (not search) and (w > width/4 or h > height/2):
+				if (not search) and (w > camW/4 or h > camH/2):
 					target = False
 					stopCondition = True
 					findFaceInit = True
@@ -338,10 +349,10 @@ def identify_faces(targetPerson, img, mode = "None"):
 			if mode is "party_time":
 				# Draw Triangle Hat
 				pts = np.array([[x+w//8,y], [x+w-w//8,y], [x+w//2,y-w]], np.int32).reshape((-1,1,2))
-				img = cv2.polylines(img,[pts],True,(0,255,255),2)
+				img = cv2.polylines(img,[pts],True,(0,255,255),4)
         
-		cv2.putText(img, str(person), (x+5,y-5), font, 1, (255,255,255), 2)
-		cv2.putText(img, str(confidence), (x+5,y+h-5), font, 1, (255,255,0), 2)
+		cv2.putText(img, str(person), (x+5,y-5), font, 1, (255,255,255), 5)
+		cv2.putText(img, str(confidence), (x+5,y+h-5), font, 1, (255,255,0), 5)
 
 	return target, stopCondition, img
 
@@ -429,16 +440,28 @@ try:
 			# if instruction.word is "party":
 			_,_,img = identify_faces(None, img, mode = "party_time")
 
+			if updateText:
+				updateText = False
+				text = fontLg.render('Party Time!', True, WHITE)
+				screen.blit(text, (0.35*dispW, camH + 10))
+				pygame.display.update(text.get_rect())
+				
+
 			# if instruction.word is "breakdance":
 			# 	pass
 
-
-		resized=cv2.resize(img,(240,160))
+		# Aspect Ratios
+		# 16/9 = 1280,720 -> 640,360 -> 320,180 -> 160,90 -> 240,135
+		# 4/3 = 960,720 -> 720,540 -> 240,180
+		
+		# resized=cv2.resize(img,(240,180)) # PiTFT Mode
+		resized=cv2.resize(img,(360,270)) # Desktop Mode
 		cv2.imwrite('tmp.jpg',resized)
 		image=pygame.image.load('tmp.jpg')
 		screen.blit(image,(0,0))
-		pygame.display.update(pygame.Rect((0,0), (240,160)))
-			
+		pygame.display.update(camRect)
+
+
 finally:
 	if _picovoice is not None:
 		_picovoice.delete()

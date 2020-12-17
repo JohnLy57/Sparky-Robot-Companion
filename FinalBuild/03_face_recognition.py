@@ -19,16 +19,16 @@ faceCascade = cv2.CascadeClassifier(cascadePath)
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 
-#iniciate id counter
+#initiate id counter
 id = 0
 
 # names related to ids: example ==> Marcelo: id=1,  etc
-names = ['None', 'John', 'Carlos', 'X', 'Y', 'Z'] 
+names = ['None', 'John', 'Carlos', 'Laura', 'Barack', 'Z'] 
 
 # Initialize and start realtime video capture
 cam = cv2.VideoCapture(0)
-cam.set(3, 640) # set video widht
-cam.set(4, 480) # set video height
+cam.set(3, 960) # set video width #1280
+cam.set(4, 720) # set video height #720
 
 # Define min window size to be recognized as a face
 minW = 0.1*cam.get(3)
@@ -37,14 +37,14 @@ minH = 0.1*cam.get(4)
 while True:
 
     ret, img = cam.read()
-    # img = cv2.flip(img, -1) # Flip vertically
+    img = cv2.flip(img, -1) # Flip vertically
 
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
     faces = faceCascade.detectMultiScale( 
         gray,
         scaleFactor = 1.2,
-        minNeighbors = 5,
+        minNeighbors = 8,
         minSize = (int(minW), int(minH)),
        )
 
@@ -52,15 +52,15 @@ while True:
 
         cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 2)
 
-        id, confidence = recognizer.predict(gray[y:y+h,x:x+w])
+        id, mismatch = recognizer.predict(gray[y:y+h,x:x+w])
 
-        # Check if confidence is less them 100 ==> "0" is perfect match 
-        if (confidence < 100):
+        # Check if mismatch is less them 100 ==> "0" is perfect match 
+        if (mismatch < 90):
             id = names[id]
-            confidence = "  {0}%".format(round(100 - confidence))
+            confidence = "  {0}%".format(round(100 - mismatch))
         else:
             id = "unknown"
-            confidence = "  {0}%".format(round(100 - confidence))
+            confidence = "  {0}%".format(round(100 - mismatch))
         
         cv2.putText(img, str(id), (x+5,y-5), font, 1, (255,255,255), 2)
         cv2.putText(img, str(confidence), (x+5,y+h-5), font, 1, (255,255,0), 1)  
