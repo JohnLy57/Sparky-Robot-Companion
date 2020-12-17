@@ -36,6 +36,13 @@ updateText = False
 
 screen.fill(BLACK)
 
+def draw_counter(number):
+	text = fontLg.render(f'{number}', True, WHITE, BLACK)
+	textRect = text.get_rect(center=(0.5*dispW, 0.90*dispH))
+	screen.fill(BLACK, textRect.inflate(20,0))
+	screen.blit(text,textRect)
+	pygame.display.update(textRect)
+
 #============================================================
 #TFT Button Operation
 #============================================================
@@ -478,6 +485,7 @@ try:
 
 			if updateText:
 					updateText = False
+					search = True
 					screen.fill(BLACK, textAreaRect)
 					text = fontLg.render(f'Looking for {instruction.word} . . .', True, WHITE, BLACK)
 					textRect = text.get_rect(center=(0.5*dispW, 0.75*dispH))
@@ -488,6 +496,7 @@ try:
 				if search:
 					foundFace = find_faces(instruction.word, img)
 					if foundFace:
+						print("spotted...")
 						search=False
 
 				elif foundFace:
@@ -496,15 +505,21 @@ try:
 					if stopCondition:
 						foundFace = False
 						search = True
+						instruction.v_search = False
 						print(f"Found {instruction.word}")
 						screen.fill(BLACK, textAreaRect)
 						text = fontLg.render(f'Found {instruction.word}!', True, WHITE, BLACK)
 						textRect = text.get_rect(center=(0.5*dispW, 0.75*dispH))
 						screen.blit(text,textRect)
 						pygame.display.update(textRect)
-						instruction.v_search = False
+
+				counter = int(time.time() - timerStart)
+				if prevCount != counter:
+					prevCount = counter
+					draw_counter(counter)
 			else:
 				findFaceInit = True
+				prevCount = 0
 				instruction.v_tricks = False
 
 		
@@ -519,16 +534,13 @@ try:
 					screen.blit(text,textRect)
 					pygame.display.update(textRect)
 
+				_,_,img = identify_faces(None, img, mode = "party_time")
+
 				if time.time() < timerStart + 10:
-					_,_,img = identify_faces(None, img, mode = "party_time")
 					counter = int(time.time() - timerStart)
 					if prevCount != counter:
 						prevCount = counter
-						text = fontLg.render(f'{counter}', True, WHITE, BLACK)
-						textRect = text.get_rect(center=(0.5*dispW, 0.90*dispH))
-						screen.fill(BLACK, textRect.inflate(20,0))
-						screen.blit(text,textRect)
-						pygame.display.update(textRect)
+						draw_counter(counter)
 
 				else:
 					instruction.v_tricks = False
