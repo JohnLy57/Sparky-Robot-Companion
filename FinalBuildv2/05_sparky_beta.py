@@ -304,14 +304,24 @@ def find_faces(targetPerson, img):
 				tw.drive(turn, 70, 70)
 				target,_,_ = identify_faces(targetPerson, img)
 				if target:
+					driveTime = time.time() + 0.2
+					while time.time() < driveTime:
+						adjustment = 'right' if turn is 'left' else 'left'
+						tw.drive(adjustment, 60, 60)
+					tw.drive("stop")
 					return True
 
     # slowly turn left to find the desired person
-	tw.drive('left', 50, 50)
+	tw.drive('left', 45, 45)
 	target,_,_ = identify_faces(targetPerson, img)
 	if target:
+		driveTime = time.time() + 0.2
+		while time.time() < driveTime:
+			tw.drive("right", 60, 60)
+		tw.drive("stop")
 		return True
 	else:
+		# tw.drive("stop")
 		return False
 
 def detect_faces_quick(img):
@@ -419,6 +429,8 @@ def identify_faces(targetPerson, img, mode = "None"):
 			# each recognized face face
 			for i in matchedIdxs:
 				name = data["names"][i]
+				if name is targetPerson:
+					tw.drive("stop")
 				counts[name] = counts.get(name, 0) + 1
 
 			# determine the recognized face with the largest number
@@ -567,7 +579,6 @@ try:
 					foundFace = find_faces(instruction.word, img)
 					if foundFace:
 						print("spotted...")
-						tw.drive("stop")
 						# time.sleep(0.5)
 						search=False
 						misses = 0
@@ -588,8 +599,10 @@ try:
 						else:
 							misses += 1
 							if misses > 10:
-								tw.drive("right", 75, 75)
-								_, _, img = identify_faces(instruction.word, img)
+								# driveTime = time.time() + 1.0
+								# while time.time() < driveTime:
+								# 	tw.drive("right", 75, 75)
+								# _, _, img = identify_faces(instruction.word, img)
 								foundFace = find_faces(instruction.word, img) # delay
 								search = True
 								foundFace = False
