@@ -33,6 +33,7 @@ fontSm = pygame.font.SysFont(None, 12)
 fontLg = pygame.font.SysFont(None, 24)
 
 updateText = False
+party_over = False
 
 screen.fill(BLACK)
 
@@ -191,7 +192,7 @@ endtime=0
 led_endtime=0
 turn=True
 def movement_3sec(direction: 'string', speedL: "int" =75, speedR: "int" =75):
-	global endtime,turn
+	global endtime,turn,updateText
 	if direction == 'forward' or 'backward' or 'right' or 'left':
 		tw.drive(direction,speedL,speedR)
 	else:
@@ -206,8 +207,9 @@ def movement_3sec(direction: 'string', speedL: "int" =75, speedR: "int" =75):
 			tw.drive('stop',speedL,speedR)
 			endtime=0
 			instruction.v_direction=False
+			updateText=False
 		else:
-			endtime=time.time()+3
+			endtime=time.time()+0.5
 
 c=0
 def move_breakdance():
@@ -492,15 +494,22 @@ try:
 	
 		if instruction.v_direction:
 			if instruction.word == 'forward':
-				movement_3sec('forward',30,30)
+				movement_3sec('forward',90,90)
 			if instruction.word == 'back':
-				movement_3sec('backward',30,30)
+				movement_3sec('backward',90,90)
 			if instruction.word == 'right':
-				movement_3sec('right',30,30)
+				movement_3sec('right',90,90)
 			if instruction.word == 'left':
-				movement_3sec('left',30,30)
+				movement_3sec('left',90,90)
 			if instruction.word == 'spin':
 				tw.drive("left",90,90)
+			
+			screen.fill(BLACK, textAreaRect)
+			text = fontLg.render(f'Moving {instruction.word}', True, WHITE, BLACK)
+			textRect = text.get_rect(center=(0.5*dispW, 0.75*dispH))
+			screen.fill(BLACK, textRect.inflate(240,0))
+			screen.blit(text,textRect)
+			pygame.display.update(textRect)
 				
 				
 		if instruction.v_search:
@@ -511,9 +520,10 @@ try:
 			if updateText:
 					updateText = False
 					search = True
-					screen.fill(BLACK, textAreaRect)
+					#screen.fill(BLACK, textAreaRect)
 					text = fontLg.render(f'Looking for {instruction.word} . . .', True, WHITE, BLACK)
 					textRect = text.get_rect(center=(0.5*dispW, 0.75*dispH))
+					screen.fill(BLACK, textRect.inflate(240,0))
 					screen.blit(text,textRect)
 					pygame.display.update(textRect)
 
@@ -532,9 +542,10 @@ try:
 						search = True
 						instruction.v_search = False
 						print(f"Found {instruction.word}")
-						screen.fill(BLACK, textAreaRect)
+						#screen.fill(BLACK, textAreaRect)
 						text = fontLg.render(f'Found {instruction.word}!', True, WHITE, BLACK)
 						textRect = text.get_rect(center=(0.5*dispW, 0.75*dispH))
+						screen.fill(BLACK, textRect.inflate(240,0))
 						screen.blit(text,textRect)
 						pygame.display.update(textRect)
 
@@ -552,10 +563,11 @@ try:
 			if instruction.word == 'party':
 				if updateText:
 					imgCount += 1
-					updateText = False
-					screen.fill(BLACK, textAreaRect)
+					
+					#screen.fill(BLACK, textAreaRect)
 					text = fontLg.render('Party Time!', True, WHITE, BLACK)
 					textRect = text.get_rect(center=(0.5*dispW, 0.75*dispH))
+					screen.fill(BLACK, textRect.inflate(240,0))
 					screen.blit(text,textRect)
 					pygame.display.update(textRect)
 
@@ -570,18 +582,36 @@ try:
 				else:
 					instruction.v_tricks = False
 					prevCount = 0
-					cv2.imwrite('party_time/image_' + str(imgCount) +'.jpg',img)
-					screen.fill(BLACK, textAreaRect)
-					photo = cv2.resize(img,(187,140))
-					cv2.imwrite('tmp_photo.jpg',photo)
-					photo = pygame.image.load('tmp_photo.jpg')
-					screen.blit(photo,(0,camHs))
-					pygame.display.update(textAreaRect)
+					party_over=True
+					updateText = False
 				
 
 			if instruction.word == 'break dance':
 				move_breakdance()
-
+				#screen.fill(BLACK, textAreaRect)
+				text = fontLg.render('Breakdancing!!!', True, WHITE, BLACK)
+				textRect = text.get_rect(center=(0.5*dispW, 0.75*dispH))
+				screen.fill(BLACK, textRect.inflate(240,0))
+				screen.blit(text,textRect)
+				pygame.display.update(textRect)
+		
+		if not updateText:
+			if party_over:
+				party_over=False
+				cv2.imwrite('party_time/image_' + str(imgCount) +'.jpg',img)
+				screen.fill(BLACK, textAreaRect)
+				photo = cv2.resize(img,(120,73))
+				cv2.imwrite('tmp_photo.jpg',photo)
+				photo = pygame.image.load('tmp_photo.jpg')
+				screen.blit(photo,(0,247))
+				pygame.display.update(textAreaRect)
+				
+			#screen.fill(BLACK, textAreaRect)
+			text = fontLg.render('Sparky is sitting waiting ...', True, WHITE, BLACK)
+			textRect = text.get_rect(center=(0.5*dispW, 0.75*dispH))
+			screen.fill(BLACK, textRect.inflate(260,0))
+			screen.blit(text,textRect)
+			pygame.display.update(textRect)
 		# Aspect Ratios
 		# 16/9 = 1280,720 -> 640,360 -> 320,180 -> 160,90 -> 240,135
 		# 4/3 = 960,720 -> 720,540 -> 240,180
