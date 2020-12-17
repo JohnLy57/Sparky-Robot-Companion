@@ -312,10 +312,44 @@ def find_faces(targetPerson, img):
 	else:
 		return False
 
+def identify_faces_quick(targetPerson, img,):
+	# Reads from camera and detects faces quickly
+	#
+	# Params:
+	#    targetPerson: (string) name of person we wish to find
+	# Return:
+	#   target: (boolean) determines if targetPerson is in view and recognized
+	#   stopCondition: (boolean) determines if targetPerson is close enough to the camera 
+
+	global speed, midX, driveTime, findFaceInit
+
+	target = False
+	stopCondition = False
+	
+	# convert the input frame from (1) BGR to grayscale (for face detection) and 
+	# (2) from BGR to RGB (for face recognition)
+	img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+	img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+	# img_gray = cv2.equalizeHist(img_gray)
+
+	# simple face detection
+	faces = detector.detectMultiScale( 
+	img_gray,
+	scaleFactor = 1.3, # higher scaleFactor increases speed of detection for smaller faces but reduces accuarcy
+	minNeighbors = 5, # number of matching rectangles required before allowing face detection
+	minSize = (int(minW), int(minH)), # minimum Size allowed for object detection
+	flags = cv2.CASCADE_SCALE_IMAGE
+	)
+
+	for (x,y,w,h) in faces:
+		centerX, centerY = x + w//2, y + h//2
+		img = cv2.ellipse(img, (centerX, centerY), (w//2, h//2), 0, 0, 360, (255, 0, 255), 4)			
 
 
 def identify_faces(targetPerson, img, mode = "None"):
-	# Reads from camera and detects faces
+	# Reads from camera and detects faces 
+	# Face Recognition is slow but accurate
 	# 
 	# Params:
 	#    targetPerson: (string) name of person we wish to find
@@ -327,19 +361,9 @@ def identify_faces(targetPerson, img, mode = "None"):
 
 	target = False
 	stopCondition = False
-
-	# time.sleep(0.005)
-	#ret, img =cam.read()
-	# if frame is read correctly ret is True
-	# if not ret:
-	# 	print("Can't receive frame (stream end?). Exiting ...")
-	# 	return
 	
-	# convert the input frame from (1) BGR to grayscale (for face detection) and 
-	# (2) from BGR to RGB (for face recognition)
+	# convert the input frame from (1) BGR to grayscale (for face detection)
 	img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-	img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
 	# img_gray = cv2.equalizeHist(img_gray)
 
 	# simple face detection
