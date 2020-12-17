@@ -287,7 +287,7 @@ def identify_faces(targetPerson, img, mode = "None"):
 	
 
 	img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-	img_gray = cv2.equalizeHist(img_gray)
+	# img_gray = cv2.equalizeHist(img_gray)
 
 	faces = faceCascade.detectMultiScale( 
 	img_gray,
@@ -303,10 +303,12 @@ def identify_faces(targetPerson, img, mode = "None"):
 		img = cv2.ellipse(img, (centerX, centerY), (w//2, h//2), 0, 0, 360, (255, 0, 255), 4)			
 
 		id, mismatch = recognizer.predict(img_gray[y:y+h,x:x+w])
+		person = "unknown"
 		
 		# Check if mismatch is less them 100 ==> "0" is perfect match 
 		if (mismatch < 100):
-			person = names[id] # determine name of face
+			if id < len(names):
+				person = names[id] # determine name of face
 			confidence = "  {0}%".format(round(100 - mismatch))
 
 			if mode is "party_time":
@@ -343,7 +345,6 @@ def identify_faces(targetPerson, img, mode = "None"):
 					tw.drive("stop")
 
 		else:		
-			person = "unknown"
 			confidence = "  {0}%".format(round(100 - mismatch))
 
 			if mode is "party_time":
