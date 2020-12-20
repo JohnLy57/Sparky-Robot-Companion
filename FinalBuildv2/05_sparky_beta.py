@@ -1,3 +1,7 @@
+# Sparky Beta (Python 3)
+# Author: John Ly (jtl222), Carlos Gutierrez (cag334)
+# Date: December 17, 2020
+
 import struct 
 import numpy as np
 import os
