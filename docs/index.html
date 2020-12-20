@@ -6,10 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description" content="Sparky is an intelligent pet-like robot which listens to its owner and is able to accomplish unique tricks in some ways similar to a real live trained dog. Sparky uses both face and voice recognition">
+    <meta name="author" content="John Ly, Carlos Gutierrez">
 
-    <title>Starter Template for Bootstrap</title>
+    <title>Sparky - Robot Companion</title>
 
     <!-- Bootstrap core CSS -->
     <link href="dist/css/bootstrap.min.css" rel="stylesheet">
@@ -63,17 +63,17 @@
 
       <div class="starter-template">
         <h1>Sparky - Robot Companion</h1>
-        </p><p class="c51 subtitle" id="h.hpmrc74rl0fj">
+        <p class="c51 subtitle" id="h.hpmrc74rl0fj">
 	<p class="c20 c49 c5">Monday Section</p>
-        </p><p class="c51 subtitle" id="h.hpmrc74rl0fj-1">
-	<p class="c21"><p class="c5">ECE 5725 Final Project</h1>
+        <p class="c51 subtitle" id="h.hpmrc74rl0fj-1">
+	<p class="c21"><p class="c5">ECE 5725 Final Project
 	</p><p class="c51 subtitle" id="h.hpmrc74rl0fj-2">
-	<p class="c20 c49 c5">By: John Ly (jtl22) and Carlos Gutierrez (cag334)</h1>
+	<p class="c20 c49 c5">By: John Ly (jtl22) and Carlos Gutierrez (cag334)
       </div>
 
       <hr>
       <div class="center-block">
-          <iframe width="640" height="360" src="https://www.youtube.com/embed/yTBZ8xb8o1w" frameborder="0" allowfullscreen></iframe>
+          <iframe width="640" height="360" src="https://www.youtube.com/embed/yTBZ8xb8o1w" allowfullscreen></iframe>
           <h4 style="text-align:center;">Demonstration Video</h4>
       </div>
 
@@ -81,7 +81,7 @@
 
       <div style="text-align:center;">
               <h1 style="padding-top:5%">Project Objective:</h1>
-	      </h1><p class="c3"><span class="c2">
+	        <p class="c3"><span class="c2">
 	The goal for our ECE 5725: Design with Embedded Operating Systems final
         project was to create a smart mobile robot which uniquely combined OpenCV facial recognition alongside
 	voice commands to create a fun robot capable of identifying faces and traveling to them upon voice requests.</span>
@@ -122,8 +122,8 @@
 	<p class="c28"><span class="c7"></span></p>
 	      
 	      
-	      <h3 class="c9" id="h.yy7kq6xc0jca"><span class="c20"><b>General Features</b></span></h3>
-        <h4 class="c9" id="h.yy7kq6xc0jca"><span class="c20">The key programmed features are as follows:</span></h4>
+	      <h3 class="c9"><span class="c20"><b>General Features</b></span></h3>
+        <h4 class="c9"><span class="c20">The key programmed features are as follows:</span></h4>
 
 	      <h4><span class="c7"><i>Voice Commands:</i></span></h4>
         <p class="c6 c39">
@@ -139,24 +139,25 @@
         <ul>
             <li class="c6 c29"><span class="c7">Sparky (hot word for starting activation)</span></li>
             <li class="c6 c29"><span class="c7">Basic Movement</span></li>
-            <ul>
-              <li class="c6 c54"><span class="c7">Go/Move/do a - (1)Forward, (2)Back, (3)Left, (4)Right, (5) Spin</span></li>
-            </ul>
+            <li class="c6 c54" style="margin-left: 20px;"><span class="c7">Go/Move/do a - (1)Forward, (2)Back, (3)Left, (4)Right, (5) Spin</span></li>
 
             <li class="c6 c29"><span class="c7">Search</span></li>
             
               <li class="c6 c54"><span class="c7">Find / Look for - (1)John, (2)Carlos</span></li>
             
             <li class="c6 c29"><span class="c7">Tricks</span></li>
-            <ul>
-              <li class="c6 c54"><span class="c7">Party Mode/Time</span></li>
-              <li class="c6 c54"><span class="c7">Break Dance - (1)Hit It, (2)Now</span></li>
-            </ul>
+
+              <li class="c6 c54" style="margin-left: 20px;"><span class="c7">Party Mode/Time</span></li>
+              <li class="c6 c54" style="margin-left: 20px;"><span class="c7">Break Dance - (1)Hit It, (2)Now</span></li>
+
+          </ul>
         <p class="c1"><span class="c7"></span></p>
 
   <div style="text-align:center;">
         <h4><span class="c7"><i>Face Identification:</i></span></h4>
-	</div>
+  </div>
+  <ul>
+
             <li class="c6 c29">
                 <span class="c7">
                     Party Mode: most easily visible from party mode, Sparky will activate a 10s photo timer and additionally animate a party hat on any visible faces in front of Sparky. For recognized persons, they are given a proper party
@@ -164,6 +165,7 @@
                 </span>
             </li>
 
+          </ul>
 
 	<div style="text-align:center;">
         <p class="c40 c39">
@@ -175,27 +177,32 @@
                 <img class="img-rounded" alt="Generic placeholder image" src="images/image3.png" style="width: 232.67px; height: 174.5px; margin-left: 0px; margin-top: 0px; transform: rotate(0rad) translateZ(0px); -webkit-transform: rotate(0rad) translateZ(0px);" title="" />
             </span>
         </p>
-	</div>
+  </div>
+          <ul>
             <li class="c6 c29">
                 <span class="c7">
                     Search Mode: upon activation, Sparky will do some quick movements in search of the requested person, either Carlos or John. After doing some in place rotations, upon recognition, Sparky will then stop and then
                     progressively drive towards the target until it is decided that the person requested is close enough to Sparky.
                 </span>
             </li>
+          </ul>
 
 <div style="text-align:center;">
 	<h4><span class="c7"><i>Untethered Operation:</i></span></h4>
 </div>
+          <ul>
             <li class="c6 c29">
                 <span class="c7">
                     Sparky works independently of an internet connection and a wall-powered energy source. Sparky carries an on-board lithium rechargeable battery to power the Raspberry Pi and 4 AA batteries to deal with motor power.
                 </span>
             </li>
-            
+          </ul>
 <div style="text-align:center;">
 	<h4><span class="c7"><i>Is a Robot Pet:</i></span></h4>
        </div>
+          <ul>
             <li class="c6 c29"><span>Cuteness is always a bonus point.</span></li>
+          </ul>
 
 
 <hr id='design-and-testing'>
@@ -254,7 +261,7 @@
             </span>
         </p>
 	      
-	        <p class="c40"><span class="c7">Sparkfun TB6612FNG dual-channel motor controller</span></p>
+	        <p class="c40"><span class="c7">Figure 3: Sparkfun TB6612FNG dual-channel motor controller</span></p>
         <p class="c28"><span class="c7"></span></p>
         <p class="c6"><span class="c7">Shown below is the underside with our battery placement, motors, and wheels all easily visible. </span></p>
         <p class="c40">
@@ -428,7 +435,7 @@
         knownEncodings<span style="color: #333333">.</span>append(encoding)
         knownNames<span style="color: #333333">.</span>append(name)
 	</pre></div>
-the Python pickle library allows us to save our data into a serialized format.</span></p>
+<p>The Python pickle library allows us to save our data into a serialized format.</p>
 <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">data <span style="color: #333333">=</span> {<span style="background-color: #fff0f0">&quot;encodings&quot;</span>: knownEncodings, <span style="background-color: #fff0f0">&quot;names&quot;</span>: knownNames}
 f <span style="color: #333333">=</span> <span style="color: #007020">open</span>(<span style="background-color: #fff0f0">&quot;encodings.pickle&quot;</span>, <span style="background-color: #fff0f0">&quot;wb&quot;</span>)
 f<span style="color: #333333">.</span>write(pickle<span style="color: #333333">.</span>dumps(data))
@@ -467,7 +474,6 @@ flags <span style="color: #333333">=</span> cv2<span style="color: #333333">.</s
                 is used for proper face recognition and deals with the comparisons as previously mentioned. Using new camera data and previously trained encodings created from the face_recogntion library, we can make our identifications and
                 label the faces accordingly.
             </span>
-        </p>
         <p class="c1"><span class="c14 c10"></span></p>
         <p class="c6">
             <span class="c14 c10">
@@ -481,7 +487,7 @@ flags <span style="color: #333333">=</span> cv2<span style="color: #333333">.</s
   cv2<span style="color: #333333">.</span>putText(img, <span style="color: #007020">str</span>(name), (leftX<span style="color: #333333">-</span><span style="color: #0000DD; font-weight: bold">15</span>,bottomY<span style="color: #333333">+</span><span style="color: #0000DD; font-weight: bold">30</span>), font, <span style="color: #6600EE; font-weight: bold">1.2</span>, (<span style="color: #0000DD; font-weight: bold">255</span>,<span style="color: #0000DD; font-weight: bold">255</span>,<span style="color: #0000DD; font-weight: bold">255</span>), <span style="color: #0000DD; font-weight: bold">2</span>)
 </pre></div>
 
-        </p>
+
 
         <p class="c1"><span class="c14 c10"></span></p>
         <h3 class="c9" id="h.n7fchvxyc524"><span class="c20">Move mode:</span></h3>
@@ -663,7 +669,6 @@ flags <span style="color: #333333">=</span> cv2<span style="color: #333333">.</s
                   </span>
               </p>
               <p class="c1"><span class="c7"></span></p>  
-              </p>
       </div>
 
       <hr id='conclusion'>
@@ -704,7 +709,6 @@ flags <span style="color: #333333">=</span> cv2<span style="color: #333333">.</s
               vision and depth sensing. Another way to help improve Sparky&rsquo;s performance could be by parallelizing the code using threads, scheduling based on priority and conditional variables to help with the heavy tool that voice
               and face recognition together put on the processor. Lastly, the mechanical design of Sparky could be refined to better handle the weight of the batteries and Raspberry PI
           </span>
-      </p>
       </p>
     </div>
 
@@ -832,101 +836,74 @@ flags <span style="color: #333333">=</span> cv2<span style="color: #333333">.</s
       <div style="font-size:18px">
           <h2>References</h2>
         <p class="c6"><span class="c7">Voice:</span></p>
-        <p class="c6">
-            <li><a class="c5" href="https://www.google.com/url?q=https://github.com/Picovoice/picovoice&amp;sa=D&amp;ust=1608455692545000&amp;usg=AOvVaw0xinARwPRzETCXe2aKoKeA">https://github.com/Picovoice/picovoice</a></span>
-        </p>
-        <p class="c6">
+        <ul>
+            <li><a class="c5" href="https://www.google.com/url?q=https://github.com/Picovoice/picovoice&amp;sa=D&amp;ust=1608455692545000&amp;usg=AOvVaw0xinARwPRzETCXe2aKoKeA">https://github.com/Picovoice/picovoice</a>
             <li>
                 <a class="c5" href="https://www.google.com/url?q=https://pimylifeup.com/raspberry-pi-porcupine/&amp;sa=D&amp;ust=1608455692546000&amp;usg=AOvVaw0D-_g3DUJvfIJlco3SlgG1">https://pimylifeup.com/raspberry-pi-porcupine/</a>
-            </span>
-        </p>
-        <p class="c6">
+
+
             <li>
                 <a class="c5" href="https://www.google.com/url?q=https://picovoice.ai/docs/api/picovoice-python/&amp;sa=D&amp;ust=1608455692546000&amp;usg=AOvVaw3YOHAXwahkGSHFPcXPB9bg">https://picovoice.ai/docs/api/picovoice-python/</a>
-            </span>
-        </p>
-        <p class="c6">
+
             <li>
                 <a class="c5" href="https://www.google.com/url?q=https://pypi.org/project/pvporcupinedemo/&amp;sa=D&amp;ust=1608455692547000&amp;usg=AOvVaw0wn9Iko7yppYc_qyIMz8hy">https://pypi.org/project/pvporcupinedemo/</a>
-            </span>
-        </p>
-        <p class="c6">
+
             <li>
                 <a class="c5" href="https://www.google.com/url?q=https://console.picovoice.ai/rhn/835553fe-4051-4d9e-8552-ed07a6e29d01%23intent-move&amp;sa=D&amp;ust=1608455692547000&amp;usg=AOvVaw0gXTKrXZfu2w3VVFARDOUW">
                     https://console.picovoice.ai/rhn/835553fe-4051-4d9e-8552-ed07a6e29d01#intent-move
                 </a>
-            </span>
-        </p>
-        <p class="c6">
+
             <li>
                 <a class="c5" href="https://www.google.com/url?q=https://stackoverflow.com/questions/10733903/pyaudio-input-overflowed&amp;sa=D&amp;ust=1608455692548000&amp;usg=AOvVaw2szpEPnPz8vpm1vQdLEVZq">
                     https://stackoverflow.com/questions/10733903/pyaudio-input-overflowed
                 </a>
-            </span>
-        </p>
-        <p class="c6">
+
             <li>
                 <a class="c5" href="https://www.google.com/url?q=https://github.com/Picovoice/picovoice/blob/master/demo/python/picovoice_demo_mic.py&amp;sa=D&amp;ust=1608455692548000&amp;usg=AOvVaw2gHLJWciJ6wwU8H7Y3zJHy">
                     https://github.com/Picovoice/picovoice/blob/master/demo/python/picovoice_demo_mic.py
                 </a>
-            </span>
-        </p>
-        <p class="c1"><span class="c7"></span></p>
+          </ul>
+
         <p class="c6"><span>Vision:</span></p>
-        <p class="c6">
+          <ul>
             <li>
                 <a class="c5" href="https://www.google.com/url?q=https://www.pyimagesearch.com/2018/09/24/opencv-face-recognition/&amp;sa=D&amp;ust=1608455692548000&amp;usg=AOvVaw0VGvMUdz2Wtx5QQGbA3UJ-">
                     https://www.pyimagesearch.com/2018/09/24/opencv-face-recognition/
                 </a>
-            </span>
-        </p>
-        <p class="c6">
+
             <li>
                 <a class="c5" href="https://www.google.com/url?q=https://projects.raspberrypi.org/en/projects/getting-started-with-picamera/6&amp;sa=D&amp;ust=1608455692549000&amp;usg=AOvVaw3I045oSizYy3xuTCWsDRxl">
                     https://projects.raspberrypi.org/en/projects/getting-started-with-picamera/6
                 </a>
-            </span>
-        </p>
-        <p class="c6">
+
             <li>
                 <a class="c5" href="https://www.google.com/url?q=https://www.pyimagesearch.com/2015/03/30/accessing-the-raspberry-pi-camera-with-opencv-and-python/&amp;sa=D&amp;ust=1608455692549000&amp;usg=AOvVaw225ctyxj-LFi9Exx6Ohd2x">
                     https://www.pyimagesearch.com/2015/03/30/accessing-the-raspberry-pi-camera-with-opencv-and-python/
                 </a>
-            </span>
-        </p>
-        <p class="c6">
+
             <li>
                 <a class="c5" href="https://www.google.com/url?q=https://docs.opencv.org/master/d6/d00/tutorial_py_root.html&amp;sa=D&amp;ust=1608455692550000&amp;usg=AOvVaw2Mg8OW9xEy8rDUYJPdgbCs">
                     https://docs.opencv.org/master/d6/d00/tutorial_py_root.html
                 </a>
-            </span>
-        </p>
-        <p class="c6">
+
             <li>
                 <a class="c5" href="https://www.google.com/url?q=https://towardsdatascience.com/real-time-face-recognition-an-end-to-end-project-b738bb0f7348&amp;sa=D&amp;ust=1608455692550000&amp;usg=AOvVaw3DpnIdfbJ68zbg0Fdv2XOg">
                     https://towardsdatascience.com/real-time-face-recognition-an-end-to-end-project-b738bb0f7348
                 </a>
-            </span>
-        </p>
-        <p class="c6">
+
             <li>
                 <a class="c5" href="https://www.google.com/url?q=https://towardsdatascience.com/face-recognition-how-lbph-works-90ec258c3d6b&amp;sa=D&amp;ust=1608455692551000&amp;usg=AOvVaw167pUNY30XsVwmmBlewh0o">
                     https://towardsdatascience.com/face-recognition-how-lbph-works-90ec258c3d6b
                 </a>
-            </span>
-        </p>
-        <p class="c6">
+
             <li>
                 <a class="c5" href="https://www.google.com/url?q=https://www.tomshardware.com/how-to/raspberry-pi-facial-recognition&amp;sa=D&amp;ust=1608455692551000&amp;usg=AOvVaw0EA8V1FwHp5rraeCfnbwWN">
                     https://www.tomshardware.com/how-to/raspberry-pi-facial-recognition
                 </a>
-            </span>
-        </p>
-        <p class="c6">
+
             <li>
                 <a class="c5" href="https://www.google.com/url?q=https://github.com/ageitgey/face_recognition&amp;sa=D&amp;ust=1608455692552000&amp;usg=AOvVaw1QHGkZ9NOwvRQGWP8PJE79">https://github.com/ageitgey/face_recognition</a>
-            </span>
-        </p>
+          </ul>
 
       </div>
 
@@ -942,7 +919,8 @@ flags <span style="color: #333333">=</span> cv2<span style="color: #333333">.</s
   
 
               </ol>
-              <pre><code><h3 id="sparky-beta">sparky_beta.py</h3><!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">  1
+              <h3 id="sparky-beta">sparky_beta.py</h3>
+              <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">  1
   2
   3
   4
@@ -2829,7 +2807,8 @@ motorB<span style="color: #666666">.</span>PWM<span style="color: #666666">.</sp
  
 
 
-    </div><!-- /.container -->
+    </div>
+  </div><!-- /.container -->
 
 
 
