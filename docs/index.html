@@ -123,7 +123,7 @@
 	<p class="c28"><span class="c7"></span></p>
 	</div>      
 	      
-        <h3 class="c9" id="h.yy7kq6xc0jca"><span class="c20">General Features</span></h3>
+        <h4 class="c9" id="h.yy7kq6xc0jca"><span class="c20">General Features</span></h3>
         <p class="c40"><span class="c14 c35">The key programmed features are as follows:</span></p>
         <p class="c6"><span class="c7">Voice Commands:</span></p>
         <p class="c6 c39">
@@ -197,20 +197,64 @@
             <li class="c6 c29"><span>Cuteness is always a bonus point.</span></li>
         </ul>
 
-	      
-    <hr id='design'>
 
+<hr id='design-and-testing'>
       <div style="text-align:center;">
               <h2>Design and Testing</h2>
-             
+              <h2 class="c9" id="h.m6g2xz9z5jpl"><span class="c4">Build and Construction</span></h2>
+        <p class="c6">
+            <span style="overflow: hidden; display: inline-block; margin: 0px 0px; border: 0px solid #000000; transform: rotate(0rad) translateZ(0px); -webkit-transform: rotate(0rad) translateZ(0px); width: 624px; height: 314.67px;">
+                <img alt="" src="images/image1.png" style="width: 624px; height: 314.67px; margin-left: 0px; margin-top: 0px; transform: rotate(0rad) translateZ(0px); -webkit-transform: rotate(0rad) translateZ(0px);" title="" />
+            </span>
+            <sup><a href="#cmnt3" id="cmnt_ref3">[c]</a></sup>
+        </p>
+        <p class="c40"><span class="c7">Figure 2: Sparky Wiring and Circuit Design</span></p>
+        <p class="c28"><span class="c7"></span></p>
+        <p class="c6">
+            <span class="c7">
+                The assembly of our robo pet builds off of a previous lab, Lab 3, reusing the same chassis, motors, motor controller, and battery design. The major additions are the camera, the microphone, and additional construction
+                materials for mounting.
+            </span>
+        </p>
+        <p class="c1"><span class="c7"></span></p>
+        <p class="c6">
+            <span class="c7">
+                This project uses a Raspberry Pi 4 2GB with PiTFT Display on top. Connected to the display is a breakout cable which is inserted into a full sized breadboard. Here on this breadboard, we have wiring for our motor controller
+                as well as our two DC motors, and Sparky&rsquo;s notification LED. These objects are all attached to a thin acrylic plate with mounting holes. While our overall construction is not ideal in terms of sturdiness, it is
+                perfectly suitable for prototyping our design. Underneath and towards the back of our chassis is a ~2200mAh lithium ion battery responsible for directly powering our Raspberry Pi when Sparky is set to work untethered.
+                Towards the front of the chassis is a 6V AA battery holder used to power our motors. Our motor controller is the Sparkfun TB6612FNG dual-channel motor controller as shown below. It gives us control of both independent motor
+                operation as well as duty cycle to assist with making turns and changing speeds.
+            </span>
+        </p>
+        <p class="c1"><span class="c7"></span></p>
+        <p class="c40">
+            <span class="c52">
+                PWMA &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &rarr; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GPIO
+                26&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PWMB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &rarr; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GPIO
+                16
+            </span>
+        </p>
+        <p class="c40">
+            <span class="c52">
+                INA1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &rarr; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GPIO
+                4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INB1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &rarr;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GPIO 20
+            </span>
+        </p>
+        <p class="c40">
+            <span class="c52">
+                INA2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&rarr; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GPIO
+                5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INB2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &rarr;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GPIO 21
+            </span>
+        </p>
+        <p class="c40">
+            <span style="overflow: hidden; display: inline-block; margin: 0px 0px; border: 0px solid #000000; transform: rotate(0rad) translateZ(0px); -webkit-transform: rotate(0rad) translateZ(0px); width: 445px; height: 206.17px;">
+                <img alt="" src="images/image5.png" style="width: 445px; height: 206.17px; margin-left: 0px; margin-top: 0px; transform: rotate(0rad) translateZ(0px); -webkit-transform: rotate(0rad) translateZ(0px);" title="" />
+            </span>
+        </p>
       </div>
 
-    <hr id='design-and-testing'>
-
-      <div style="text-align:center;">
-              <h2>Drawings</h2>
-              <p style="text-align: left;padding: 0px 30px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum lorem nulla, consectetur at leo vel, pretium bibendum nisl. Cras blandit quam a enim ultrices, eu convallis enim posuere. Donec eleifend enim sed purus consectetur, vitae cursus lectus varius. Vivamus consectetur felis nec est venenatis posuere. Phasellus vitae aliquet erat. In laoreet lacinia mollis. Quisque iaculis nisl fermentum pharetra lobortis. Donec rhoncus dui sem, ac molestie leo tristique vel. Phasellus in nibh feugiat, fringilla lectus in, elementum magna. Etiam quis dui condimentum, tempus ex in, dapibus est. Cras ut congue augue. Donec ac enim ex. Ut id tristique risus, vel porttitor quam. Sed ultricies enim eu nibh porttitor, vel sodales enim feugiat. Fusce volutpat venenatis magna ac ultrices. Curabitur eget urna ut nulla mattis convallis non eu diam.</p>
-      </div>
 
     <hr id='testing'>
 
