@@ -296,20 +296,14 @@
         </p>
         <p class="c1"><span class="c7"></span></p>
         <a id="t.64850c0bda086c0d23798a0ccb6423a60abe8f45"></a><a id="t.0"></a>
-        <table class="c17">
-            <tbody>
-                <tr class="c30">
-                    <td class="c53" colspan="1" rowspan="1">
-                        <p class="c6"><span class="c25 c21 c15">audio_stream = pa.open(</span></p>
-                        <p class="c6"><span class="c25 c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rate=_picovoice.sample_rate,</span></p>
-                        <p class="c6"><span class="c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;channels=</span><span class="c13 c47">1</span><span class="c25 c21 c15">,</span></p>
-                        <p class="c6"><span class="c25 c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;format=pyaudio.paInt16,</span></p>
-                        <p class="c6"><span class="c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c0">input</span><span class="c21 c15">=</span><span class="c0">True</span><span class="c25 c21 c15">,</span></p>
-                        <p class="c31 c67"><span class="c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frames_per_buffer=_picovoice.frame_length)</span></p>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">audio_stream <span style="color: #333333">=</span> pa<span style="color: #333333">.</span>open(
+	rate<span style="color: #333333">=</span>_picovoice<span style="color: #333333">.</span>sample_rate,
+	channels<span style="color: #333333">=</span><span style="color: #0000DD; font-weight: bold">1</span>,
+	format<span style="color: #333333">=</span>pyaudio<span style="color: #333333">.</span>paInt16,
+	<span style="color: #007020">input</span><span style="color: #333333">=</span><span style="color: #007020">True</span>,
+	frames_per_buffer<span style="color: #333333">=</span>_picovoice<span style="color: #333333">.</span>frame_length)
+</pre></div>
+
         <p class="c1"><span class="c14 c35"></span></p>
         <h3 class="c9" id="h.5s2mcfodle19"><span class="c59">Using Picovoice():</span><span class="c20">&nbsp;</span></h3>
         <p class="c6">
@@ -322,25 +316,19 @@
         </p>
         <p class="c1"><span class="c7"></span></p>
         <a id="t.e15e6e9e10a205a62fe9162bc6e9dbdeed73a4bd"></a><a id="t.1"></a>
-        <table class="c17">
-            <tbody>
-                <tr class="c30">
-                    <td class="c53" colspan="1" rowspan="1">
-                        <p class="c24"><span class="c21 c15">_picovoice</span><span class="c25 c21 c15">=Picovoice(</span></p>
-                        <p class="c24"><span class="c25 c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;keyword_path=_keyword_path,</span></p>
-                        <p class="c24"><span class="c25 c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wake_word_callback=wake_word_callback,</span></p>
-                        <p class="c24"><span class="c25 c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context_path=_context_path,</span></p>
-                        <p class="c24"><span class="c25 c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inference_callback=inference_callback,</span></p>
-                        <p class="c24"><span class="c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;porcupine_library_path=</span><span class="c0">None</span><span class="c25 c21 c15">,</span></p>
-                        <p class="c24"><span class="c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;porcupine_model_path=</span><span class="c0">None</span><span class="c25 c21 c15">,</span></p>
-                        <p class="c24"><span class="c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rhino_sensitivity=</span><span class="c47 c59 c61">0.2</span><span class="c25 c21 c15">, </span></p>
-                        <p class="c24"><span class="c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rhino_library_path=</span><span class="c0">None</span><span class="c25 c21 c15">,</span></p>
-                        <p class="c24"><span class="c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rhino_model_path=</span><span class="c0">None</span><span class="c21 c15 c25">,</span></p>
-                        <p class="c31"><span class="c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;porcupine_sensitivity=</span><span class="c13 c47">1</span><span class="c21 c15">)</span></p>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">_picovoice<span style="color: #333333">=</span>Picovoice(
+	keyword_path<span style="color: #333333">=</span>_keyword_path,
+	wake_word_callback<span style="color: #333333">=</span>wake_word_callback,
+	context_path<span style="color: #333333">=</span>_context_path,
+	inference_callback<span style="color: #333333">=</span>inference_callback,
+	porcupine_library_path<span style="color: #333333">=</span><span style="color: #007020">None</span>,
+	porcupine_model_path<span style="color: #333333">=</span><span style="color: #007020">None</span>,
+	rhino_sensitivity<span style="color: #333333">=</span><span style="color: #6600EE; font-weight: bold">0.2</span>, 
+	rhino_library_path<span style="color: #333333">=</span><span style="color: #007020">None</span>,
+	rhino_model_path<span style="color: #333333">=</span><span style="color: #007020">None</span>,
+	porcupine_sensitivity<span style="color: #333333">=</span><span style="color: #0000DD; font-weight: bold">1</span>)
+	</pre></div>
+
         <p class="c1"><span class="c7"></span></p>
         <p class="c6">
             <span>Variables</span><span class="c21">&nbsp;wake_word_callback</span><span>&nbsp;and</span><span class="c21">&nbsp;inferecence_callback</span>
@@ -441,26 +429,20 @@
                 recognition library to determine face positions as well as create encodings in HOG model format.
             </span>
         </p>
-        <p class="c1"><span class="c7"></span></p>
-        <p class="c22">
-            <span class="c37 c43">&nbsp; &nbsp; boxes = face_recognition.face_locations(rgb, </span><span class="c37 c63 c70">model</span><span class="c37 c43">=</span><span class="c36">&quot;hog&quot;</span><span class="c11">)</span>
-        </p>
-        <p class="c22"><span class="c11">&nbsp; &nbsp; encodings = face_recognition.face_encodings(rgb, boxes)</span></p>
-        <p class="c22"><span class="c37 c43">&nbsp; &nbsp; </span><span class="c33">for</span><span class="c37 c43">&nbsp;encoding </span><span class="c33">in</span><span class="c37 c43">&nbsp;encodings:</span></p>
-        <p class="c22"><span class="c11">&nbsp; &nbsp; &nbsp; &nbsp; knownEncodings.append(encoding)</span></p>
-        <p class="c22"><span class="c11">&nbsp; &nbsp; &nbsp; &nbsp; knownNames.append(name)</span></p>
-        <p class="c1"><span class="c7"></span></p>
-        <p class="c6"><span class="c7">Lastly, using the Python pickle library allows us to save our data into a serialized format.</span></p>
-        <p class="c1"><span class="c7"></span></p>
-        <p class="c22"><span class="c37 c43">data = {</span><span class="c36">&quot;encodings&quot;</span><span class="c37 c43">: knownEncodings, </span><span class="c36">&quot;names&quot;</span><span class="c11">: knownNames}</span></p>
-        <p class="c22">
-            <span class="c37 c43">f = </span><span class="c37 c63 c66">open</span><span class="c37 c43">(</span><span class="c36">&quot;encodings.pickle&quot;</span><span class="c37 c43">, </span><span class="c36">&quot;wb&quot;</span>
-            <span class="c11">)</span>
-        </p>
-        <p class="c22"><span class="c11">f.write(pickle.dumps(data))</span></p>
-        <p class="c22"><span class="c11">f.close()</span></p>
-        <p class="c1"><span class="c7"></span></p>
-        <p class="c1"><span class="c7"></span></p>
+
+        <div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">boxes <span style="color: #333333">=</span> face_recognition<span style="color: #333333">.</span>face_locations(rgb, model<span style="color: #333333">=</span><span style="background-color: #fff0f0">&quot;hog&quot;</span>)
+    encodings <span style="color: #333333">=</span> face_recognition<span style="color: #333333">.</span>face_encodings(rgb, boxes)
+    <span style="color: #008800; font-weight: bold">for</span> encoding <span style="color: #000000; font-weight: bold">in</span> encodings:
+        knownEncodings<span style="color: #333333">.</span>append(encoding)
+        knownNames<span style="color: #333333">.</span>append(name)
+	</pre></div>
+the Python pickle library allows us to save our data into a serialized format.</span></p>
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">data <span style="color: #333333">=</span> {<span style="background-color: #fff0f0">&quot;encodings&quot;</span>: knownEncodings, <span style="background-color: #fff0f0">&quot;names&quot;</span>: knownNames}
+f <span style="color: #333333">=</span> <span style="color: #007020">open</span>(<span style="background-color: #fff0f0">&quot;encodings.pickle&quot;</span>, <span style="background-color: #fff0f0">&quot;wb&quot;</span>)
+f<span style="color: #333333">.</span>write(pickle<span style="color: #333333">.</span>dumps(data))
+f<span style="color: #333333">.</span>close()
+</pre></div>
+
         <h3 class="c9" id="h.xmn0kfz2g6vq"><span class="c20">Face Recognition Implementation</span></h3>
         <p class="c6">
             <span>For both face recognition algorithms described, our system first required face detection using OpenCV&rsquo;s </span>
@@ -476,21 +458,16 @@
                 forms of images. For those unfamiliar, it is also important to note that in pixel arrays (0,0) starts from the top left corner.
             </span>
         </p>
-        <p class="c1"><span class="c14 c10"></span></p>
-        <p class="c22"><span class="c16">&nbsp; &nbsp; img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)</span></p>
-        <p class="c22"><span class="c16">&nbsp; &nbsp; img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)</span></p>
-        <p class="c22 c58"><span class="c16"></span></p>
-        <p class="c22"><span class="c19">&nbsp; &nbsp; </span><span class="c37 c46"># simple face detection</span></p>
-        <p class="c22"><span class="c19">&nbsp; &nbsp; faces = detector.detectMultiScale( img_gray, </span><span class="c37 c38">scaleFactor</span><span class="c19">&nbsp;= </span><span class="c32">1.3</span><span class="c16">, </span></p>
-        <p class="c22 c39">
-            <span class="c37 c38">minNeighbors</span><span class="c19">&nbsp;= </span><span class="c32">5</span><span class="c19">, </span><span class="c37 c38">minSize</span><span class="c19">&nbsp;= (</span>
-            <span class="c37 c56">int</span><span class="c19">(minW), </span><span class="c37 c56">int</span><span class="c16">(minH)), </span>
-        </p>
-        <p class="c22 c39"><span class="c37 c38">flags</span><span class="c16">&nbsp;= cv2.CASCADE_SCALE_IMAGE</span></p>
-        <p class="c22"><span class="c16">&nbsp; &nbsp; )</span></p>
-        <p class="c1"><span class="c10 c14"></span></p>
-        <p class="c1"><span class="c14 c10"></span></p>
-        <p class="c6">
+    <div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">  img_gray <span style="color: #333333">=</span> cv2<span style="color: #333333">.</span>cvtColor(img, cv2<span style="color: #333333">.</span>COLOR_BGR2GRAY)
+    img_rgb <span style="color: #333333">=</span> cv2<span style="color: #333333">.</span>cvtColor(img, cv2<span style="color: #333333">.</span>COLOR_BGR2RGB)
+ 
+    <span style="color: #888888"># simple face detection</span>
+    faces <span style="color: #333333">=</span> detector<span style="color: #333333">.</span>detectMultiScale( img_gray, scaleFactor <span style="color: #333333">=</span> <span style="color: #6600EE; font-weight: bold">1.3</span>, 
+minNeighbors <span style="color: #333333">=</span> <span style="color: #0000DD; font-weight: bold">5</span>, minSize <span style="color: #333333">=</span> (<span style="color: #007020">int</span>(minW), <span style="color: #007020">int</span>(minH)), 
+flags <span style="color: #333333">=</span> cv2<span style="color: #333333">.</span>CASCADE_SCALE_IMAGE
+    )
+</pre></div>
+
             <span class="c10">Using this data we are able to zoom in on the data that we want to process for face recognition and individually compare each boxed face to our encoded HOG dataset for identification. While the function </span>
             <span class="c37 c60">detect_faces_quick() </span><span class="c10">primarily just uses the above lines of code for face detection, the function </span><span class="c37 c60">identify_faces()</span>
             <span class="c37 c60 c66">&nbsp;</span>
@@ -508,16 +485,12 @@
         </p>
         <p class="c1"><span class="c14 c10"></span></p>
         <p class="c22">
-            <span class="c19">&nbsp; cv2.ellipse(img, (center[</span><span class="c32">0</span><span class="c19">], center[</span><span class="c32">1</span><span class="c19">]), (w//</span><span class="c32">2</span>
-            <span class="c19">, h//</span><span class="c32">2</span><span class="c19">), </span><span class="c32">0</span><span class="c19">, </span><span class="c32">0</span><span class="c19">, </span><span class="c32">360</span>
-            <span class="c19">, (</span><span class="c32">255</span><span class="c19">, </span><span class="c32">0</span><span class="c19">, </span><span class="c32">255</span><span class="c19">), </span><span class="c32">2</span>
-            <span class="c16">) &nbsp; </span>
+         <div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"> cv2<span style="color: #333333">.</span>ellipse(img, (center[<span style="color: #0000DD; font-weight: bold">0</span>], center[<span style="color: #0000DD; font-weight: bold">1</span>]), (w<span style="color: #333333">//</span><span style="color: #0000DD; font-weight: bold">2</span>, h<span style="color: #333333">//</span><span style="color: #0000DD; font-weight: bold">2</span>), <span style="color: #0000DD; font-weight: bold">0</span>, <span style="color: #0000DD; font-weight: bold">0</span>, <span style="color: #0000DD; font-weight: bold">360</span>, (<span style="color: #0000DD; font-weight: bold">255</span>, <span style="color: #0000DD; font-weight: bold">0</span>, <span style="color: #0000DD; font-weight: bold">255</span>), <span style="color: #0000DD; font-weight: bold">2</span>)   
+  cv2<span style="color: #333333">.</span>putText(img, <span style="color: #007020">str</span>(name), (leftX<span style="color: #333333">-</span><span style="color: #0000DD; font-weight: bold">15</span>,bottomY<span style="color: #333333">+</span><span style="color: #0000DD; font-weight: bold">30</span>), font, <span style="color: #6600EE; font-weight: bold">1.2</span>, (<span style="color: #0000DD; font-weight: bold">255</span>,<span style="color: #0000DD; font-weight: bold">255</span>,<span style="color: #0000DD; font-weight: bold">255</span>), <span style="color: #0000DD; font-weight: bold">2</span>)
+</pre></div>
+
         </p>
-        <p class="c22">
-            <span class="c19">&nbsp; cv2.putText(img, </span><span class="c37 c56">str</span><span class="c19">(name), (leftX-</span><span class="c32">15</span><span class="c19">,bottomY+</span><span class="c32">30</span>
-            <span class="c19">), font, </span><span class="c32">1.2</span><span class="c19">, (</span><span class="c32">255</span><span class="c19">,</span><span class="c32">255</span><span class="c19">,</span><span class="c32">255</span>
-            <span class="c19">), </span><span class="c32">2</span><span class="c16">)</span>
-        </p>
+
         <p class="c1"><span class="c14 c10"></span></p>
         <h3 class="c9" id="h.n7fchvxyc524"><span class="c20">Move mode:</span></h3>
         <p class="c6">
@@ -532,81 +505,26 @@
         </p>
         <p class="c1"><span class="c7"></span></p>
         <a id="t.04eb9b9f37e42194dcc2ae6ec7b71781a5aec546"></a><a id="t.2"></a>
-        <table class="c17">
-            <tbody>
-                <tr class="c30">
-                    <td class="c53" colspan="1" rowspan="1">
-                        <p class="c31"><span class="c50">if</span><span class="c14 c15">&nbsp;instruction.v_direction:</span></p>
-                        <p class="c31">
-                            <span class="c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c50">if</span><span class="c15">&nbsp;instruction.word == </span><span class="c8">&#39;forward&#39;</span>
-                            <span class="c14 c15">:</span>
-                        </p>
-                        <p class="c31">
-                            <span class="c15">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;movement_3sec(
-                            </span>
-                            <span class="c8">&#39;forward&#39;</span><span class="c15">,</span><span class="c13">90</span><span class="c15">,</span><span class="c13">90</span><span class="c14 c15">)</span>
-                        </p>
-                        <p class="c31">
-                            <span class="c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c50">if</span><span class="c15">&nbsp;instruction.word == </span><span class="c8">&#39;back&#39;</span>
-                            <span class="c14 c15">:</span>
-                        </p>
-                        <p class="c31">
-                            <span class="c15">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;movement_3sec(
-                            </span>
-                            <span class="c8">&#39;backward&#39;</span><span class="c15">,</span><span class="c13">90</span><span class="c15">,</span><span class="c13">90</span><span class="c14 c15">)</span>
-                        </p>
-                        <p class="c31">
-                            <span class="c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c50">if</span><span class="c15">&nbsp;instruction.word == </span><span class="c8">&#39;right&#39;</span>
-                            <span class="c14 c15">:</span>
-                        </p>
-                        <p class="c31">
-                            <span class="c15">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;movement_3sec(
-                            </span>
-                            <span class="c8">&#39;right&#39;</span><span class="c15">,</span><span class="c13">90</span><span class="c15">,</span><span class="c13">90</span><span class="c14 c15">)</span>
-                        </p>
-                        <p class="c31">
-                            <span class="c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c50">if</span><span class="c15">&nbsp;instruction.word == </span><span class="c8">&#39;left&#39;</span>
-                            <span class="c14 c15">:</span>
-                        </p>
-                        <p class="c31">
-                            <span class="c15">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;movement_3sec(
-                            </span>
-                            <span class="c8">&#39;left&#39;</span><span class="c15">,</span><span class="c13">90</span><span class="c15">,</span><span class="c13">90</span><span class="c14 c15">)</span>
-                        </p>
-                        <p class="c31">
-                            <span class="c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c50">if</span><span class="c15">&nbsp;instruction.word == </span><span class="c8">&#39;spin&#39;</span>
-                            <span class="c14 c15">:</span>
-                        </p>
-                        <p class="c31">
-                            <span class="c15">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tw.drive(
-                            </span>
-                            <span class="c8">&quot;left&quot;</span><span class="c15">,</span><span class="c13">90</span><span class="c15">,</span><span class="c13">90</span><span class="c14 c15">)</span>
-                        </p>
-                        <p class="c31"><span class="c14 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
-                        <p class="c31"><span class="c14 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;screen.fill(BLACK, textAreaRect)</span></p>
-                        <p class="c31">
-                            <span class="c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text = fontLg.render(f</span><span class="c8">&#39;Moving {instruction.word}&#39;</span><span class="c15">, </span><span class="c3">True</span>
-                            <span class="c14 c15">, WHITE, BLACK)</span>
-                        </p>
-                        <p class="c31">
-                            <span class="c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;textRect = text.get_rect(center=(</span><span class="c59 c61">0.5</span><span class="c15">*dispW, </span><span class="c59 c61">0.75</span>
-                            <span class="c14 c15">*dispH))</span>
-                        </p>
-                        <p class="c31">
-                            <span class="c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;screen.fill(BLACK, textRect.inflate(</span><span class="c13">240</span><span class="c15">,</span><span class="c13">0</span>
-                            <span class="c14 c15">))</span>
-                        </p>
-                        <p class="c31"><span class="c14 c15">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; screen.blit(text,textRect)</span></p>
-                        <p class="c31"><span class="c15">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; pygame.display.update(textRect)</span></p>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-weight: bold">if</span> instruction<span style="color: #333333">.</span>v_direction:
+	<span style="color: #008800; font-weight: bold">if</span> instruction<span style="color: #333333">.</span>word <span style="color: #333333">==</span> <span style="background-color: #fff0f0">&#39;forward&#39;</span>:
+				movement_3sec(<span style="background-color: #fff0f0">&#39;forward&#39;</span>,<span style="color: #0000DD; font-weight: bold">90</span>,<span style="color: #0000DD; font-weight: bold">90</span>)
+	<span style="color: #008800; font-weight: bold">if</span> instruction<span style="color: #333333">.</span>word <span style="color: #333333">==</span> <span style="background-color: #fff0f0">&#39;back&#39;</span>:
+				movement_3sec(<span style="background-color: #fff0f0">&#39;backward&#39;</span>,<span style="color: #0000DD; font-weight: bold">90</span>,<span style="color: #0000DD; font-weight: bold">90</span>)
+	<span style="color: #008800; font-weight: bold">if</span> instruction<span style="color: #333333">.</span>word <span style="color: #333333">==</span> <span style="background-color: #fff0f0">&#39;right&#39;</span>:
+				movement_3sec(<span style="background-color: #fff0f0">&#39;right&#39;</span>,<span style="color: #0000DD; font-weight: bold">90</span>,<span style="color: #0000DD; font-weight: bold">90</span>)
+	<span style="color: #008800; font-weight: bold">if</span> instruction<span style="color: #333333">.</span>word <span style="color: #333333">==</span> <span style="background-color: #fff0f0">&#39;left&#39;</span>:
+				movement_3sec(<span style="background-color: #fff0f0">&#39;left&#39;</span>,<span style="color: #0000DD; font-weight: bold">90</span>,<span style="color: #0000DD; font-weight: bold">90</span>)
+	<span style="color: #008800; font-weight: bold">if</span> instruction<span style="color: #333333">.</span>word <span style="color: #333333">==</span> <span style="background-color: #fff0f0">&#39;spin&#39;</span>:
+				tw<span style="color: #333333">.</span>drive(<span style="background-color: #fff0f0">&quot;left&quot;</span>,<span style="color: #0000DD; font-weight: bold">90</span>,<span style="color: #0000DD; font-weight: bold">90</span>)
+			
+	screen<span style="color: #333333">.</span>fill(BLACK, textAreaRect)
+	text <span style="color: #333333">=</span> fontLg<span style="color: #333333">.</span>render(f<span style="background-color: #fff0f0">&#39;Moving {instruction.word}&#39;</span>, <span style="color: #007020">True</span>, WHITE, BLACK)
+	textRect <span style="color: #333333">=</span> text<span style="color: #333333">.</span>get_rect(center<span style="color: #333333">=</span>(<span style="color: #6600EE; font-weight: bold">0.5</span><span style="color: #333333">*</span>dispW, <span style="color: #6600EE; font-weight: bold">0.75</span><span style="color: #333333">*</span>dispH))
+	screen<span style="color: #333333">.</span>fill(BLACK, textRect<span style="color: #333333">.</span>inflate(<span style="color: #0000DD; font-weight: bold">240</span>,<span style="color: #0000DD; font-weight: bold">0</span>))
+            screen<span style="color: #333333">.</span>blit(text,textRect)
+            pygame<span style="color: #333333">.</span>display<span style="color: #333333">.</span>update(textRect)
+</pre></div>
+
         <p class="c1"><span class="c7"></span></p>
         <p class="c1"><span class="c7"></span></p>
         <h3 class="c9" id="h.pfc7pl10t4f7"><span>Search Mode:</span></h3>
