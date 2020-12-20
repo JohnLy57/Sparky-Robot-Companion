@@ -1,12 +1,10 @@
+# Borrowed from https://github.com/carolinedunn/facial_recognition
+
 import cv2
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 
-<<<<<<< HEAD
-name = 'Carlos' #replace with your name
-=======
 name = 'John' #replace with your name
->>>>>>> eed68b539075fb906cb4ed884475f80fa35db17b
 
 cam = PiCamera()
 cam.resolution = (512, 304)

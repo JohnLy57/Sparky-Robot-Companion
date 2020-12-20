@@ -1,3 +1,5 @@
+# Borrowed from https://github.com/carolinedunn/facial_recognition
+
 #! /usr/bin/python
 
 # import the necessary packages
