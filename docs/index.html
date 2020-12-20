@@ -261,10 +261,482 @@
                 <img class="img-rounded" alt="" src="images/image5.png" style="width: 445px; height: 206.17px; margin-left: 0px; margin-top: 0px; transform: rotate(0rad) translateZ(0px); -webkit-transform: rotate(0rad) translateZ(0px);" title="" />
             </span>
         </p>
+	      
+	        <p class="c40"><span class="c7">Sparkfun TB6612FNG dual-channel motor controller</span></p>
+        <p class="c28"><span class="c7"></span></p>
+        <p class="c6"><span class="c7">Shown below is the underside with our battery placement, motors, and wheels all easily visible. </span></p>
+        <p class="c40">
+            <span style="overflow: hidden; display: inline-block; margin: 0px 0px; border: 0px solid #000000; transform: rotate(0rad) translateZ(0px); -webkit-transform: rotate(0rad) translateZ(0px); width: 241.5px; height: 265.96px;">
+                <img alt="" src="images/image6.png" style="width: 299.45px; height: 299.7px; margin-left: -29.25px; margin-top: -18.86px; transform: rotate(0rad) translateZ(0px); -webkit-transform: rotate(0rad) translateZ(0px);" title="" />
+            </span>
+        </p>
+        <p class="c40"><span class="c7">Figure 4: Underside of Sparky</span></p>
+        <p class="c28"><span class="c7"></span></p>
+        <p class="c6">
+            <span>As seen in </span><span class="c59">Figure 1</span><span>, the </span>
+            <span class="c7">
+                Raspberry Pi V2 Camera Module is placed directly facing forward and as high as possible upon the robot to get an angle closer to head level for face detection and recognition. Due to the constraints of our build, Sparky
+                performs most optimally on a table surface where one&rsquo;s face is most visible from the camera&rsquo;s perspective due to the height. In a more advanced build there would be more room for an actuated camera with an
+                additional degree of freedom to pivot and look around during operation. Our cameras are stood up onto our robot primarily using cardboard/wood splints. What is not displayed here is that Sparky additionally uses a USB
+                connected mic for receiving audio. We individually found our own mics to use, but any small and lightweight omnidirectional microphone is ideal here. John substituted in a Blue Snowball iCE Microphone with a long wire while
+                Carlos used a small headset and strapped it around Sparky.
+            </span>
+        </p>
+        <p class="c1"><span class="c7"></span></p>
+        <h2 class="c9" id="h.fqpc2o2v5ws1"><span class="c4">Voice recognition</span></h2>
+        <h3 class="c9" id="h.ljge2ogfchbg"><span class="c20">Microphone Input:</span></h3>
+        <p class="c6">
+            <span>With any USB microphone connected to the Py we use the pyaudio() library to establish an audio stream from the microphone by setting variable </span><span class="c21">pa = pyaudio.PyAudio(). </span>
+            <span>Next we open the audio stream</span><span class="c21">&nbsp;pa.open()</span><span>&nbsp;and set the sample rate, channels, format, and size of the buffer inside this variable (configuration based on the </span>
+            <span>pyadudio</span><span>&nbsp;library). The values used for the </span><span class="c21">rate</span><span>,</span><span class="c21">&nbsp;format</span><span>&nbsp;and </span><span class="c21">frames_per_buffer</span>
+            <span class="c7">
+                &nbsp;are taken from the picovoice library because we will later process the audio stream using the picovoice library and there must be congruence between the audio format and the necessary requirements of the picovoice
+                library. The audio_stream variable setup is shown below.
+            </span>
+        </p>
+        <p class="c1"><span class="c7"></span></p>
+        <a id="t.64850c0bda086c0d23798a0ccb6423a60abe8f45"></a><a id="t.0"></a>
+        <table class="c17">
+            <tbody>
+                <tr class="c30">
+                    <td class="c53" colspan="1" rowspan="1">
+                        <p class="c6"><span class="c25 c21 c15">audio_stream = pa.open(</span></p>
+                        <p class="c6"><span class="c25 c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rate=_picovoice.sample_rate,</span></p>
+                        <p class="c6"><span class="c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;channels=</span><span class="c13 c47">1</span><span class="c25 c21 c15">,</span></p>
+                        <p class="c6"><span class="c25 c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;format=pyaudio.paInt16,</span></p>
+                        <p class="c6"><span class="c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c0">input</span><span class="c21 c15">=</span><span class="c0">True</span><span class="c25 c21 c15">,</span></p>
+                        <p class="c31 c67"><span class="c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frames_per_buffer=_picovoice.frame_length)</span></p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="c1"><span class="c14 c35"></span></p>
+        <h3 class="c9" id="h.5s2mcfodle19"><span class="c59">Using Picovoice():</span><span class="c20">&nbsp;</span></h3>
+        <p class="c6">
+            <span>
+                The picovoice engine accepts 16-bit linearly-encoded PCM and operates on a single-channel. The audio is processed in consecutive frames. Picovoice is able to understand wake words (hotword) and after the recognition of the
+                wake word it detects the intentions of the user using inference. Both the wake word and the inference are customizable and can be created using the online picovoice console, after the desired phrases are created and trained
+                online we can download the trained files that pertain to the wake word and inferences. The wake word is .ppn type file and the inference is a .rhn type file. The path to these files are placed inside variable
+            </span>
+            <span class="c21">_picovoice</span><span class="c7">&nbsp;along with other configurations seen below.</span>
+        </p>
+        <p class="c1"><span class="c7"></span></p>
+        <a id="t.e15e6e9e10a205a62fe9162bc6e9dbdeed73a4bd"></a><a id="t.1"></a>
+        <table class="c17">
+            <tbody>
+                <tr class="c30">
+                    <td class="c53" colspan="1" rowspan="1">
+                        <p class="c24"><span class="c21 c15">_picovoice</span><span class="c25 c21 c15">=Picovoice(</span></p>
+                        <p class="c24"><span class="c25 c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;keyword_path=_keyword_path,</span></p>
+                        <p class="c24"><span class="c25 c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wake_word_callback=wake_word_callback,</span></p>
+                        <p class="c24"><span class="c25 c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context_path=_context_path,</span></p>
+                        <p class="c24"><span class="c25 c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inference_callback=inference_callback,</span></p>
+                        <p class="c24"><span class="c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;porcupine_library_path=</span><span class="c0">None</span><span class="c25 c21 c15">,</span></p>
+                        <p class="c24"><span class="c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;porcupine_model_path=</span><span class="c0">None</span><span class="c25 c21 c15">,</span></p>
+                        <p class="c24"><span class="c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rhino_sensitivity=</span><span class="c47 c59 c61">0.2</span><span class="c25 c21 c15">, </span></p>
+                        <p class="c24"><span class="c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rhino_library_path=</span><span class="c0">None</span><span class="c25 c21 c15">,</span></p>
+                        <p class="c24"><span class="c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rhino_model_path=</span><span class="c0">None</span><span class="c21 c15 c25">,</span></p>
+                        <p class="c31"><span class="c21 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;porcupine_sensitivity=</span><span class="c13 c47">1</span><span class="c21 c15">)</span></p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="c1"><span class="c7"></span></p>
+        <p class="c6">
+            <span>Variables</span><span class="c21">&nbsp;wake_word_callback</span><span>&nbsp;and</span><span class="c21">&nbsp;inferecence_callback</span>
+            <span>&nbsp;are assigned to a respective function that handles the signal of such an event occurring. Variables </span><span class="c21">rhino_sensitivity</span><span>&nbsp;and</span>
+            <span class="c21">&nbsp;porcupine_sensitivy</span>
+            <span class="c7">
+                &nbsp;are assigned a value from [0-1] where 1 is the most sensitive value for the library to react to inferences and to the wake word respectively. We set the hot word sensitivity to the 1 to make sure a call to Sparky will
+                be very easily recognized. The value set for the inference is low to make sure that the spoken commands are correctly ottered and so that the library is not set off by incorrectly uttered commands &nbsp;that are not part of
+                Sparky&rsquo;s understanding.
+            </span>
+        </p>
+        <p class="c6">
+            <span>We opted for our audio to be constantly running and processing the information gathered from the microphone, therefore at the beginning of the while loop we set variable</span><span class="c21">&nbsp;</span>
+            <span class="c21 c15">pcm = audio_stream.read(_picovoice.frame_length,exception_on_overflow=</span><span class="c0">False</span><span class="c21 c15">)</span>
+            <span class="c15">&nbsp;in order to read the microphone, on the next line we edit the variable </span><span class="c21 c15">pcm = struct.unpack_from(&quot;h&quot; * _picovoice.frame_length, pcm) </span>
+            <span class="c15">to unpack the information from the audio into a format picovoice expects and finally we process the data</span><span class="c21 c15">&nbsp;_picovoice.process(pcm)</span><span class="c14 c15">.</span>
+        </p>
+        <p class="c1"><span class="c14 c15"></span></p>
+        <p class="c6"><span class="c55">def wake_word_callback():</span></p>
+        <p class="c6">
+            <span class="c7">
+                This function is accessed when the word &ldquo;Sparky&rdquo; is recognized by picovoice engine. Here we set all mode flags to false, light up the LED connected to GPIO pin 13, set flag intention.led_on to True which will
+                allow us to turn off the LED after 5 seconds, we also stop the motors of the robot. The main purpose behind this is to give the sense that when Sparky is called he stops what he is doing and listens to the next instructions.
+            </span>
+        </p>
+        <p class="c1"><span class="c7"></span></p>
+        <p class="c6"><span class="c55">def inference_callback():</span></p>
+        <p class="c6">
+            <span>After the wake word is recognized and the inferences spoken are understood this function accessed in here we enable the flags that set off the modes inside the while based on the values of</span>
+            <span class="c21">&nbsp;inference.intent</span><span>&nbsp;which can be either &lsquo;move&rsquo; or search&rsquo; strings. Variable </span><span class="c21">inference. slots[] </span>
+            <span>is a dictionary type and contains the value of slot under the uttered intent. Along with enabling the correct flag we write the value of the action Sparky is taking into variable </span>
+            <span class="c21">intention.word</span><span>&nbsp;as a string ( used later on to write on the TFT display). We initiate variable </span><span class="c21">timerStart= time.time()</span>
+            <span class="c7">&nbsp;to be used in modes where a time limit is implemented, we read this value to know when the mode began. </span>
+        </p>
+        <p class="c1"><span class="c7"></span></p>
+        <p class="c1"><span class="c7"></span></p>
+        <h2 class="c9" id="h.fqs47bnu625b"><span class="c4">Face Detection and Recognition</span></h2>
+        <h3 class="c9" id="h.7urs1bchb1jk"><span class="c20">Face Detection Algorithm</span></h3>
+        <p class="c6">
+            <span>
+                Overall while many face detection and recognition libraries, choosing an appropriate method for our device had some challenges. Initially, we developed Sparky using the Local Binary Patterns Histograms (LBPH) algorithm
+                available through the OpenCV library. More information about how this method works can be found
+            </span>
+            <span class="c18">
+                <a class="c5" href="https://www.google.com/url?q=https://towardsdatascience.com/face-recognition-how-lbph-works-90ec258c3d6b&amp;sa=D&amp;ust=1608455692521000&amp;usg=AOvVaw1tlv5h1CktDHQVWBHmlZ-d">here</a>
+            </span>
+            <span class="c7">
+                , but in summary the algorithm takes in grayscale images and uses thresholding to turn the pixel array into binary data. From here a histogram of the data is created and based on new incoming images. Those images are treated
+                similarly and compared across various histogram values. Based on some differences between the values, a confidence value can be calculated to determine a person&rsquo;s face. Initially this method seemed to work fine,
+                properly identifying and labeling John&rsquo;s face, but after further testing, we found that while the algorithm works okay for already pretrained images, it had some biases towards already trained faces and resulted in
+                lots of errors especially with faces that were supposed to be unknown to the system.
+            </span>
+        </p>
+        <p class="c1"><span class="c7"></span></p>
+        <p class="c6">
+            <span>As a result, towards the later half of the project we pivoted towards using the significantly more accurate face_recognition library linked </span>
+            <span class="c18"><a class="c5" href="https://www.google.com/url?q=https://github.com/ageitgey/face_recognition&amp;sa=D&amp;ust=1608455692521000&amp;usg=AOvVaw32gNUfd3bipSotWZ9lFvnj">here</a></span>
+            <span>. According to the documentation, this library was trained using the </span>
+            <span class="c18"><a class="c5" href="https://www.google.com/url?q=http://dlib.net/&amp;sa=D&amp;ust=1608455692521000&amp;usg=AOvVaw1BEDZ_Vp8n1pwKJBxUZFa3">Dlib C++</a></span>
+            <span>
+                &nbsp;library along with deep learning methods. The result here is that key facial features are determined primarily through color gradient changes within a face. These results are recorded in a histogram of oriented
+                gradients (HOG) which is then encoded for usage with our facial recognition model. With these gradients it is possible to discern key landmark features such as the eye shape, eyebrows, nose shape, mouth, and jawline.
+                Additional details on the deep learning algorithm used can be found
+            </span>
+            <span class="c18">
+                <a
+                    class="c5"
+                    href="https://www.google.com/url?q=https://medium.com/@ageitgey/machine-learning-is-fun-part-4-modern-face-recognition-with-deep-learning-c3cffc121d78&amp;sa=D&amp;ust=1608455692522000&amp;usg=AOvVaw3uu1CJJl383FPQDHhZLw7y"
+                >
+                    here
+                </a>
+            </span>
+            <span class="c7">.</span>
+        </p>
+        <p class="c1"><span class="c7"></span></p>
+        <p class="c6">
+            <span class="c7">
+                In our pivot from using the LBPH model method provided in OpenCV to the face_recogniton library written by ageitgey, there were a few major resulting changes. Firstly, face recognition was significantly improved and with
+                very high accuracy. The major tradeoff though was that the necessary computing power was much more significant and resulted in our smooth video feed losing many frames. A few factors are the cause for this, but some
+                potential solutions for improving computation times would be having a processor better suited for calculated parallel computations and with better single core performance. On a standard desktop, this can be achieved through
+                using Nvidia&rsquo;s CUDA cores or a high performance CPU. One potential other issue is that our compilation of dlib using pip3 install may have some strange performance errors as opposed to compiling the library on board
+                our Raspberry Pi. This has not been tested though as this potential solution was only recently found by us.
+            </span>
+        </p>
+        <p class="c1"><span class="c7"></span></p>
+        <h3 class="c9" id="h.h0e6opqz7yzn"><span class="c20">Face Recognition Training Data</span></h3>
+        <p class="c6">
+            <span>
+                As Sparky is currently, he only can recognize pretrained faces. It would very much be possible to have active face recognition work with new faces during operation but we&rsquo;ll leave that for a possible future
+                implementation. Using this
+            </span>
+            <span class="c18"><a class="c5" href="https://www.google.com/url?q=https://www.tomshardware.com/how-to/raspberry-pi-facial-recognition&amp;sa=D&amp;ust=1608455692523000&amp;usg=AOvVaw0kYYIJMx2n51GnimXnOmj2">guide</a></span>
+            <span>&nbsp;</span>
+            <span class="c7">
+                from Caroline Dunn, we were able to make a face recognition system that ran using active video data instead of just identifying still images as provided by the face_recognition library. To first train our encodings for face
+                recognition, we start by taking a collection of photos of primarily one&#39;s face while rotated to different angles. For John, he additionally took photos with and without glasses. We used about 20-30 images but the
+                face_detection library is supposedly very capable with even just 10 images. With our input data of identifying names and images, we first take our image data captured in BGR format and convert it to RGB before using the face
+                recognition library to determine face positions as well as create encodings in HOG model format.
+            </span>
+        </p>
+        <p class="c1"><span class="c7"></span></p>
+        <p class="c22">
+            <span class="c37 c43">&nbsp; &nbsp; boxes = face_recognition.face_locations(rgb, </span><span class="c37 c63 c70">model</span><span class="c37 c43">=</span><span class="c36">&quot;hog&quot;</span><span class="c11">)</span>
+        </p>
+        <p class="c22"><span class="c11">&nbsp; &nbsp; encodings = face_recognition.face_encodings(rgb, boxes)</span></p>
+        <p class="c22"><span class="c37 c43">&nbsp; &nbsp; </span><span class="c33">for</span><span class="c37 c43">&nbsp;encoding </span><span class="c33">in</span><span class="c37 c43">&nbsp;encodings:</span></p>
+        <p class="c22"><span class="c11">&nbsp; &nbsp; &nbsp; &nbsp; knownEncodings.append(encoding)</span></p>
+        <p class="c22"><span class="c11">&nbsp; &nbsp; &nbsp; &nbsp; knownNames.append(name)</span></p>
+        <p class="c1"><span class="c7"></span></p>
+        <p class="c6"><span class="c7">Lastly, using the Python pickle library allows us to save our data into a serialized format.</span></p>
+        <p class="c1"><span class="c7"></span></p>
+        <p class="c22"><span class="c37 c43">data = {</span><span class="c36">&quot;encodings&quot;</span><span class="c37 c43">: knownEncodings, </span><span class="c36">&quot;names&quot;</span><span class="c11">: knownNames}</span></p>
+        <p class="c22">
+            <span class="c37 c43">f = </span><span class="c37 c63 c66">open</span><span class="c37 c43">(</span><span class="c36">&quot;encodings.pickle&quot;</span><span class="c37 c43">, </span><span class="c36">&quot;wb&quot;</span>
+            <span class="c11">)</span>
+        </p>
+        <p class="c22"><span class="c11">f.write(pickle.dumps(data))</span></p>
+        <p class="c22"><span class="c11">f.close()</span></p>
+        <p class="c1"><span class="c7"></span></p>
+        <p class="c1"><span class="c7"></span></p>
+        <h3 class="c9" id="h.xmn0kfz2g6vq"><span class="c20">Face Recognition Implementation</span></h3>
+        <p class="c6">
+            <span>For both face recognition algorithms described, our system first required face detection using OpenCV&rsquo;s </span>
+            <span class="c10">
+                Haar Feature-based Cascade Classifier model which is able to quickly detect objects, but in our case faces. The difference between face detection and face recognition is that recognition is more specific and allows for us to
+                distinguish between faces whereas face detection only provides us with the ability to determine if a human face is present. The model is available pre-trained but is generally created using lots of positive (faces) and
+                negative (no faces) images. From there, the differences allow for key features to be extracted and to create a model. The return from this face detection when using
+            </span>
+            <span class="c37 c60">detector</span><span class="c37 c63">.detectMultiScale() </span><span class="c10">where detector is a </span><span class="c37 c63">CascadeClassifier</span>
+            <span class="c14 c10">
+                &nbsp;is a set of 4 values describing the pixel values of a box surrounding the detected person&rsquo;s face from within an image. The format of this is (x,y,w,h) where x and y describe the starting position of the box from
+                the top left corner while w and h describe the pixel width and height of the box respectively. While this classifier only uses grayscale images, our face recognition algorithm uses RGB format images thus we must create both
+                forms of images. For those unfamiliar, it is also important to note that in pixel arrays (0,0) starts from the top left corner.
+            </span>
+        </p>
+        <p class="c1"><span class="c14 c10"></span></p>
+        <p class="c22"><span class="c16">&nbsp; &nbsp; img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)</span></p>
+        <p class="c22"><span class="c16">&nbsp; &nbsp; img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)</span></p>
+        <p class="c22 c58"><span class="c16"></span></p>
+        <p class="c22"><span class="c19">&nbsp; &nbsp; </span><span class="c37 c46"># simple face detection</span></p>
+        <p class="c22"><span class="c19">&nbsp; &nbsp; faces = detector.detectMultiScale( img_gray, </span><span class="c37 c38">scaleFactor</span><span class="c19">&nbsp;= </span><span class="c32">1.3</span><span class="c16">, </span></p>
+        <p class="c22 c39">
+            <span class="c37 c38">minNeighbors</span><span class="c19">&nbsp;= </span><span class="c32">5</span><span class="c19">, </span><span class="c37 c38">minSize</span><span class="c19">&nbsp;= (</span>
+            <span class="c37 c56">int</span><span class="c19">(minW), </span><span class="c37 c56">int</span><span class="c16">(minH)), </span>
+        </p>
+        <p class="c22 c39"><span class="c37 c38">flags</span><span class="c16">&nbsp;= cv2.CASCADE_SCALE_IMAGE</span></p>
+        <p class="c22"><span class="c16">&nbsp; &nbsp; )</span></p>
+        <p class="c1"><span class="c10 c14"></span></p>
+        <p class="c1"><span class="c14 c10"></span></p>
+        <p class="c6">
+            <span class="c10">Using this data we are able to zoom in on the data that we want to process for face recognition and individually compare each boxed face to our encoded HOG dataset for identification. While the function </span>
+            <span class="c37 c60">detect_faces_quick() </span><span class="c10">primarily just uses the above lines of code for face detection, the function </span><span class="c37 c60">identify_faces()</span>
+            <span class="c37 c60 c66">&nbsp;</span>
+            <span class="c14 c10">
+                is used for proper face recognition and deals with the comparisons as previously mentioned. Using new camera data and previously trained encodings created from the face_recogntion library, we can make our identifications and
+                label the faces accordingly.
+            </span>
+        </p>
+        <p class="c1"><span class="c14 c10"></span></p>
+        <p class="c6">
+            <span class="c14 c10">
+                In addition to the OpenCV library being responsible for opening up our camera and reading the incoming signal, we also used it for drawing and labeling on top of our images. The library includes the ability to draw shapes
+                and write text as desired at different pixel coordinates. Some of that can be seen below. In the case that we cannot identify a person, the written name is defaulted to &ldquo;Unknown&rdquo; and they are labeled as such.
+            </span>
+        </p>
+        <p class="c1"><span class="c14 c10"></span></p>
+        <p class="c22">
+            <span class="c19">&nbsp; cv2.ellipse(img, (center[</span><span class="c32">0</span><span class="c19">], center[</span><span class="c32">1</span><span class="c19">]), (w//</span><span class="c32">2</span>
+            <span class="c19">, h//</span><span class="c32">2</span><span class="c19">), </span><span class="c32">0</span><span class="c19">, </span><span class="c32">0</span><span class="c19">, </span><span class="c32">360</span>
+            <span class="c19">, (</span><span class="c32">255</span><span class="c19">, </span><span class="c32">0</span><span class="c19">, </span><span class="c32">255</span><span class="c19">), </span><span class="c32">2</span>
+            <span class="c16">) &nbsp; </span>
+        </p>
+        <p class="c22">
+            <span class="c19">&nbsp; cv2.putText(img, </span><span class="c37 c56">str</span><span class="c19">(name), (leftX-</span><span class="c32">15</span><span class="c19">,bottomY+</span><span class="c32">30</span>
+            <span class="c19">), font, </span><span class="c32">1.2</span><span class="c19">, (</span><span class="c32">255</span><span class="c19">,</span><span class="c32">255</span><span class="c19">,</span><span class="c32">255</span>
+            <span class="c19">), </span><span class="c32">2</span><span class="c16">)</span>
+        </p>
+        <p class="c1"><span class="c14 c10"></span></p>
+        <h3 class="c9" id="h.n7fchvxyc524"><span class="c20">Move mode:</span></h3>
+        <p class="c6">
+            <span>When </span><span class="c21">instruction.v_direction</span>
+            <span>&nbsp;is True, Sparky&rsquo;s motors move in the direction specified by the user that direction is read from variable instruction.word. For each of the directions there is a call to function </span>
+            <span class="c21">movement_3sec(&ldquo;direction&rdquo;,speed, speed)</span><span>&nbsp;which will make the motors move in the &ldquo;direction&rdquo; uttered. Inside the function</span>
+            <span class="c21">&nbsp;movement_3sec()</span>
+            <span class="c7">
+                &nbsp;a timer is implemented for directions (&#39;forward&#39;, &#39;backward&#39;, &#39;right&#39;, and &nbsp;&#39;left&#39;) of half a second implemented to make Sparky stop after the timer is over. Using pygame we also
+                update the TFT display message to display what Sparky is doing.
+            </span>
+        </p>
+        <p class="c1"><span class="c7"></span></p>
+        <a id="t.04eb9b9f37e42194dcc2ae6ec7b71781a5aec546"></a><a id="t.2"></a>
+        <table class="c17">
+            <tbody>
+                <tr class="c30">
+                    <td class="c53" colspan="1" rowspan="1">
+                        <p class="c31"><span class="c50">if</span><span class="c14 c15">&nbsp;instruction.v_direction:</span></p>
+                        <p class="c31">
+                            <span class="c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c50">if</span><span class="c15">&nbsp;instruction.word == </span><span class="c8">&#39;forward&#39;</span>
+                            <span class="c14 c15">:</span>
+                        </p>
+                        <p class="c31">
+                            <span class="c15">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;movement_3sec(
+                            </span>
+                            <span class="c8">&#39;forward&#39;</span><span class="c15">,</span><span class="c13">90</span><span class="c15">,</span><span class="c13">90</span><span class="c14 c15">)</span>
+                        </p>
+                        <p class="c31">
+                            <span class="c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c50">if</span><span class="c15">&nbsp;instruction.word == </span><span class="c8">&#39;back&#39;</span>
+                            <span class="c14 c15">:</span>
+                        </p>
+                        <p class="c31">
+                            <span class="c15">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;movement_3sec(
+                            </span>
+                            <span class="c8">&#39;backward&#39;</span><span class="c15">,</span><span class="c13">90</span><span class="c15">,</span><span class="c13">90</span><span class="c14 c15">)</span>
+                        </p>
+                        <p class="c31">
+                            <span class="c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c50">if</span><span class="c15">&nbsp;instruction.word == </span><span class="c8">&#39;right&#39;</span>
+                            <span class="c14 c15">:</span>
+                        </p>
+                        <p class="c31">
+                            <span class="c15">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;movement_3sec(
+                            </span>
+                            <span class="c8">&#39;right&#39;</span><span class="c15">,</span><span class="c13">90</span><span class="c15">,</span><span class="c13">90</span><span class="c14 c15">)</span>
+                        </p>
+                        <p class="c31">
+                            <span class="c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c50">if</span><span class="c15">&nbsp;instruction.word == </span><span class="c8">&#39;left&#39;</span>
+                            <span class="c14 c15">:</span>
+                        </p>
+                        <p class="c31">
+                            <span class="c15">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;movement_3sec(
+                            </span>
+                            <span class="c8">&#39;left&#39;</span><span class="c15">,</span><span class="c13">90</span><span class="c15">,</span><span class="c13">90</span><span class="c14 c15">)</span>
+                        </p>
+                        <p class="c31">
+                            <span class="c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c50">if</span><span class="c15">&nbsp;instruction.word == </span><span class="c8">&#39;spin&#39;</span>
+                            <span class="c14 c15">:</span>
+                        </p>
+                        <p class="c31">
+                            <span class="c15">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tw.drive(
+                            </span>
+                            <span class="c8">&quot;left&quot;</span><span class="c15">,</span><span class="c13">90</span><span class="c15">,</span><span class="c13">90</span><span class="c14 c15">)</span>
+                        </p>
+                        <p class="c31"><span class="c14 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+                        <p class="c31"><span class="c14 c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;screen.fill(BLACK, textAreaRect)</span></p>
+                        <p class="c31">
+                            <span class="c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text = fontLg.render(f</span><span class="c8">&#39;Moving {instruction.word}&#39;</span><span class="c15">, </span><span class="c3">True</span>
+                            <span class="c14 c15">, WHITE, BLACK)</span>
+                        </p>
+                        <p class="c31">
+                            <span class="c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;textRect = text.get_rect(center=(</span><span class="c59 c61">0.5</span><span class="c15">*dispW, </span><span class="c59 c61">0.75</span>
+                            <span class="c14 c15">*dispH))</span>
+                        </p>
+                        <p class="c31">
+                            <span class="c15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;screen.fill(BLACK, textRect.inflate(</span><span class="c13">240</span><span class="c15">,</span><span class="c13">0</span>
+                            <span class="c14 c15">))</span>
+                        </p>
+                        <p class="c31"><span class="c14 c15">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; screen.blit(text,textRect)</span></p>
+                        <p class="c31"><span class="c15">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; pygame.display.update(textRect)</span></p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="c1"><span class="c7"></span></p>
+        <p class="c1"><span class="c7"></span></p>
+        <h3 class="c9" id="h.pfc7pl10t4f7"><span>Search Mode:</span></h3>
+        <p class="c6">
+            <span class="c35">When variable </span><span class="c21 c35">instruction.v_search</span>
+            <span class="c35">
+                &nbsp;is true we can tell Sparky to begin the process of finding the user specified. First the text on theTFT is updated to show the change in mode, Sparky displays &lsquo;Looking for &lsquo;user&rsquo;...&rsquo;. A timer
+                condition of 20 seconds is set so that Sparky only performs the task of searching for 20 seconds. Inside this condition there is a call to the function
+            </span>
+            <span class="c21 c35">foundFace = find_faces(instruction.word, img)</span><span class="c35">. If the function returns True, that means the target user was found in that direction, then we stop running the</span>
+            <span class="c21 c35">&nbsp;find_faces</span><span class="c35">&nbsp;function and we proceed to running</span><span class="c35 c59">&nbsp;</span><span class="c35">the </span><span class="c21 c35">detect_faces_quick</span>
+            <span class="c35">&nbsp;function. Our return value,</span><span class="c21 c35">&nbsp;facePresent = detect_faces_quick(img)</span><span class="c35">will be t</span>
+            <span class="c35">rue if there is a singular detectable face still in the view of the camera. If facePresent is true we perform </span><span class="c21 c35">pursue_target(True)</span>
+            <span class="c35">&nbsp;which will guide the robot closer towards the face based on the location of the face on the image from the camera. If </span><span class="c21 c35">facePresent</span>
+            <span class="c35">&nbsp;is false then we run the function </span><span class="c21 c35">identify_faces()</span>
+            <span class="c35">&nbsp;which determines if the user requested is found in the field of view of the camera, this function then returns a value for </span><span class="c21 c35">target</span>
+            <span class="c35">&nbsp;and then again we perform</span><span class="c21 c35">&nbsp;pursue_target</span><span class="c35">&nbsp;if</span><span class="c21 c35">&nbsp;target=True.</span><span class="c35">I</span>
+            <span class="c35">n the case of</span><span class="c21 c35">&nbsp;target= False</span><span class="c35">&nbsp;we increment variable</span><span class="c21 c35">&nbsp;misses</span>
+            <span class="c35">, after 10 consecutive misses (</span><span class="c21 c35">misses &gt;10</span><span class="c35">) we then try again and run the </span><span class="c21 c35">find_faces</span>
+            <span class="c14 c35">&nbsp;function. </span>
+        </p>
+        <p class="c1"><span class="c14 c35"></span></p>
+        <p class="c6">
+            <span class="c35">
+                The main reason for dividing the face recognition steps like this is to make an adjustment between running a very heavy face recognition process, which provides the best results on identifying the user, and being able to
+                pursuing the target in the correct direction. If the heavy face recognition function is always running it has an enormous effect on the framerate of the camera which then translates to erroneous movements of the robot
+                because we are moving faster than what our image processing can return. This causes a delay on the reaction of the motors and a bad performance by Sparky. We opted to implement the search algorithm this way so that after
+                finding our target our driving motion towards the face consists of using face detection only for approximately 95% of the time (light on the processor) and then we use proper face recognition for the remaining other 5% of
+                the time (heavy on the processor). This way we make sure that Sparky makes faster motor adjustment decisions when moving towards the target and also that he recognizes the face with high precision. Once Sparky reaches the
+                target user, the flag
+            </span>
+            <span class="c21 c35">&nbsp;stopCondition</span><span class="c35">&nbsp;is set and we exit the search mode (set</span><span class="c21 c35">&nbsp;instruction.v_search =False</span>
+            <span class="c14 c35">
+                ) and set all variables back to their starting value, we also update the TFT display to notify that the user was found. While Sparky is trying to find the user, a counter is displayed onto the screen showing how much time
+                has elapsed since the search began, and as previously stated once the count reaches its limit of 20 seconds, Sparky stops the search.
+            </span>
+        </p>
+        <h3 class="c9" id="h.9hhfn7akun2k"><span class="c20">Tricks Mode:</span></h3>
+        <p class="c6">
+            <span>For Sparky to go into this mode the variabel</span><span class="c21">&nbsp;instruction.v_tricks</span><span>&nbsp;is set to true by the voice recognition. Inside this condition we look at variable</span>
+            <span class="c21">&nbsp;instruction.word</span><span class="c7">&nbsp;and determine if it&#39;s equal to &lsquo;party&rsquo; or &lsquo;break dance&rsquo;, the two tricks that Sparky can do. </span>
+        </p>
+        <p class="c1"><span class="c7"></span></p>
+        <p class="c6">
+            <span>If </span><span class="c21">instruction.word == &lsquo;party&rsquo;, </span><span>we then again update the tft display to show what Sparky is doing and we run function </span>
+            <span class="c21">_,_,img = identify_faces(None, img, mode = &quot;party_time&quot;)</span>
+            <span class="c7">
+                &nbsp;this is the same face detection function previously used by the search mode but since in this case the motors for Sparky are not running we take the privilege to run it without constraints. We pass mode=
+                &ldquo;party_time&rdquo; to the function to tell it that it will not only do face recognition but will also draw on top of the user the trade-marked party hats. For users that Sparky knows (Carlos and John) the hat is
+                special and for people that Sparky doesn&rsquo;t know yet they will receive just an outlined triangle. This mode will run for 10 seconds and also display a 10 second counter on the screen at the end of the time Sparky exits
+                the mode and waits for his next instructions.
+            </span>
+        </p>
+        <p class="c1"><span class="c7"></span></p>
+        <p class="c6">
+            <span style="overflow: hidden; display: inline-block; margin: 0px 0px; border: 0px solid #000000; transform: rotate(0rad) translateZ(0px); -webkit-transform: rotate(0rad) translateZ(0px); width: 219px; height: 293.5px;">
+                <img alt="" src="images/image10.gif" style="width: 219px; height: 293.5px; margin-left: 0px; margin-top: 0px; transform: rotate(0rad) translateZ(0px); -webkit-transform: rotate(0rad) translateZ(0px);" title="" />
+            </span>
+            <sup><a href="#cmnt4" id="cmnt_ref4">[d]</a></sup><sup><a href="#cmnt5" id="cmnt_ref5">[e]</a></sup><sup><a href="#cmnt6" id="cmnt_ref6">[f]</a></sup><sup><a href="#cmnt7" id="cmnt_ref7">[g]</a></sup>
+            <sup><a href="#cmnt8" id="cmnt_ref8">[h]</a></sup><sup><a href="#cmnt9" id="cmnt_ref9">[i]</a></sup><sup><a href="#cmnt10" id="cmnt_ref10">[j]</a></sup>
+            <span style="overflow: hidden; display: inline-block; margin: 0px 0px; border: 0px solid #000000; transform: rotate(0rad) translateZ(0px); -webkit-transform: rotate(0rad) translateZ(0px); width: 390.5px; height: 292.61px;">
+                <img alt="" src="images/image9.png" style="width: 390.5px; height: 292.61px; margin-left: 0px; margin-top: 0px; transform: rotate(0rad) translateZ(0px); -webkit-transform: rotate(0rad) translateZ(0px);" title="" />
+            </span>
+        </p>
+        <p class="c1"><span class="c7"></span></p>
+        <p class="c6">
+            <span>If </span><span class="c21">instruction.word == &lsquo;break dance&rsquo;</span>
+            <span class="c7">
+                , then TFT display is updated and a function call to move_breakdance() is made. This function moves the motors so that sparky alternates between moving right and left. Sparky looks like he is wiggling in place.
+            </span>
+        </p>
+        <p class="c6">
+            <span style="overflow: hidden; display: inline-block; margin: 0px 0px; border: 0px solid #000000; transform: rotate(0rad) translateZ(0px); -webkit-transform: rotate(0rad) translateZ(0px); width: 293.5px; height: 348.99px;">
+                <img alt="" src="images/image2.gif" style="width: 293.5px; height: 348.99px; margin-left: 0px; margin-top: 0px; transform: rotate(0rad) translateZ(0px); -webkit-transform: rotate(0rad) translateZ(0px);" title="" />
+            </span>
+        </p>
+        <p class="c1"><span class="c7"></span></p>
+        <h2 class="c9" id="h.20mlxkp95k4m"><span class="c4">Motor Control and Face Pursuit Mode</span></h2>
+        <h3 class="c9" id="h.7jr0avd5e1nc"><span class="c20">Motor Control</span></h3>
+        <p class="c6">
+            <span>
+                Sparky&rsquo;s motor control largely comes from previously developed code for Lab 3 of ECE 5725. The code exists in two_wheel_mod.py and is responsible for initializing PWM signals for controlling the duty cycle of our
+                motors. While the set duty cycle controls the turn speed, we can change the voltage sent to our control pins to also change the turn direction of our motors. With these functions combined, the file primarily includes a
+                function
+            </span>
+            <span class="c37">drive() </span>
+            <span class="c7">
+                which makes it easier for making movement decisions with our robot. For example, it allows us to adjust for movement forward as well as individual motor spin speed. This is especially key to making micro adjustments to our
+                travel path with Sparky when he is traveling forward.
+            </span>
+        </p>
+        <h3 class="c9" id="h.30fzgvmhfpvd"><span class="c20">Face Pursuit</span></h3>
+        <p class="c6">
+            <span>When locating a person from one of the three functions, </span><span class="c37">find_faces()</span><span>, </span><span class="c37">detect_faces_quick()</span><span>, or </span><span class="c37">identify_faces()</span>
+            <span>
+                &nbsp;our robot Sparky will stop his motors and then determine an appropriate path for traveling to our desired target. Taking the center of our target as identified in our video feed, we can determine a relative offset from
+                the center and therefore slow down the respective motors such that our robot will slowly turn towards our target while trying to maintain the target position at the center of Sparky&rsquo;s vision. These conditions occur
+                inside of
+            </span>
+            <span class="c37">pursue_target()</span>
+            <span class="c7">
+                &nbsp;and adjust our robot accordingly. We have this driving mode occur for a short period of time with our robot stuck inside a while loop, as we cannot process voice data during search mode anyways. When exiting, Sparky
+                will then try to evaluate his position relative to the target. During this reevaluation, Sparky will then decide to do one of the three previously mentioned functions.
+            </span>
+        </p>
+        <p class="c1"><span class="c7"></span></p>
+        <p class="c6">
+            <span>As detailed earlier in the Face Recognition Implementation section, Sparky will use </span><span class="c37">detect_faces_quick()</span>
+            <span>, to just follow the face in front of him. If there is more than one or less than one face visible, we will default to doing a fully intensive </span><span class="c37">identify_faces()</span>
+            <span>
+                &nbsp;call which provides us details on which of the correct faces to pursue. Because identify_faces() is so intensive for our image processing, we use a randomly generated number to allow Sparky to check using
+                identify_faces about 1% of the time inside of detect_faces_quick in the scenario where this one visible subject. While not an ideal way of truly making our search process, use identify_faces only about 1% of the time, we
+                found the solution to be good enough. In the case that we ever got a wrong reading for face recognition, which is unlikely, or our robot has lost sight of the target, Sparky will count the amount of consecutive misses and
+                eventually return to the &nbsp;
+            </span>
+            <span class="c37">find_faces()</span><span>&nbsp;function if we cannot find our target. Lastly, the </span><span class="c37">find_faces()</span>
+            <span>&nbsp;operates by primarily having Sparky pivot counterclockwise, while slowly polling for the target face using </span><span class="c37">identify_faces()</span>
+            <span class="c7">
+                . To start though, upon a new search request, Sparky will do a quick pivot left and then right as a fun gesture, making him act like a robo pet. In the case that the desired person is found, Sparky will then exit and make
+                his travel towards the target. Sparky is more likely to find a person while turning slowly though. In addition, there is additional tuning movement which rotates Sparky back right by a bit as there tends to be some delay
+                between the face recognition and when Sparky&rsquo;s camera has already passed the target. Finally, after traveling to the requested person, Sparky&rsquo;s search will come to a close after the desired target has reached an
+                experimentally determined threshold value for proximity based on the amount of screen space the target person&#39;s head takes up in the captured video.
+            </span>
+        </p>      
+	      
+	      
       </div>
 
 
-    <hr id='testing'>
+
 
 
 
@@ -327,11 +799,9 @@
       </p>
       </p>
     </div>
-    
-    <hr>
 
     <div class="row" style="text-align:center;">
-      <h1 class="c42" ><span class="c41">Team</span></h1>
+          <h2>Work Distribution</h2>
           <p class="c6"><span class="c7">Overall the work for this project was pretty evenly distributed. We worked on the overall design and code development together as well as the final report.</span></p>
           <div style="text-align:center;">
               <img class="img-rounded" class="img-rounded" src="pics/group.jpg" alt="Generic placeholder image" style="width:80%;">
@@ -342,216 +812,130 @@
               <h3>John Ly</h3>
               <p class="lead">jtl222@cornell.edu</p>
               <p> Cornell Electrical and Computer Engineer 2021
-              <p style="padding:0 50px"> Responsible for face detection and recognition, motor control functions, face tracking and pursuit mode, party mode effects, and video editing
+              <p class="col-md-6 text-center"> Responsible for face detection and recognition, motor control functions, face tracking and pursuit mode, party mode effects, and video editing
           </div>
           <div class="col-md-6" style="font-size:16px">
               <img class="img-rounded" src="pics/b.png" alt="Generic placeholder image" width="240" height="240">
               <h3>Carlos Gutierrez</h3>
               <p class="lead">cag334@cornell.edu</p>
               <p>Cornell Electrical and Computer Engineer 2021
-              <p style="padding:0 50px">Voice detection and processing, voice movement modes, tricks mode, piTFT image display
+              <p class="col-md-6 text-center">Voice detection and processing, voice movement modes, tricks mode, piTFT image display
           </div>
       </div>
 
-      <hr>
-
+      <h1 class="c42" id="h.l3trz6x9tn96"><span class="c41">Team</span></h1>
+      <p class="c6"><span> - Cornell Electrical and Computer Engineer 2021&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jtl222@cornell.edu</span></p>
+      <p class="c1"><span class="c7"></span></p>
+      <p class="c6"><span class="c7"> - Cornell Electrical and Computer Engineer 2021&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cag334@cornell.edu</span></p>
+      <p class="c1"><span class="c7"></span></p>
       <h1 class="c42" id="h.8bv9wvg0fgwd"><span>Appendix</span></h1>
       <h2 class="c9" id="h.wgnzbc5cjtjh"><span class="c4">Bill of Materials&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></h2>
-      <table class="c17" style="font-size:16px">
+      <a id="t.41f96062d17741918658df300cbb487cfa09eabb"></a><a id="t.3"></a>
+      <table class="c17">
           <tbody>
-              <tr class="row">
-                  <td class="col-md-6" colspan="1" rowspan="1">
+              <tr class="c30">
+                  <td class="c45" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">Product</span></p>
                   </td>
-                  <td class="col-md-2" colspan="1" rowspan="1">
+                  <td class="c62" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">Cost</span></p>
                   </td>
-                  <td class="col-md-2" colspan="1" rowspan="1">
+                  <td class="c26" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">Provided?</span></p>
                   </td>
               </tr>
-              <tr class="row">
-                  <td class="col-md-6" colspan="1" rowspan="1">
+              <tr class="c30">
+                  <td class="c45" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">Raspberry Pi 4 2GB</span></p>
                   </td>
-                  <td class="col-md-2" colspan="1" rowspan="1">
+                  <td class="c62" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">$35.00</span></p>
                   </td>
-                  <td class="col-md-2" colspan="1" rowspan="1">
+                  <td class="c26" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">Yes</span></p>
                   </td>
               </tr>
-              <tr class="row">
-                  <td class="col-md-6" colspan="1" rowspan="1">
+              <tr class="c30">
+                  <td class="c45" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">Adafruit piTFT 2.8&rdquo;</span></p>
                   </td>
-                  <td class="col-md-2" colspan="1" rowspan="1">
+                  <td class="c62" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">$35.00</span></p>
                   </td>
-                  <td class="col-md-2" colspan="1" rowspan="1">
+                  <td class="c26" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">Yes</span></p>
                   </td>
               </tr>
-              <tr class="row">
-                  <td class="col-md-6" colspan="1" rowspan="1">
+              <tr class="c30">
+                  <td class="c45" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">2 DC motors &amp; Chassis </span></p>
                   </td>
-                  <td class="col-md-2" colspan="1" rowspan="1">
+                  <td class="c62" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">$13.99</span></p>
                   </td>
-                  <td class="col-md-2" colspan="1" rowspan="1">
+                  <td class="c26" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">Yes</span></p>
                   </td>
               </tr>
-              <tr class="row">
-                  <td class="col-md-6" colspan="1" rowspan="1">
+              <tr class="c30">
+                  <td class="c45" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">SparkFun Motor Driver - Dual TB6612FNG (1A)</span></p>
                   </td>
-                  <td class="col-md-2" colspan="1" rowspan="1">
+                  <td class="c62" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">$4.96</span></p>
                   </td>
-                  <td class="col-md-2" colspan="1" rowspan="1">
+                  <td class="c26" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">Yes</span></p>
                   </td>
               </tr>
-              <tr class="row">
-                  <td class="col-md-6" colspan="1" rowspan="1">
+              <tr class="c30">
+                  <td class="c45" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">Raspberry Pi Camera Module v2</span></p>
+                      <sup><a href="#cmnt11" id="cmnt_ref11">[k]</a></sup><sup><a href="#cmnt12" id="cmnt_ref12">[l]</a></sup>
                   </td>
-                  <td class="col-md-2" colspan="1" rowspan="1">
+                  <td class="c62" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">$23.98</span></p>
                   </td>
-                  <td class="col-md-3" colspan="1" rowspan="1">
+                  <td class="c26" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">Yes (Requested)</span></p>
                   </td>
               </tr>
-              <tr class="row">
-                  <td class="col-md-6" colspan="1" rowspan="1">
+              <tr class="c30">
+                  <td class="c45" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">USB microphone</span></p>
                   </td>
-                  <td class="col-md-2" colspan="1" rowspan="1">
+                  <td class="c62" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">$10.00</span></p>
                   </td>
-                  <td class="col-md-2" colspan="1" rowspan="1">
+                  <td class="c26" colspan="1" rowspan="1">
                       <p class="c24"><span class="c4">No</span></p>
                   </td>
               </tr>
-              <tr class="row">
-                <td class="col-md-6" colspan="1" rowspan="1">
-                    <p class="c24"><span class="c4">LEDs, Resistors and Wires</span></p>
-                </td>
-                <td class="col-md-2" colspan="1" rowspan="1">
-                    <p class="c24"><span class="c4">N/A</span></p>
-                </td>
-                <td class="col-md-2" colspan="1" rowspan="1">
-                    <p class="c24"><span class="c4">Yes</span></p>
-                </td>
-            </tr>
-
           </tbody>
       </table>
-          <h3>Total: $69.95</h3>
+      <p class="c1"><span class="c7"></span></p>
 
+
+
+    <hr>
+      <div style="font-size:18px">
+          <h2>Parts List</h2>
+          <ul>
+              <li>Raspberry Pi $35.00</li>
+              <li>Raspberry Pi Camera V2 $25.00</li>
+              <a href="https://www.adafruit.com/product/1463"><li>NeoPixel Ring - $9.95</li></a>
+              <li>LEDs, Resistors and Wires - Provided in lab</li>
+          </ul>
+          <h3>Total: $69.95</h3>
+      </div>
       <hr>
       <div style="font-size:18px">
           <h2>References</h2>
-          <h2 class="c9" id="h.qgk7brstg26r"><span class="c4">References</span></h2>
-        <p class="c6"><span class="c7">Voice:</span></p>
-        <p class="c6">
-            <li><a class="c5" href="https://www.google.com/url?q=https://github.com/Picovoice/picovoice&amp;sa=D&amp;ust=1608455692545000&amp;usg=AOvVaw0xinARwPRzETCXe2aKoKeA">https://github.com/Picovoice/picovoice</a></span>
-        </p>
-        <p class="c6">
-            <li>
-                <a class="c5" href="https://www.google.com/url?q=https://pimylifeup.com/raspberry-pi-porcupine/&amp;sa=D&amp;ust=1608455692546000&amp;usg=AOvVaw0D-_g3DUJvfIJlco3SlgG1">https://pimylifeup.com/raspberry-pi-porcupine/</a>
-            </span>
-        </p>
-        <p class="c6">
-            <li>
-                <a class="c5" href="https://www.google.com/url?q=https://picovoice.ai/docs/api/picovoice-python/&amp;sa=D&amp;ust=1608455692546000&amp;usg=AOvVaw3YOHAXwahkGSHFPcXPB9bg">https://picovoice.ai/docs/api/picovoice-python/</a>
-            </span>
-        </p>
-        <p class="c6">
-            <li>
-                <a class="c5" href="https://www.google.com/url?q=https://pypi.org/project/pvporcupinedemo/&amp;sa=D&amp;ust=1608455692547000&amp;usg=AOvVaw0wn9Iko7yppYc_qyIMz8hy">https://pypi.org/project/pvporcupinedemo/</a>
-            </span>
-        </p>
-        <p class="c6">
-            <li>
-                <a class="c5" href="https://www.google.com/url?q=https://console.picovoice.ai/rhn/835553fe-4051-4d9e-8552-ed07a6e29d01%23intent-move&amp;sa=D&amp;ust=1608455692547000&amp;usg=AOvVaw0gXTKrXZfu2w3VVFARDOUW">
-                    https://console.picovoice.ai/rhn/835553fe-4051-4d9e-8552-ed07a6e29d01#intent-move
-                </a>
-            </span>
-        </p>
-        <p class="c6">
-            <li>
-                <a class="c5" href="https://www.google.com/url?q=https://stackoverflow.com/questions/10733903/pyaudio-input-overflowed&amp;sa=D&amp;ust=1608455692548000&amp;usg=AOvVaw2szpEPnPz8vpm1vQdLEVZq">
-                    https://stackoverflow.com/questions/10733903/pyaudio-input-overflowed
-                </a>
-            </span>
-        </p>
-        <p class="c6">
-            <li>
-                <a class="c5" href="https://www.google.com/url?q=https://github.com/Picovoice/picovoice/blob/master/demo/python/picovoice_demo_mic.py&amp;sa=D&amp;ust=1608455692548000&amp;usg=AOvVaw2gHLJWciJ6wwU8H7Y3zJHy">
-                    https://github.com/Picovoice/picovoice/blob/master/demo/python/picovoice_demo_mic.py
-                </a>
-            </span>
-        </p>
-        <p class="c1"><span class="c7"></span></p>
-        <p class="c6"><span>Vision:</span></p>
-        <p class="c6">
-            <li>
-                <a class="c5" href="https://www.google.com/url?q=https://www.pyimagesearch.com/2018/09/24/opencv-face-recognition/&amp;sa=D&amp;ust=1608455692548000&amp;usg=AOvVaw0VGvMUdz2Wtx5QQGbA3UJ-">
-                    https://www.pyimagesearch.com/2018/09/24/opencv-face-recognition/
-                </a>
-            </span>
-        </p>
-        <p class="c6">
-            <li>
-                <a class="c5" href="https://www.google.com/url?q=https://projects.raspberrypi.org/en/projects/getting-started-with-picamera/6&amp;sa=D&amp;ust=1608455692549000&amp;usg=AOvVaw3I045oSizYy3xuTCWsDRxl">
-                    https://projects.raspberrypi.org/en/projects/getting-started-with-picamera/6
-                </a>
-            </span>
-        </p>
-        <p class="c6">
-            <li>
-                <a class="c5" href="https://www.google.com/url?q=https://www.pyimagesearch.com/2015/03/30/accessing-the-raspberry-pi-camera-with-opencv-and-python/&amp;sa=D&amp;ust=1608455692549000&amp;usg=AOvVaw225ctyxj-LFi9Exx6Ohd2x">
-                    https://www.pyimagesearch.com/2015/03/30/accessing-the-raspberry-pi-camera-with-opencv-and-python/
-                </a>
-            </span>
-        </p>
-        <p class="c6">
-            <li>
-                <a class="c5" href="https://www.google.com/url?q=https://docs.opencv.org/master/d6/d00/tutorial_py_root.html&amp;sa=D&amp;ust=1608455692550000&amp;usg=AOvVaw2Mg8OW9xEy8rDUYJPdgbCs">
-                    https://docs.opencv.org/master/d6/d00/tutorial_py_root.html
-                </a>
-            </span>
-        </p>
-        <p class="c6">
-            <li>
-                <a class="c5" href="https://www.google.com/url?q=https://towardsdatascience.com/real-time-face-recognition-an-end-to-end-project-b738bb0f7348&amp;sa=D&amp;ust=1608455692550000&amp;usg=AOvVaw3DpnIdfbJ68zbg0Fdv2XOg">
-                    https://towardsdatascience.com/real-time-face-recognition-an-end-to-end-project-b738bb0f7348
-                </a>
-            </span>
-        </p>
-        <p class="c6">
-            <li>
-                <a class="c5" href="https://www.google.com/url?q=https://towardsdatascience.com/face-recognition-how-lbph-works-90ec258c3d6b&amp;sa=D&amp;ust=1608455692551000&amp;usg=AOvVaw167pUNY30XsVwmmBlewh0o">
-                    https://towardsdatascience.com/face-recognition-how-lbph-works-90ec258c3d6b
-                </a>
-            </span>
-        </p>
-        <p class="c6">
-            <li>
-                <a class="c5" href="https://www.google.com/url?q=https://www.tomshardware.com/how-to/raspberry-pi-facial-recognition&amp;sa=D&amp;ust=1608455692551000&amp;usg=AOvVaw0EA8V1FwHp5rraeCfnbwWN">
-                    https://www.tomshardware.com/how-to/raspberry-pi-facial-recognition
-                </a>
-            </span>
-        </p>
-        <p class="c6">
-            <li>
-                <a class="c5" href="https://www.google.com/url?q=https://github.com/ageitgey/face_recognition&amp;sa=D&amp;ust=1608455692552000&amp;usg=AOvVaw1QHGkZ9NOwvRQGWP8PJE79">https://github.com/ageitgey/face_recognition</a>
-            </span>
-        </p>
+          <a href="https://picamera.readthedocs.io/">PiCamera Document</a><br>
+          <a href="http://www.micropik.com/PDF/SG90Servo.pdf">Tower Pro Servo Datasheet</a><br>
+          <a href="http://getbootstrap.com/">Bootstrap</a><br>
+          <a href="http://abyz.co.uk/rpi/pigpio/">Pigpio Library</a><br>
+          <a href="https://sourceforge.net/p/raspberry-gpio-python/wiki/Home/">R-Pi GPIO Document</a><br>
 
       </div>
 
@@ -560,1429 +944,10 @@
       <div class="row">
               <h2>Code Appendix</h2>
               <pre><code>
-              <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">  1
-  2
-  3
-  4
-  5
-  6
-  7
-  8
-  9
- 10
- 11
- 12
- 13
- 14
- 15
- 16
- 17
- 18
- 19
- 20
- 21
- 22
- 23
- 24
- 25
- 26
- 27
- 28
- 29
- 30
- 31
- 32
- 33
- 34
- 35
- 36
- 37
- 38
- 39
- 40
- 41
- 42
- 43
- 44
- 45
- 46
- 47
- 48
- 49
- 50
- 51
- 52
- 53
- 54
- 55
- 56
- 57
- 58
- 59
- 60
- 61
- 62
- 63
- 64
- 65
- 66
- 67
- 68
- 69
- 70
- 71
- 72
- 73
- 74
- 75
- 76
- 77
- 78
- 79
- 80
- 81
- 82
- 83
- 84
- 85
- 86
- 87
- 88
- 89
- 90
- 91
- 92
- 93
- 94
- 95
- 96
- 97
- 98
- 99
-100
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115
-116
-117
-118
-119
-120
-121
-122
-123
-124
-125
-126
-127
-128
-129
-130
-131
-132
-133
-134
-135
-136
-137
-138
-139
-140
-141
-142
-143
-144
-145
-146
-147
-148
-149
-150
-151
-152
-153
-154
-155
-156
-157
-158
-159
-160
-161
-162
-163
-164
-165
-166
-167
-168
-169
-170
-171
-172
-173
-174
-175
-176
-177
-178
-179
-180
-181
-182
-183
-184
-185
-186
-187
-188
-189
-190
-191
-192
-193
-194
-195
-196
-197
-198
-199
-200
-201
-202
-203
-204
-205
-206
-207
-208
-209
-210
-211
-212
-213
-214
-215
-216
-217
-218
-219
-220
-221
-222
-223
-224
-225
-226
-227
-228
-229
-230
-231
-232
-233
-234
-235
-236
-237
-238
-239
-240
-241
-242
-243
-244
-245
-246
-247
-248
-249
-250
-251
-252
-253
-254
-255
-256
-257
-258
-259
-260
-261
-262
-263
-264
-265
-266
-267
-268
-269
-270
-271
-272
-273
-274
-275
-276
-277
-278
-279
-280
-281
-282
-283
-284
-285
-286
-287
-288
-289
-290
-291
-292
-293
-294
-295
-296
-297
-298
-299
-300
-301
-302
-303
-304
-305
-306
-307
-308
-309
-310
-311
-312
-313
-314
-315
-316
-317
-318
-319
-320
-321
-322
-323
-324
-325
-326
-327
-328
-329
-330
-331
-332
-333
-334
-335
-336
-337
-338
-339
-340
-341
-342
-343
-344
-345
-346
-347
-348
-349
-350
-351
-352
-353
-354
-355
-356
-357
-358
-359
-360
-361
-362
-363
-364
-365
-366
-367
-368
-369
-370
-371
-372
-373
-374
-375
-376
-377
-378
-379
-380
-381
-382
-383
-384
-385
-386
-387
-388
-389
-390
-391
-392
-393
-394
-395
-396
-397
-398
-399
-400
-401
-402
-403
-404
-405
-406
-407
-408
-409
-410
-411
-412
-413
-414
-415
-416
-417
-418
-419
-420
-421
-422
-423
-424
-425
-426
-427
-428
-429
-430
-431
-432
-433
-434
-435
-436
-437
-438
-439
-440
-441
-442
-443
-444
-445
-446
-447
-448
-449
-450
-451
-452
-453
-454
-455
-456
-457
-458
-459
-460
-461
-462
-463
-464
-465
-466
-467
-468
-469
-470
-471
-472
-473
-474
-475
-476
-477
-478
-479
-480
-481
-482
-483
-484
-485
-486
-487
-488
-489
-490
-491
-492
-493
-494
-495
-496
-497
-498
-499
-500
-501
-502
-503
-504
-505
-506
-507
-508
-509
-510
-511
-512
-513
-514
-515
-516
-517
-518
-519
-520
-521
-522
-523
-524
-525
-526
-527
-528
-529
-530
-531
-532
-533
-534
-535
-536
-537
-538
-539
-540
-541
-542
-543
-544
-545
-546
-547
-548
-549
-550
-551
-552
-553
-554
-555
-556
-557
-558
-559
-560
-561
-562
-563
-564
-565
-566
-567
-568
-569
-570
-571
-572
-573
-574
-575
-576
-577
-578
-579
-580
-581
-582
-583
-584
-585
-586
-587
-588
-589
-590
-591
-592
-593
-594
-595
-596
-597
-598
-599
-600
-601
-602
-603
-604
-605
-606
-607
-608
-609
-610
-611
-612
-613
-614
-615
-616
-617
-618
-619
-620
-621
-622
-623
-624
-625
-626
-627
-628
-629
-630
-631
-632
-633
-634
-635
-636
-637
-638
-639
-640
-641
-642
-643
-644
-645
-646
-647
-648
-649
-650
-651
-652
-653
-654
-655
-656
-657
-658
-659
-660
-661
-662
-663
-664
-665
-666
-667
-668
-669
-670
-671
-672
-673
-674
-675
-676
-677
-678
-679
-680
-681
-682
-683
-684
-685
-686
-687
-688
-689
-690
-691
-692
-693
-694
-695
-696
-697
-698
-699
-700
-701
-702
-703
-704
-705
-706
-707
-708
-709
-710
-711</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #408080; font-style: italic"># Sparky Beta (Python 3)</span>
-<span style="color: #408080; font-style: italic"># Author: John Ly (jtl222), Carlos Gutierrez (cag334)</span>
-<span style="color: #408080; font-style: italic"># Date: December 17, 2020</span>
-
-<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">struct</span> 
-<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">numpy</span> <span style="color: #008000; font-weight: bold">as</span> <span style="color: #0000FF; font-weight: bold">np</span>
-<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">os</span>
-<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">RPi.GPIO</span> <span style="color: #008000; font-weight: bold">as</span> <span style="color: #0000FF; font-weight: bold">GPIO</span>
-<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">pyaudio</span>
-<span style="color: #008000; font-weight: bold">from</span> <span style="color: #0000FF; font-weight: bold">picovoice</span> <span style="color: #008000; font-weight: bold">import</span> Picovoice
-<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">sys</span>
-<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">two_wheel_mod</span> <span style="color: #008000; font-weight: bold">as</span> <span style="color: #0000FF; font-weight: bold">tw</span>
-<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">time</span>
-<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">cv2</span>
-<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">face_recognition</span>
-<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">pickle</span>
-
-<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">numpy</span> <span style="color: #008000; font-weight: bold">as</span> <span style="color: #0000FF; font-weight: bold">np</span>
-<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">pygame</span>
-<span style="color: #008000; font-weight: bold">from</span> <span style="color: #0000FF; font-weight: bold">pygame.locals</span> <span style="color: #008000; font-weight: bold">import</span> <span style="color: #666666">*</span>
-<span style="color: #408080; font-style: italic">###################</span>
-<span style="color: #408080; font-style: italic">#-- PYGAME INIT --#</span>
-<span style="color: #408080; font-style: italic">###################</span>
-
-os<span style="color: #666666">.</span>putenv(<span style="color: #BA2121">&#39;SDL_VIDEODRIVER&#39;</span>, <span style="color: #BA2121">&#39;fbcon&#39;</span>) <span style="color: #408080; font-style: italic"># Display on piTFT</span>
-os<span style="color: #666666">.</span>putenv(<span style="color: #BA2121">&#39;SDL_FBDEV&#39;</span>, <span style="color: #BA2121">&#39;/dev/fb0&#39;</span>)
-<span style="color: #408080; font-style: italic"># #os.putenv(&#39;SDL_MOUSEDRV&#39;, &#39;TSLIB&#39;) # Track mouse clicks on piTFT</span>
-<span style="color: #408080; font-style: italic"># #os.putenv(&#39;SDL_MOUSEDEV&#39;, &#39;/dev/input/touchscreen&#39;)</span>
-pygame<span style="color: #666666">.</span>init()
-screen<span style="color: #666666">=</span>pygame<span style="color: #666666">.</span>display<span style="color: #666666">.</span>set_mode((<span style="color: #666666">240</span>,<span style="color: #666666">320</span>)) <span style="color: #408080; font-style: italic"># PiTFT Mode</span>
-<span style="color: #408080; font-style: italic"># screen=pygame.display.set_mode((360,360)) # Desktop Mode</span>
-pygame<span style="color: #666666">.</span>mouse<span style="color: #666666">.</span>set_visible(<span style="color: #008000">False</span>)
-dispW, dispH <span style="color: #666666">=</span> screen<span style="color: #666666">.</span>get_size()
-dispRect <span style="color: #666666">=</span> pygame<span style="color: #666666">.</span>Rect((<span style="color: #666666">0</span>,<span style="color: #666666">0</span>), (dispW,dispH))
-BLACK <span style="color: #666666">=</span> (<span style="color: #666666">0</span>,<span style="color: #666666">0</span>,<span style="color: #666666">0</span>)
-WHITE <span style="color: #666666">=</span> (<span style="color: #666666">255</span>,<span style="color: #666666">255</span>,<span style="color: #666666">255</span>)
-fontSm <span style="color: #666666">=</span> pygame<span style="color: #666666">.</span>font<span style="color: #666666">.</span>SysFont(<span style="color: #008000">None</span>, <span style="color: #666666">12</span>)
-fontLg <span style="color: #666666">=</span> pygame<span style="color: #666666">.</span>font<span style="color: #666666">.</span>SysFont(<span style="color: #008000">None</span>, <span style="color: #666666">24</span>)
-
-updateText <span style="color: #666666">=</span> <span style="color: #008000">False</span>
-party_over <span style="color: #666666">=</span> <span style="color: #008000">False</span>
-
-screen<span style="color: #666666">.</span>fill(BLACK)
-
-<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">draw_counter</span>(number):
-	text <span style="color: #666666">=</span> fontLg<span style="color: #666666">.</span>render(f<span style="color: #BA2121">&#39;{number}&#39;</span>, <span style="color: #008000">True</span>, WHITE, BLACK)
-	textRect <span style="color: #666666">=</span> text<span style="color: #666666">.</span>get_rect(center<span style="color: #666666">=</span>(<span style="color: #666666">0.5*</span>dispW, <span style="color: #666666">0.90*</span>dispH))
-	screen<span style="color: #666666">.</span>fill(BLACK, textRect<span style="color: #666666">.</span>inflate(<span style="color: #666666">20</span>,<span style="color: #666666">0</span>))
-	screen<span style="color: #666666">.</span>blit(text,textRect)
-	pygame<span style="color: #666666">.</span>display<span style="color: #666666">.</span>update(textRect)
-
-<span style="color: #408080; font-style: italic">#============================================================</span>
-<span style="color: #408080; font-style: italic">#TFT Button Operation</span>
-<span style="color: #408080; font-style: italic">#============================================================</span>
-panicStop <span style="color: #666666">=</span> <span style="color: #008000">False</span>
-GPIO<span style="color: #666666">.</span>setmode(GPIO<span style="color: #666666">.</span>BCM)
-<span style="color: #408080; font-style: italic"># on pin interrupt signal, handle motor functions</span>
-<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">GPIO_callback</span>(channel):
-	<span style="color: #008000; font-weight: bold">for</span> pin <span style="color: #AA22FF; font-weight: bold">in</span> tw<span style="color: #666666">.</span>piTFT_Buttons:
-		<span style="color: #008000; font-weight: bold">if</span> (<span style="color: #AA22FF; font-weight: bold">not</span> GPIO<span style="color: #666666">.</span>input(pin)):
-			<span style="color: #008000; font-weight: bold">print</span>(<span style="color: #BA2121">&quot;falling edge detected on {}&quot;</span><span style="color: #666666">.</span>format(pin))
-			<span style="color: #008000; font-weight: bold">if</span> pin <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #666666">27</span>:
-				<span style="color: #008000; font-weight: bold">print</span>(<span style="color: #BA2121">&quot;</span><span style="color: #BB6622; font-weight: bold">\n</span><span style="color: #BA2121"> [INFO] Exiting Program and cleanup stuff&quot;</span>)
-				GPIO<span style="color: #666666">.</span>cleanup()
-				cam<span style="color: #666666">.</span>release()
-				cv2<span style="color: #666666">.</span>destroyAllWindows()
-				<span style="color: #408080; font-style: italic"># pygame.quit()</span>
-				sys<span style="color: #666666">.</span>exit()
-
-
-
-buttonControls <span style="color: #666666">=</span> {<span style="color: #666666">17</span>:<span style="color: #BA2121">&quot;start&quot;</span>, <span style="color: #666666">22</span>:<span style="color: #BA2121">&quot;search&quot;</span>, <span style="color: #666666">23</span>:<span style="color: #BA2121">&quot;add_face&quot;</span>, <span style="color: #666666">27</span>:<span style="color: #BA2121">&quot;quit&quot;</span>}
-
-<span style="color: #408080; font-style: italic"># setup for all piTFT buttons as inputs using pull up resistors</span>
-<span style="color: #008000; font-weight: bold">print</span>(<span style="color: #BA2121">&quot;setting up piTFT buttons&quot;</span>)
-<span style="color: #008000; font-weight: bold">for</span> pin <span style="color: #AA22FF; font-weight: bold">in</span> tw<span style="color: #666666">.</span>piTFT_Buttons:
-	GPIO<span style="color: #666666">.</span>setup(pin, GPIO<span style="color: #666666">.</span>IN, pull_up_down<span style="color: #666666">=</span>GPIO<span style="color: #666666">.</span>PUD_UP)
-	<span style="color: #008000; font-weight: bold">print</span>(<span style="color: #BA2121">&quot;GPIO {} setup&quot;</span><span style="color: #666666">.</span>format(pin))
-	GPIO<span style="color: #666666">.</span>add_event_detect(pin, GPIO<span style="color: #666666">.</span>FALLING, callback<span style="color: #666666">=</span>GPIO_callback, bouncetime<span style="color: #666666">=300</span>)
-<span style="color: #408080; font-style: italic">#============================================================</span>
-<span style="color: #408080; font-style: italic"># LEDs</span>
-<span style="color: #408080; font-style: italic">#============================================================</span>
-GPIO<span style="color: #666666">.</span>setup(<span style="color: #666666">13</span>,GPIO<span style="color: #666666">.</span>OUT) <span style="color: #408080; font-style: italic"># LED pin</span>
-
-
-	
-
-
-<span style="color: #408080; font-style: italic">#===============================================</span>
-<span style="color: #408080; font-style: italic">#Voice Recognition </span>
-<span style="color: #408080; font-style: italic">#===============================================</span>
-timerStart <span style="color: #666666">=</span> time<span style="color: #666666">.</span>time()
-prevCount <span style="color: #666666">=</span> <span style="color: #666666">0</span>
-imgCount <span style="color: #666666">=</span> <span style="color: #666666">0</span>
-
-_keyword_path<span style="color: #666666">=</span><span style="color: #BA2121">&quot;sparky.ppn&quot;</span> <span style="color: #408080; font-style: italic">#sparky hotword (to initiate)</span>
-_context_path<span style="color: #666666">=</span><span style="color: #BA2121">&quot;sparky.rhn&quot;</span> <span style="color: #408080; font-style: italic">#uses the smart lighting intents ( we changing it to our own) </span>
-pa <span style="color: #666666">=</span> <span style="color: #008000">None</span>
-audio_stream <span style="color: #666666">=</span> <span style="color: #008000">None</span>
-<span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">v_instructions</span>:
-	v_search<span style="color: #666666">=</span><span style="color: #008000">False</span>
-	v_direction<span style="color: #666666">=</span><span style="color: #008000">False</span>
-	v_tricks<span style="color: #666666">=</span><span style="color: #008000">False</span>
-	led_on<span style="color: #666666">=</span><span style="color: #008000">False</span>
-	word<span style="color: #666666">=</span><span style="color: #BA2121">&#39;&#39;</span>
-	
-instruction<span style="color: #666666">=</span>v_instructions()
-<span style="color: #008000; font-weight: bold">global</span> instructions
-
-
-
-
-<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">wake_word_callback</span>():
-	<span style="color: #008000; font-weight: bold">print</span>(<span style="color: #BA2121">&#39;[wake word]</span><span style="color: #BB6622; font-weight: bold">\n</span><span style="color: #BA2121">&#39;</span>) 
-	GPIO<span style="color: #666666">.</span>output(<span style="color: #666666">13</span>, GPIO<span style="color: #666666">.</span>HIGH)
-	instruction<span style="color: #666666">.</span>led_on<span style="color: #666666">=</span><span style="color: #008000">True</span>
-	tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&#39;stop&#39;</span>)
-	instruction<span style="color: #666666">.</span>v_search<span style="color: #666666">=</span><span style="color: #008000">False</span>
-	instruction<span style="color: #666666">.</span>v_direction<span style="color: #666666">=</span><span style="color: #008000">False</span>
-	instruction<span style="color: #666666">.</span>v_tricks<span style="color: #666666">=</span><span style="color: #008000">False</span>
-	
-
-<span style="color: #408080; font-style: italic">#### Example: Sparky, turn all the lights on </span>
-<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">inference_callback</span>(inference):
-	<span style="color: #008000; font-weight: bold">global</span> updateText, timerStart
-	timerStart <span style="color: #666666">=</span> time<span style="color: #666666">.</span>time()
-
-	<span style="color: #008000; font-weight: bold">if</span> inference<span style="color: #666666">.</span>is_understood:
-		instruction<span style="color: #666666">.</span>v_search<span style="color: #666666">=</span><span style="color: #008000">False</span>
-		instruction<span style="color: #666666">.</span>v_direction<span style="color: #666666">=</span><span style="color: #008000">False</span>
-		instruction<span style="color: #666666">.</span>v_tricks<span style="color: #666666">=</span><span style="color: #008000">False</span>
-		<span style="color: #008000; font-weight: bold">print</span>(inference)
-		updateText <span style="color: #666666">=</span> <span style="color: #008000">True</span>
-		
-		<span style="color: #008000; font-weight: bold">if</span> inference<span style="color: #666666">.</span>intent <span style="color: #666666">==</span> <span style="color: #BA2121">&#39;search&#39;</span>:
-			instruction<span style="color: #666666">.</span>v_search<span style="color: #666666">=</span><span style="color: #008000">True</span>
-			instruction<span style="color: #666666">.</span>word<span style="color: #666666">=</span>inference<span style="color: #666666">.</span>slots[<span style="color: #BA2121">&#39;users&#39;</span>]
-			<span style="color: #008000; font-weight: bold">print</span>(f<span style="color: #BA2121">&quot;Looking for friend {instruction.word} .....&quot;</span>)
-			
-		<span style="color: #008000; font-weight: bold">elif</span> inference<span style="color: #666666">.</span>intent <span style="color: #666666">==</span><span style="color: #BA2121">&#39;move&#39;</span>:
-			<span style="color: #008000; font-weight: bold">for</span> slot,value <span style="color: #AA22FF; font-weight: bold">in</span> inference<span style="color: #666666">.</span>slots<span style="color: #666666">.</span>items():
-				<span style="color: #008000; font-weight: bold">if</span> slot <span style="color: #666666">==</span> <span style="color: #BA2121">&#39;direction&#39;</span>:
-					instruction<span style="color: #666666">.</span>v_direction<span style="color: #666666">=</span><span style="color: #008000">True</span>
-					instruction<span style="color: #666666">.</span>word<span style="color: #666666">=</span>value 
-				<span style="color: #008000; font-weight: bold">elif</span> slot <span style="color: #666666">==</span> <span style="color: #BA2121">&#39;tricks&#39;</span>:
-					instruction<span style="color: #666666">.</span>v_tricks<span style="color: #666666">=</span><span style="color: #008000">True</span>
-					instruction<span style="color: #666666">.</span>word<span style="color: #666666">=</span>value
-				<span style="color: #008000; font-weight: bold">else</span>:
-					instruction<span style="color: #666666">.</span>word<span style="color: #666666">=</span><span style="color: #BA2121">&#39;&#39;</span>
-
-		<span style="color: #008000; font-weight: bold">else</span>:
-			instruction<span style="color: #666666">.</span>word<span style="color: #666666">=</span><span style="color: #BA2121">&#39;&#39;</span>
-	
-		
-	
-	<span style="color: #BA2121; font-style: italic">&#39;&#39;&#39;</span>
-<span style="color: #BA2121; font-style: italic">		if inference.is_understood:</span>
-<span style="color: #BA2121; font-style: italic">			print(&#39;{&#39;)</span>
-<span style="color: #BA2121; font-style: italic">			print(&quot;  intent : &#39;%s&#39;&quot; % inference.intent)</span>
-<span style="color: #BA2121; font-style: italic">			print(&#39;  slots : {&#39;)</span>
-<span style="color: #BA2121; font-style: italic">			print(inference.slots.items())</span>
-<span style="color: #BA2121; font-style: italic">			</span>
-<span style="color: #BA2121; font-style: italic">			for slot, value in inference.slots.items():</span>
-<span style="color: #BA2121; font-style: italic">				print(&quot;    %s : &#39;%s&#39;&quot; % (slot, value))</span>
-<span style="color: #BA2121; font-style: italic">			print(&#39;  }&#39;)</span>
-<span style="color: #BA2121; font-style: italic">			print(&#39;}\n&#39;)</span>
-<span style="color: #BA2121; font-style: italic">		else:</span>
-<span style="color: #BA2121; font-style: italic">			print(&quot;Didn&#39;t understand the command.\n&quot;)</span>
-<span style="color: #BA2121; font-style: italic">&#39;&#39;&#39;</span>
-
-_picovoice<span style="color: #666666">=</span>Picovoice(
-	keyword_path<span style="color: #666666">=</span>_keyword_path,
-	wake_word_callback<span style="color: #666666">=</span>wake_word_callback,
-	context_path<span style="color: #666666">=</span>_context_path,
-	inference_callback<span style="color: #666666">=</span>inference_callback,
-	porcupine_library_path<span style="color: #666666">=</span><span style="color: #008000">None</span>,
-	porcupine_model_path<span style="color: #666666">=</span><span style="color: #008000">None</span>,
-	rhino_sensitivity<span style="color: #666666">=0.2</span>, 
-	rhino_library_path<span style="color: #666666">=</span><span style="color: #008000">None</span>,
-	rhino_model_path<span style="color: #666666">=</span><span style="color: #008000">None</span>,
-	porcupine_sensitivity<span style="color: #666666">=1</span>)
-
-
-			 
-pa <span style="color: #666666">=</span> pyaudio<span style="color: #666666">.</span>PyAudio()
-audio_stream <span style="color: #666666">=</span> pa<span style="color: #666666">.</span>open(
-	rate<span style="color: #666666">=</span>_picovoice<span style="color: #666666">.</span>sample_rate,
-	channels<span style="color: #666666">=1</span>,
-	format<span style="color: #666666">=</span>pyaudio<span style="color: #666666">.</span>paInt16,
-	<span style="color: #008000">input</span><span style="color: #666666">=</span><span style="color: #008000">True</span>,
-	frames_per_buffer<span style="color: #666666">=</span>_picovoice<span style="color: #666666">.</span>frame_length)
-				
-<span style="color: #408080; font-style: italic">#=============================================================</span>
-<span style="color: #408080; font-style: italic"># Movement</span>
-<span style="color: #408080; font-style: italic">#=============================================================</span>
-endtime<span style="color: #666666">=0</span> 
-led_endtime<span style="color: #666666">=0</span>
-turn<span style="color: #666666">=</span><span style="color: #008000">True</span>
-<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">movement_3sec</span>(direction: <span style="color: #BA2121">&#39;string&#39;</span>, speedL: <span style="color: #BA2121">&quot;int&quot;</span> <span style="color: #666666">=75</span>, speedR: <span style="color: #BA2121">&quot;int&quot;</span> <span style="color: #666666">=75</span>):
-	<span style="color: #008000; font-weight: bold">global</span> endtime,turn,updateText
-	<span style="color: #008000; font-weight: bold">if</span> direction <span style="color: #666666">==</span> <span style="color: #BA2121">&#39;forward&#39;</span> <span style="color: #AA22FF; font-weight: bold">or</span> <span style="color: #BA2121">&#39;backward&#39;</span> <span style="color: #AA22FF; font-weight: bold">or</span> <span style="color: #BA2121">&#39;right&#39;</span> <span style="color: #AA22FF; font-weight: bold">or</span> <span style="color: #BA2121">&#39;left&#39;</span>:
-		tw<span style="color: #666666">.</span>drive(direction,speedL,speedR)
-	<span style="color: #008000; font-weight: bold">else</span>:
-		tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&quot;left&quot;</span>,<span style="color: #666666">90</span>,<span style="color: #666666">90</span>)
-		
-			
-			
-	<span style="color: #008000; font-weight: bold">print</span>(time<span style="color: #666666">.</span>time())
-	<span style="color: #008000; font-weight: bold">print</span>(endtime)
-	<span style="color: #008000; font-weight: bold">if</span> time<span style="color: #666666">.</span>time() <span style="color: #666666">&gt;</span> endtime:
-		<span style="color: #008000; font-weight: bold">if</span> endtime <span style="color: #666666">&gt;0</span>:
-			tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&#39;stop&#39;</span>,speedL,speedR)
-			endtime<span style="color: #666666">=0</span>
-			instruction<span style="color: #666666">.</span>v_direction<span style="color: #666666">=</span><span style="color: #008000">False</span>
-			updateText<span style="color: #666666">=</span><span style="color: #008000">False</span>
-		<span style="color: #008000; font-weight: bold">else</span>:
-			endtime<span style="color: #666666">=</span>time<span style="color: #666666">.</span>time()<span style="color: #666666">+0.5</span>
-
-c<span style="color: #666666">=0</span>
-<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">move_breakdance</span>():
-	<span style="color: #008000; font-weight: bold">global</span> c,endtime
-	
-	<span style="color: #008000; font-weight: bold">if</span> (c <span style="color: #666666">%</span> <span style="color: #666666">2</span>) <span style="color: #666666">==0</span>:
-		tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&#39;stop&#39;</span>)
-		tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&quot;left&quot;</span>,<span style="color: #666666">50</span>,<span style="color: #666666">50</span>)
-		
-	<span style="color: #008000; font-weight: bold">else</span>:
-		tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&#39;stop&#39;</span>)
-		tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&quot;right&quot;</span>,<span style="color: #666666">60</span>,<span style="color: #666666">60</span>)
-		
-		
-	<span style="color: #008000; font-weight: bold">if</span> time<span style="color: #666666">.</span>time() <span style="color: #666666">&gt;</span> endtime:
-		
-		
-		<span style="color: #008000; font-weight: bold">if</span> endtime <span style="color: #666666">&gt;0</span>:
-			c<span style="color: #666666">+=1</span>
-			endtime<span style="color: #666666">=0</span>
-			<span style="color: #008000; font-weight: bold">if</span> c <span style="color: #666666">&gt;=</span> <span style="color: #666666">10</span>:
-				tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&#39;stop&#39;</span>)
-				instruction<span style="color: #666666">.</span>v_tricks<span style="color: #666666">=</span><span style="color: #008000">False</span>
-				c<span style="color: #666666">=0</span>
-				
-		<span style="color: #008000; font-weight: bold">else</span>:
-			endtime<span style="color: #666666">=</span>time<span style="color: #666666">.</span>time()<span style="color: #666666">+0.5</span>
-
-
-<span style="color: #408080; font-style: italic">########################</span>
-<span style="color: #408080; font-style: italic">#-- FACE RECOGNITION --#</span>
-<span style="color: #408080; font-style: italic">########################</span>
-
-<span style="color: #408080; font-style: italic">#Initialize &#39;currentname&#39; to trigger only when a new person is identified.</span>
-currentname <span style="color: #666666">=</span> <span style="color: #BA2121">&quot;unknown&quot;</span>
-<span style="color: #408080; font-style: italic">#Determine faces from encodings.pickle file model created from train_model.py</span>
-encodingsP <span style="color: #666666">=</span> <span style="color: #BA2121">&quot;encodings.pickle&quot;</span>
-<span style="color: #408080; font-style: italic">#use this xml file</span>
-cascade <span style="color: #666666">=</span> <span style="color: #BA2121">&quot;haarcascade_frontalface_default.xml&quot;</span>
-
-<span style="color: #408080; font-style: italic"># load the known faces and embeddings along with OpenCV&#39;s Haar</span>
-<span style="color: #408080; font-style: italic"># cascade for face detection</span>
-<span style="color: #008000; font-weight: bold">print</span>(<span style="color: #BA2121">&quot;[INFO] loading encodings + face detector...&quot;</span>)
-data <span style="color: #666666">=</span> pickle<span style="color: #666666">.</span>loads(<span style="color: #008000">open</span>(encodingsP, <span style="color: #BA2121">&quot;rb&quot;</span>)<span style="color: #666666">.</span>read())
-detector <span style="color: #666666">=</span> cv2<span style="color: #666666">.</span>CascadeClassifier(cascade)
-
-font <span style="color: #666666">=</span> cv2<span style="color: #666666">.</span>FONT_HERSHEY_SIMPLEX
-
-
-<span style="color: #408080; font-style: italic"># Initialize and start realtime video capture</span>
-cam <span style="color: #666666">=</span> cv2<span style="color: #666666">.</span>VideoCapture(<span style="color: #666666">0</span>)
-camW, camH <span style="color: #666666">=</span> <span style="color: #666666">640</span>,<span style="color: #666666">480</span> <span style="color: #408080; font-style: italic">#960,720 # 1280,720 </span>
-cam<span style="color: #666666">.</span>set(<span style="color: #666666">3</span>, camW) <span style="color: #408080; font-style: italic"># set video width</span>
-cam<span style="color: #666666">.</span>set(<span style="color: #666666">4</span>, camH) <span style="color: #408080; font-style: italic"># set video height</span>
-camRect <span style="color: #666666">=</span> pygame<span style="color: #666666">.</span>Rect((<span style="color: #666666">0</span>,<span style="color: #666666">0</span>), (camW,camH))
-camWs, camHs <span style="color: #666666">=</span> <span style="color: #666666">240</span>, <span style="color: #666666">180</span>  
-textAreaRect <span style="color: #666666">=</span> pygame<span style="color: #666666">.</span>Rect((<span style="color: #666666">0</span>,camHs), (dispW,dispH<span style="color: #666666">-</span>camHs))
-
-<span style="color: #408080; font-style: italic"># fps = FPS().start()</span>
-
-<span style="color: #408080; font-style: italic"># Define min window size to be recognized as a face</span>
-minW <span style="color: #666666">=</span> <span style="color: #666666">0.05*</span>cam<span style="color: #666666">.</span>get(<span style="color: #666666">3</span>)
-minH <span style="color: #666666">=</span> <span style="color: #666666">0.05*</span>cam<span style="color: #666666">.</span>get(<span style="color: #666666">4</span>)
-
-<span style="color: #408080; font-style: italic"># Define parameters for pursuit</span>
-<span style="color: #408080; font-style: italic"># target = False</span>
-speed <span style="color: #666666">=</span> <span style="color: #666666">90</span>
-midX <span style="color: #666666">=</span> camW<span style="color: #666666">/2</span>
-driveTime <span style="color: #666666">=</span> time<span style="color: #666666">.</span>time()
-
-<span style="color: #408080; font-style: italic">#targetPerson = &quot;John&quot; # change to output of voice input</span>
-findFaceInit <span style="color: #666666">=</span> <span style="color: #008000">True</span>
-search <span style="color: #666666">=</span> <span style="color: #008000">True</span>
-misses <span style="color: #666666">=</span> <span style="color: #666666">0</span>
-
-<span style="color: #408080; font-style: italic"># Rotate until we find an identifiable face</span>
-<span style="color: #408080; font-style: italic"># Return true if the desired person is found</span>
-<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">find_faces</span>(targetPerson, img):
-	<span style="color: #008000; font-weight: bold">global</span> findFaceInit
-	<span style="color: #408080; font-style: italic"># print(f&quot;Init: {findFaceInit}&quot;)</span>
-	target <span style="color: #666666">=</span> <span style="color: #008000">False</span>
-	<span style="color: #408080; font-style: italic"># print(&quot;search mode&quot;)</span>
-	<span style="color: #408080; font-style: italic"># Do a fun search init maneuver</span>
-	<span style="color: #408080; font-style: italic"># quickly spin ~180 left then right</span>
-	<span style="color: #008000; font-weight: bold">if</span> findFaceInit:
-		findFaceInit <span style="color: #666666">=</span> <span style="color: #008000">False</span>
-		<span style="color: #008000; font-weight: bold">for</span> turn <span style="color: #AA22FF; font-weight: bold">in</span> [<span style="color: #BA2121">&#39;left&#39;</span>, <span style="color: #BA2121">&#39;right&#39;</span>]:
-			startTime <span style="color: #666666">=</span> time<span style="color: #666666">.</span>time()
-			tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&#39;stop&#39;</span>, speed, speed)
-			<span style="color: #008000; font-weight: bold">while</span> time<span style="color: #666666">.</span>time() <span style="color: #666666">&lt;</span> startTime <span style="color: #666666">+</span> <span style="color: #666666">1</span>:
-				tw<span style="color: #666666">.</span>drive(turn, <span style="color: #666666">70</span>, <span style="color: #666666">70</span>)
-				target,_,_ <span style="color: #666666">=</span> identify_faces(targetPerson, img)
-				<span style="color: #008000; font-weight: bold">if</span> target:
-					driveTime <span style="color: #666666">=</span> time<span style="color: #666666">.</span>time() <span style="color: #666666">+</span> <span style="color: #666666">0.2</span>
-					<span style="color: #008000; font-weight: bold">while</span> time<span style="color: #666666">.</span>time() <span style="color: #666666">&lt;</span> driveTime:
-						adjustment <span style="color: #666666">=</span> <span style="color: #BA2121">&#39;right&#39;</span> <span style="color: #008000; font-weight: bold">if</span> turn <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #BA2121">&#39;left&#39;</span> <span style="color: #008000; font-weight: bold">else</span> <span style="color: #BA2121">&#39;left&#39;</span>
-						tw<span style="color: #666666">.</span>drive(adjustment, <span style="color: #666666">60</span>, <span style="color: #666666">60</span>)
-					tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&quot;stop&quot;</span>)
-					<span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000">True</span>
-
-    <span style="color: #408080; font-style: italic"># slowly turn left to find the desired person</span>
-	tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&#39;left&#39;</span>, <span style="color: #666666">45</span>, <span style="color: #666666">45</span>)
-	target,_,_ <span style="color: #666666">=</span> identify_faces(targetPerson, img)
-	<span style="color: #008000; font-weight: bold">if</span> target:
-		driveTime <span style="color: #666666">=</span> time<span style="color: #666666">.</span>time() <span style="color: #666666">+</span> <span style="color: #666666">0.2</span>
-		<span style="color: #008000; font-weight: bold">while</span> time<span style="color: #666666">.</span>time() <span style="color: #666666">&lt;</span> driveTime:
-			tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&quot;right&quot;</span>, <span style="color: #666666">60</span>, <span style="color: #666666">60</span>)
-		tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&quot;stop&quot;</span>)
-		<span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000">True</span>
-	<span style="color: #008000; font-weight: bold">else</span>:
-		<span style="color: #408080; font-style: italic"># tw.drive(&quot;stop&quot;)</span>
-		<span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000">False</span>
-
-<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">detect_faces_quick</span>(img):
-	<span style="color: #408080; font-style: italic"># Reads from camera and detects faces quickly</span>
-	<span style="color: #408080; font-style: italic">#</span>
-	<span style="color: #408080; font-style: italic"># Params:</span>
-	<span style="color: #408080; font-style: italic">#    targetPerson: (string) name of person we wish to find</span>
-	<span style="color: #408080; font-style: italic"># Return:</span>
-	<span style="color: #408080; font-style: italic">#   boolean: True if single face present, False if too many faces or none</span>
-
-	<span style="color: #008000; font-weight: bold">global</span> speed, midX, driveTime, findFaceInit
-
-	<span style="color: #408080; font-style: italic"># convert the input frame from (1) BGR to grayscale (for face detection)</span>
-	img_gray <span style="color: #666666">=</span> cv2<span style="color: #666666">.</span>cvtColor(img, cv2<span style="color: #666666">.</span>COLOR_BGR2GRAY)
-
-	<span style="color: #408080; font-style: italic"># simple face detection</span>
-	faces <span style="color: #666666">=</span> detector<span style="color: #666666">.</span>detectMultiScale( 
-	img_gray,
-	scaleFactor <span style="color: #666666">=</span> <span style="color: #666666">1.3</span>, <span style="color: #408080; font-style: italic"># higher scaleFactor increases speed of detection for smaller faces but reduces accuarcy</span>
-	minNeighbors <span style="color: #666666">=</span> <span style="color: #666666">5</span>, <span style="color: #408080; font-style: italic"># number of matching rectangles required before allowing face detection</span>
-	minSize <span style="color: #666666">=</span> (<span style="color: #008000">int</span>(minW), <span style="color: #008000">int</span>(minH)), <span style="color: #408080; font-style: italic"># minimum Size allowed for object detection</span>
-	flags <span style="color: #666666">=</span> cv2<span style="color: #666666">.</span>CASCADE_SCALE_IMAGE
-	)
-
-	<span style="color: #408080; font-style: italic"># determine number of faces seen</span>
-	<span style="color: #408080; font-style: italic"># print(np.asarray(faces))</span>
-	<span style="color: #008000; font-weight: bold">if</span> np<span style="color: #666666">.</span>shape(np<span style="color: #666666">.</span>asarray(faces))[<span style="color: #666666">0</span>] <span style="color: #666666">!=</span> <span style="color: #666666">1</span>:
-		tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&quot;stop&quot;</span>)
-		<span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000">False</span>
-	
-	<span style="color: #008000; font-weight: bold">else</span>:
-		chance <span style="color: #666666">=</span> np<span style="color: #666666">.</span>random<span style="color: #666666">.</span>rand(<span style="color: #666666">1</span>)
-		<span style="color: #008000; font-weight: bold">if</span> chance <span style="color: #666666">&lt;</span> <span style="color: #666666">0.99</span>:
-			<span style="color: #008000; font-weight: bold">for</span> (x,y,w,h) <span style="color: #AA22FF; font-weight: bold">in</span> faces:
-				<span style="color: #408080; font-style: italic"># when very close, force a face recgnition check</span>
-				<span style="color: #008000; font-weight: bold">if</span> (<span style="color: #AA22FF; font-weight: bold">not</span> search) <span style="color: #AA22FF; font-weight: bold">and</span> (w <span style="color: #666666">&gt;</span> camW<span style="color: #666666">/4</span> <span style="color: #AA22FF; font-weight: bold">or</span> h <span style="color: #666666">&gt;</span> camH<span style="color: #666666">/2</span>):
-					tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&quot;stop&quot;</span>)
-					<span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000">False</span>
-
-				centerX, centerY <span style="color: #666666">=</span> x <span style="color: #666666">+</span> w<span style="color: #666666">//2</span>, y <span style="color: #666666">+</span> h<span style="color: #666666">//2</span>
-				img <span style="color: #666666">=</span> cv2<span style="color: #666666">.</span>ellipse(img, (centerX, centerY), (w<span style="color: #666666">//2</span>, h<span style="color: #666666">//2</span>), <span style="color: #666666">0</span>, <span style="color: #666666">0</span>, <span style="color: #666666">360</span>, (<span style="color: #666666">255</span>, <span style="color: #666666">0</span>, <span style="color: #666666">255</span>), <span style="color: #666666">4</span>)	
-
-				driveTime <span style="color: #666666">=</span> time<span style="color: #666666">.</span>time() <span style="color: #666666">+</span> <span style="color: #666666">0.2</span>
-				midX <span style="color: #666666">=</span> (x <span style="color: #666666">+</span> w<span style="color: #666666">/2</span>)<span style="color: #666666">/</span>camW <span style="color: #666666">*</span> <span style="color: #666666">100</span>	
-				<span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000">True</span>
-		<span style="color: #008000; font-weight: bold">else</span>:
-			<span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000">False</span>
-
-
-<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">identify_faces</span>(targetPerson, img, mode <span style="color: #666666">=</span> <span style="color: #BA2121">&quot;None&quot;</span>):
-	<span style="color: #408080; font-style: italic"># Reads from camera and detects faces </span>
-	<span style="color: #408080; font-style: italic"># Face Recognition is slow but accurate</span>
-	<span style="color: #408080; font-style: italic"># </span>
-	<span style="color: #408080; font-style: italic"># Params:</span>
-	<span style="color: #408080; font-style: italic">#    targetPerson: (string) name of person we wish to find</span>
-	<span style="color: #408080; font-style: italic"># Return:</span>
-	<span style="color: #408080; font-style: italic">#   target: (boolean) determines if targetPerson is in view and recognized</span>
-	<span style="color: #408080; font-style: italic">#   stopCondition: (boolean) determines if targetPerson is close enough to the camera </span>
-
-	<span style="color: #008000; font-weight: bold">global</span> speed, midX, driveTime, findFaceInit
-
-	target <span style="color: #666666">=</span> <span style="color: #008000">False</span>
-	stopCondition <span style="color: #666666">=</span> <span style="color: #008000">False</span>
-	
-	<span style="color: #408080; font-style: italic"># convert the input frame from (1) BGR to grayscale (for face detection) and</span>
-	<span style="color: #408080; font-style: italic"># (2) from BGR to RGB for (face recogniton)</span>
-	img_gray <span style="color: #666666">=</span> cv2<span style="color: #666666">.</span>cvtColor(img, cv2<span style="color: #666666">.</span>COLOR_BGR2GRAY)
-	img_rgb <span style="color: #666666">=</span> cv2<span style="color: #666666">.</span>cvtColor(img, cv2<span style="color: #666666">.</span>COLOR_BGR2RGB)
-
-	<span style="color: #408080; font-style: italic"># simple face detection</span>
-	faces <span style="color: #666666">=</span> detector<span style="color: #666666">.</span>detectMultiScale( 
-	img_gray,
-	scaleFactor <span style="color: #666666">=</span> <span style="color: #666666">1.3</span>, <span style="color: #408080; font-style: italic"># higher scaleFactor increases speed of detection for smaller faces but reduces accuarcy</span>
-	minNeighbors <span style="color: #666666">=</span> <span style="color: #666666">5</span>, <span style="color: #408080; font-style: italic"># number of matching rectangles required before allowing face detection</span>
-	minSize <span style="color: #666666">=</span> (<span style="color: #008000">int</span>(minW), <span style="color: #008000">int</span>(minH)), <span style="color: #408080; font-style: italic"># minimum Size allowed for object detection</span>
-	flags <span style="color: #666666">=</span> cv2<span style="color: #666666">.</span>CASCADE_SCALE_IMAGE
-	)
-
-	<span style="color: #408080; font-style: italic"># OpenCV returns bounding box coordinates in (x, y, w, h) order</span>
-	<span style="color: #408080; font-style: italic"># but we need them in (top, right, bottom, left) order, so we</span>
-	<span style="color: #408080; font-style: italic"># need to do a bit of reordering</span>
-	boxes <span style="color: #666666">=</span> [(y, x <span style="color: #666666">+</span> w, y <span style="color: #666666">+</span> h, x) <span style="color: #008000; font-weight: bold">for</span> (x, y, w, h) <span style="color: #AA22FF; font-weight: bold">in</span> faces]
-
-	<span style="color: #408080; font-style: italic"># compute the facial embeddings for each face bounding box</span>
-	encodings <span style="color: #666666">=</span> face_recognition<span style="color: #666666">.</span>face_encodings(img_rgb, boxes)
-	names <span style="color: #666666">=</span> []
-
-	<span style="color: #408080; font-style: italic"># loop over the facial embeddings</span>
-	<span style="color: #008000; font-weight: bold">for</span> encoding <span style="color: #AA22FF; font-weight: bold">in</span> encodings:
-		<span style="color: #408080; font-style: italic"># attempt to match each face in the input image to our known</span>
-		<span style="color: #408080; font-style: italic"># encodings</span>
-		matches <span style="color: #666666">=</span> face_recognition<span style="color: #666666">.</span>compare_faces(data[<span style="color: #BA2121">&quot;encodings&quot;</span>],
-			encoding)
-		name <span style="color: #666666">=</span> <span style="color: #BA2121">&quot;Unknown&quot;</span> <span style="color: #408080; font-style: italic">#if face is not recognized, then print Unknown</span>
-
-		<span style="color: #408080; font-style: italic"># check to see if we have found a match</span>
-		<span style="color: #008000; font-weight: bold">if</span> <span style="color: #008000">True</span> <span style="color: #AA22FF; font-weight: bold">in</span> matches:
-			<span style="color: #408080; font-style: italic"># find the indexes of all matched faces then initialize a</span>
-			<span style="color: #408080; font-style: italic"># dictionary to count the total number of times each face</span>
-			<span style="color: #408080; font-style: italic"># was matched</span>
-			matchedIdxs <span style="color: #666666">=</span> [i <span style="color: #008000; font-weight: bold">for</span> (i, b) <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">enumerate</span>(matches) <span style="color: #008000; font-weight: bold">if</span> b]
-			counts <span style="color: #666666">=</span> {}
-
-			<span style="color: #408080; font-style: italic"># loop over the matched indexes and maintain a count for</span>
-			<span style="color: #408080; font-style: italic"># each recognized face face</span>
-			<span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> matchedIdxs:
-				name <span style="color: #666666">=</span> data[<span style="color: #BA2121">&quot;names&quot;</span>][i]
-				<span style="color: #008000; font-weight: bold">if</span> name <span style="color: #AA22FF; font-weight: bold">is</span> targetPerson:
-					tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&quot;stop&quot;</span>)
-				counts[name] <span style="color: #666666">=</span> counts<span style="color: #666666">.</span>get(name, <span style="color: #666666">0</span>) <span style="color: #666666">+</span> <span style="color: #666666">1</span>
-
-			<span style="color: #408080; font-style: italic"># determine the recognized face with the largest number</span>
-			<span style="color: #408080; font-style: italic"># of votes (note: in the event of an unlikely tie Python</span>
-			<span style="color: #408080; font-style: italic"># will select first entry in the dictionary)</span>
-			name <span style="color: #666666">=</span> <span style="color: #008000">max</span>(counts, key<span style="color: #666666">=</span>counts<span style="color: #666666">.</span>get)
-			
-			<span style="color: #408080; font-style: italic"># #If someone in your dataset is identified, print their name on the screen</span>
-			<span style="color: #408080; font-style: italic"># if currentname != name:</span>
-			<span style="color: #408080; font-style: italic"># 	currentname = name</span>
-			<span style="color: #408080; font-style: italic"># 	print(currentname)</span>
-		
-		<span style="color: #408080; font-style: italic"># update the list of names</span>
-		names<span style="color: #666666">.</span>append(name)
-
-	<span style="color: #408080; font-style: italic"># loop over the detected faces and label them</span>
-	<span style="color: #008000; font-weight: bold">for</span> ((topY, rightX, bottomY, leftX), name) <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">zip</span>(boxes, names):
-		center <span style="color: #666666">=</span> ((leftX<span style="color: #666666">+</span>rightX)<span style="color: #666666">//2</span>, (bottomY<span style="color: #666666">+</span>topY)<span style="color: #666666">//2</span>)
-		w,h <span style="color: #666666">=</span> rightX<span style="color: #666666">-</span>leftX, bottomY<span style="color: #666666">-</span>topY
-
-		cv2<span style="color: #666666">.</span>ellipse(img, (center[<span style="color: #666666">0</span>], center[<span style="color: #666666">1</span>]), (w<span style="color: #666666">//2</span>, h<span style="color: #666666">//2</span>), <span style="color: #666666">0</span>, <span style="color: #666666">0</span>, <span style="color: #666666">360</span>, (<span style="color: #666666">255</span>, <span style="color: #666666">0</span>, <span style="color: #666666">255</span>), <span style="color: #666666">2</span>)	
-		cv2<span style="color: #666666">.</span>putText(img, <span style="color: #008000">str</span>(name), (leftX<span style="color: #666666">-15</span>,bottomY<span style="color: #666666">+30</span>), font, <span style="color: #666666">1.2</span>, (<span style="color: #666666">255</span>,<span style="color: #666666">255</span>,<span style="color: #666666">255</span>), <span style="color: #666666">2</span>)
-
-		<span style="color: #008000; font-weight: bold">if</span> mode <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #BA2121">&quot;party_time&quot;</span>:
-			<span style="color: #008000; font-weight: bold">if</span> name <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #AA22FF; font-weight: bold">not</span> <span style="color: #BA2121">&quot;Unknown&quot;</span>:
-				<span style="color: #408080; font-style: italic"># Icon made by &quot;https://www.flaticon.com/authors/freepik&quot;</span>
-				hat <span style="color: #666666">=</span> cv2<span style="color: #666666">.</span>imread(<span style="color: #BA2121">&#39;party-hat.png&#39;</span>, cv2<span style="color: #666666">.</span>IMREAD_UNCHANGED)
-				hat <span style="color: #666666">=</span> cv2<span style="color: #666666">.</span>resize(hat,(h,h))
-				hatY, hatX, _ <span style="color: #666666">=</span> hat<span style="color: #666666">.</span>shape
-				offsetY, offsetX <span style="color: #666666">=</span> topY<span style="color: #666666">-</span>hatY, center[<span style="color: #666666">0</span>]<span style="color: #666666">-</span>hatX<span style="color: #666666">//2</span> <span style="color: #408080; font-style: italic"># top left corner of hat position</span>
-				yStartImg <span style="color: #666666">=</span> np<span style="color: #666666">.</span>amax([<span style="color: #666666">0</span>,offsetY])
-				yEndImg <span style="color: #666666">=</span> np<span style="color: #666666">.</span>amax([<span style="color: #666666">0</span>,topY])
-				yStartHat <span style="color: #666666">=</span> np<span style="color: #666666">.</span>amax([<span style="color: #666666">0</span>,hatY<span style="color: #666666">-</span>topY])
-				alpha_hat <span style="color: #666666">=</span> hat[:,:,<span style="color: #666666">3</span>] <span style="color: #666666">/</span> <span style="color: #666666">255.0</span>
-				alpha_img <span style="color: #666666">=</span> <span style="color: #666666">1.0</span> <span style="color: #666666">-</span> alpha_hat
-				<span style="color: #408080; font-style: italic"># alpha will either be 0 or 1 here</span>
-				<span style="color: #408080; font-style: italic"># merge images using alpha value to remove hat bkgd</span>
-				<span style="color: #008000; font-weight: bold">for</span> c <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">0</span>,<span style="color: #666666">3</span>):
-					img[yStartImg:yEndImg, offsetX:offsetX<span style="color: #666666">+</span>hatX, c] <span style="color: #666666">=</span> \
-						alpha_hat[yStartHat:, :] <span style="color: #666666">*</span> hat[yStartHat:, :, c] <span style="color: #666666">+</span> \
-						alpha_img[yStartHat:, :] <span style="color: #666666">*</span> img[yStartImg:yEndImg, offsetX:offsetX<span style="color: #666666">+</span>hatX, c]
-			<span style="color: #008000; font-weight: bold">else</span>:
-				<span style="color: #408080; font-style: italic"># Draw Triangle Hat</span>
-				pts <span style="color: #666666">=</span> np<span style="color: #666666">.</span>array([[leftX<span style="color: #666666">+</span>w<span style="color: #666666">//8</span>,topY], [leftX<span style="color: #666666">+</span>w<span style="color: #666666">-</span>w<span style="color: #666666">//8</span>,topY], [leftX<span style="color: #666666">+</span>w<span style="color: #666666">//2</span>,topY<span style="color: #666666">-</span>w]], np<span style="color: #666666">.</span>int32)<span style="color: #666666">.</span>reshape((<span style="color: #666666">-1</span>,<span style="color: #666666">1</span>,<span style="color: #666666">2</span>))
-				img <span style="color: #666666">=</span> cv2<span style="color: #666666">.</span>polylines(img,[pts],<span style="color: #008000">True</span>,(<span style="color: #666666">0</span>,<span style="color: #666666">255</span>,<span style="color: #666666">255</span>),<span style="color: #666666">4</span>)
-
-	
-		<span style="color: #408080; font-style: italic"># determine if person detected is our desired target</span>
-		<span style="color: #008000; font-weight: bold">if</span> name <span style="color: #666666">==</span> targetPerson:
-			target <span style="color: #666666">=</span> <span style="color: #008000">True</span>
-			driveTime <span style="color: #666666">=</span> time<span style="color: #666666">.</span>time() <span style="color: #666666">+</span> <span style="color: #666666">0.05</span>
-			midX <span style="color: #666666">=</span> (leftX <span style="color: #666666">+</span> w<span style="color: #666666">/2</span>)<span style="color: #666666">/</span>camW <span style="color: #666666">*</span> <span style="color: #666666">100</span>
-
-			<span style="color: #408080; font-style: italic"># reached destination so stop tracking</span>
-			<span style="color: #008000; font-weight: bold">if</span> (<span style="color: #AA22FF; font-weight: bold">not</span> search) <span style="color: #AA22FF; font-weight: bold">and</span> (w <span style="color: #666666">&gt;</span> camW<span style="color: #666666">/4</span> <span style="color: #AA22FF; font-weight: bold">or</span> h <span style="color: #666666">&gt;</span> camH<span style="color: #666666">/2</span>):
-				target <span style="color: #666666">=</span> <span style="color: #008000">False</span>
-				stopCondition <span style="color: #666666">=</span> <span style="color: #008000">True</span>
-				findFaceInit <span style="color: #666666">=</span> <span style="color: #008000">True</span>
-				tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&quot;stop&quot;</span>)
-
-	<span style="color: #008000; font-weight: bold">return</span> target, stopCondition, img
-
-<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">pursue_target</span>(target):
-	<span style="color: #408080; font-style: italic"># when we see a known target, have robot travel towards face</span>
-	<span style="color: #008000; font-weight: bold">while</span> target <span style="color: #AA22FF; font-weight: bold">and</span> time<span style="color: #666666">.</span>time() <span style="color: #666666">&lt;</span> driveTime:
-		<span style="color: #408080; font-style: italic"># print(f&quot;Target: {targetPerson}, X:{midX}&quot;)</span>
-		slowSpeed <span style="color: #666666">=</span> speed<span style="color: #666666">-</span>(np<span style="color: #666666">.</span>abs(<span style="color: #666666">50-</span>midX<span style="color: #666666">//4</span>))
-		<span style="color: #008000; font-weight: bold">if</span> slowSpeed <span style="color: #666666">&lt;=</span> <span style="color: #666666">0</span>:
-			slowSpeed<span style="color: #666666">=0</span>
-		<span style="color: #408080; font-style: italic"># print(f&quot;Speed:{slowSpeed}&quot;)</span>
-		<span style="color: #008000; font-weight: bold">if</span> midX <span style="color: #666666">&lt;</span> <span style="color: #666666">45</span>:
-			tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&quot;forward&quot;</span>, slowSpeed, speed)
-			<span style="color: #408080; font-style: italic"># print(&quot;Lean left&quot;)</span>
-		<span style="color: #008000; font-weight: bold">elif</span> midX <span style="color: #666666">&gt;</span> <span style="color: #666666">55</span>:
-			tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&quot;forward&quot;</span>, speed, slowSpeed)
-			<span style="color: #408080; font-style: italic"># print(&quot;Lean right&quot;)</span>
-		<span style="color: #008000; font-weight: bold">else</span>:
-			tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&quot;forward&quot;</span>, speed, speed)
-	<span style="color: #008000; font-weight: bold">else</span>:
-		tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&quot;forward&quot;</span>, <span style="color: #666666">40</span>, <span style="color: #666666">40</span>)
-
-
-
-<span style="color: #008000; font-weight: bold">try</span>:
-
-	<span style="color: #008000; font-weight: bold">while</span> <span style="color: #008000">True</span>:
-					
-		pcm <span style="color: #666666">=</span> audio_stream<span style="color: #666666">.</span>read(_picovoice<span style="color: #666666">.</span>frame_length,exception_on_overflow<span style="color: #666666">=</span><span style="color: #008000">False</span>)
-		pcm <span style="color: #666666">=</span> struct<span style="color: #666666">.</span>unpack_from(<span style="color: #BA2121">&quot;h&quot;</span> <span style="color: #666666">*</span> _picovoice<span style="color: #666666">.</span>frame_length, pcm)
-		_picovoice<span style="color: #666666">.</span>process(pcm)
-
-		<span style="color: #408080; font-style: italic"># video capture</span>
-		ret, img <span style="color: #666666">=</span>cam<span style="color: #666666">.</span>read()
-		img <span style="color: #666666">=</span> cv2<span style="color: #666666">.</span>flip(img, <span style="color: #666666">-1</span>) <span style="color: #408080; font-style: italic"># Flip vertically</span>
-		<span style="color: #408080; font-style: italic"># resize for faster processing</span>
-		<span style="color: #408080; font-style: italic"># img = cv2.resize(img, (640,480), interpolation = cv2.INTER_AREA)</span>
-		
-
-		<span style="color: #008000; font-weight: bold">if</span> instruction<span style="color: #666666">.</span>led_on:
-			<span style="color: #008000; font-weight: bold">if</span> time<span style="color: #666666">.</span>time() <span style="color: #666666">&gt;</span> led_endtime:
-				<span style="color: #008000; font-weight: bold">if</span> led_endtime <span style="color: #666666">&gt;0</span>:
-					GPIO<span style="color: #666666">.</span>output(<span style="color: #666666">13</span>, GPIO<span style="color: #666666">.</span>LOW)
-					led_endtime<span style="color: #666666">=0</span>
-					instruction<span style="color: #666666">.</span>led_on<span style="color: #666666">=</span><span style="color: #008000">False</span>
-				<span style="color: #008000; font-weight: bold">else</span>:
-					led_endtime<span style="color: #666666">=</span>time<span style="color: #666666">.</span>time()<span style="color: #666666">+5</span>
-					
-	
-		<span style="color: #008000; font-weight: bold">if</span> instruction<span style="color: #666666">.</span>v_direction:
-			<span style="color: #008000; font-weight: bold">if</span> instruction<span style="color: #666666">.</span>word <span style="color: #666666">==</span> <span style="color: #BA2121">&#39;forward&#39;</span>:
-				movement_3sec(<span style="color: #BA2121">&#39;forward&#39;</span>,<span style="color: #666666">90</span>,<span style="color: #666666">90</span>)
-			<span style="color: #008000; font-weight: bold">if</span> instruction<span style="color: #666666">.</span>word <span style="color: #666666">==</span> <span style="color: #BA2121">&#39;back&#39;</span>:
-				movement_3sec(<span style="color: #BA2121">&#39;backward&#39;</span>,<span style="color: #666666">90</span>,<span style="color: #666666">90</span>)
-			<span style="color: #008000; font-weight: bold">if</span> instruction<span style="color: #666666">.</span>word <span style="color: #666666">==</span> <span style="color: #BA2121">&#39;right&#39;</span>:
-				movement_3sec(<span style="color: #BA2121">&#39;right&#39;</span>,<span style="color: #666666">90</span>,<span style="color: #666666">90</span>)
-			<span style="color: #008000; font-weight: bold">if</span> instruction<span style="color: #666666">.</span>word <span style="color: #666666">==</span> <span style="color: #BA2121">&#39;left&#39;</span>:
-				movement_3sec(<span style="color: #BA2121">&#39;left&#39;</span>,<span style="color: #666666">90</span>,<span style="color: #666666">90</span>)
-			<span style="color: #008000; font-weight: bold">if</span> instruction<span style="color: #666666">.</span>word <span style="color: #666666">==</span> <span style="color: #BA2121">&#39;spin&#39;</span>:
-				tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&quot;left&quot;</span>,<span style="color: #666666">90</span>,<span style="color: #666666">90</span>)
-			
-			screen<span style="color: #666666">.</span>fill(BLACK, textAreaRect)
-			text <span style="color: #666666">=</span> fontLg<span style="color: #666666">.</span>render(f<span style="color: #BA2121">&#39;Moving {instruction.word}&#39;</span>, <span style="color: #008000">True</span>, WHITE, BLACK)
-			textRect <span style="color: #666666">=</span> text<span style="color: #666666">.</span>get_rect(center<span style="color: #666666">=</span>(<span style="color: #666666">0.5*</span>dispW, <span style="color: #666666">0.75*</span>dispH))
-			screen<span style="color: #666666">.</span>fill(BLACK, textRect<span style="color: #666666">.</span>inflate(<span style="color: #666666">240</span>,<span style="color: #666666">0</span>))
-			screen<span style="color: #666666">.</span>blit(text,textRect)
-			pygame<span style="color: #666666">.</span>display<span style="color: #666666">.</span>update(textRect)
-				
-				
-		<span style="color: #008000; font-weight: bold">if</span> instruction<span style="color: #666666">.</span>v_search:
-			<span style="color: #408080; font-style: italic">#use instruction.word for the user pass to FaceRec</span>
-			<span style="color: #408080; font-style: italic">#variable contains name of the user asked for</span>
-			<span style="color: #408080; font-style: italic">#change instruction.v_search to False after user found</span>
-
-			<span style="color: #008000; font-weight: bold">if</span> updateText:
-					updateText <span style="color: #666666">=</span> <span style="color: #008000">False</span>
-					search <span style="color: #666666">=</span> <span style="color: #008000">True</span>
-					<span style="color: #408080; font-style: italic"># screen.fill(BLACK, textAreaRect)</span>
-					text <span style="color: #666666">=</span> fontLg<span style="color: #666666">.</span>render(f<span style="color: #BA2121">&#39;Looking for {instruction.word} . . .&#39;</span>, <span style="color: #008000">True</span>, WHITE, BLACK)
-					textRect <span style="color: #666666">=</span> text<span style="color: #666666">.</span>get_rect(center<span style="color: #666666">=</span>(<span style="color: #666666">0.5*</span>dispW, <span style="color: #666666">0.75*</span>dispH))
-					screen<span style="color: #666666">.</span>fill(BLACK, textRect<span style="color: #666666">.</span>inflate(<span style="color: #666666">240</span>,<span style="color: #666666">0</span>))
-					screen<span style="color: #666666">.</span>blit(text,textRect)
-					pygame<span style="color: #666666">.</span>display<span style="color: #666666">.</span>update(textRect)
-
-			<span style="color: #008000; font-weight: bold">if</span> time<span style="color: #666666">.</span>time() <span style="color: #666666">&lt;</span> timerStart <span style="color: #666666">+</span> <span style="color: #666666">20</span>:			
-				<span style="color: #008000; font-weight: bold">if</span> search:
-					foundFace <span style="color: #666666">=</span> find_faces(instruction<span style="color: #666666">.</span>word, img)
-					<span style="color: #008000; font-weight: bold">if</span> foundFace:
-						<span style="color: #008000; font-weight: bold">print</span>(<span style="color: #BA2121">&quot;spotted...&quot;</span>)
-						<span style="color: #408080; font-style: italic"># time.sleep(0.5)</span>
-						search<span style="color: #666666">=</span><span style="color: #008000">False</span>
-						misses <span style="color: #666666">=</span> <span style="color: #666666">0</span>
-
-				<span style="color: #008000; font-weight: bold">elif</span> foundFace:
-					<span style="color: #408080; font-style: italic"># after finding our target, move to face 90% of time with face detection only</span>
-					<span style="color: #408080; font-style: italic"># use face recognition for the other 10% of the time</span>
-					search <span style="color: #666666">=</span> <span style="color: #008000">False</span>
-					facePresent <span style="color: #666666">=</span> detect_faces_quick(img)
-					<span style="color: #008000; font-weight: bold">if</span> facePresent:
-						pursue_target(<span style="color: #008000">True</span>)
-					<span style="color: #008000; font-weight: bold">else</span>: 
-						tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&quot;stop&quot;</span>)
-						target, stopCondition, img <span style="color: #666666">=</span> identify_faces(instruction<span style="color: #666666">.</span>word, img)
-						<span style="color: #008000; font-weight: bold">if</span> target:
-							misses <span style="color: #666666">=</span> <span style="color: #666666">0</span>
-							pursue_target(target)
-						<span style="color: #008000; font-weight: bold">else</span>:
-							misses <span style="color: #666666">+=</span> <span style="color: #666666">1</span>
-							<span style="color: #008000; font-weight: bold">if</span> misses <span style="color: #666666">&gt;</span> <span style="color: #666666">10</span>:
-								<span style="color: #408080; font-style: italic"># driveTime = time.time() + 1.0</span>
-								<span style="color: #408080; font-style: italic"># while time.time() &lt; driveTime:</span>
-								<span style="color: #408080; font-style: italic"># 	tw.drive(&quot;right&quot;, 75, 75)</span>
-								<span style="color: #408080; font-style: italic"># _, _, img = identify_faces(instruction.word, img)</span>
-								foundFace <span style="color: #666666">=</span> find_faces(instruction<span style="color: #666666">.</span>word, img) <span style="color: #408080; font-style: italic"># delay</span>
-								search <span style="color: #666666">=</span> <span style="color: #008000">True</span>
-								foundFace <span style="color: #666666">=</span> <span style="color: #008000">False</span>
-
-						<span style="color: #008000; font-weight: bold">if</span> stopCondition:
-							foundFace <span style="color: #666666">=</span> <span style="color: #008000">False</span>
-							search <span style="color: #666666">=</span> <span style="color: #008000">True</span>
-							instruction<span style="color: #666666">.</span>v_search <span style="color: #666666">=</span> <span style="color: #008000">False</span>
-							updateText <span style="color: #666666">=</span> <span style="color: #008000">True</span>
-							<span style="color: #008000; font-weight: bold">print</span>(f<span style="color: #BA2121">&quot;Found {instruction.word}&quot;</span>)
-							<span style="color: #408080; font-style: italic">#screen.fill(BLACK, textAreaRect)</span>
-							text <span style="color: #666666">=</span> fontLg<span style="color: #666666">.</span>render(f<span style="color: #BA2121">&#39;Found {instruction.word}!&#39;</span>, <span style="color: #008000">True</span>, WHITE, BLACK)
-							textRect <span style="color: #666666">=</span> text<span style="color: #666666">.</span>get_rect(center<span style="color: #666666">=</span>(<span style="color: #666666">0.5*</span>dispW, <span style="color: #666666">0.75*</span>dispH))
-							screen<span style="color: #666666">.</span>fill(BLACK, textRect<span style="color: #666666">.</span>inflate(<span style="color: #666666">240</span>,<span style="color: #666666">0</span>))
-							screen<span style="color: #666666">.</span>blit(text,textRect)
-							pygame<span style="color: #666666">.</span>display<span style="color: #666666">.</span>update(textRect)
-
-				counter <span style="color: #666666">=</span> <span style="color: #008000">int</span>(time<span style="color: #666666">.</span>time() <span style="color: #666666">-</span> timerStart)
-				<span style="color: #008000; font-weight: bold">if</span> prevCount <span style="color: #666666">!=</span> counter:
-					prevCount <span style="color: #666666">=</span> counter
-					draw_counter(counter)
-			<span style="color: #008000; font-weight: bold">else</span>:
-				tw<span style="color: #666666">.</span>drive(<span style="color: #BA2121">&quot;stop&quot;</span>)
-				findFaceInit <span style="color: #666666">=</span> <span style="color: #008000">True</span>
-				prevCount <span style="color: #666666">=</span> <span style="color: #666666">0</span>
-				instruction<span style="color: #666666">.</span>v_search <span style="color: #666666">=</span> <span style="color: #008000">False</span>
-
-		
-		<span style="color: #008000; font-weight: bold">if</span> instruction<span style="color: #666666">.</span>v_tricks:
-			<span style="color: #008000; font-weight: bold">if</span> instruction<span style="color: #666666">.</span>word <span style="color: #666666">==</span> <span style="color: #BA2121">&#39;party&#39;</span>:
-				<span style="color: #008000; font-weight: bold">if</span> updateText:
-					imgCount <span style="color: #666666">+=</span> <span style="color: #666666">1</span>
-					
-					<span style="color: #408080; font-style: italic">#screen.fill(BLACK, textAreaRect)</span>
-					text <span style="color: #666666">=</span> fontLg<span style="color: #666666">.</span>render(<span style="color: #BA2121">&#39;Party Time!&#39;</span>, <span style="color: #008000">True</span>, WHITE, BLACK)
-					textRect <span style="color: #666666">=</span> text<span style="color: #666666">.</span>get_rect(center<span style="color: #666666">=</span>(<span style="color: #666666">0.5*</span>dispW, <span style="color: #666666">0.75*</span>dispH))
-					screen<span style="color: #666666">.</span>fill(BLACK, textRect<span style="color: #666666">.</span>inflate(<span style="color: #666666">240</span>,<span style="color: #666666">0</span>))
-					screen<span style="color: #666666">.</span>blit(text,textRect)
-					pygame<span style="color: #666666">.</span>display<span style="color: #666666">.</span>update(textRect)
-
-				_,_,img <span style="color: #666666">=</span> identify_faces(<span style="color: #008000">None</span>, img, mode <span style="color: #666666">=</span> <span style="color: #BA2121">&quot;party_time&quot;</span>)
-
-				<span style="color: #008000; font-weight: bold">if</span> time<span style="color: #666666">.</span>time() <span style="color: #666666">&lt;</span> timerStart <span style="color: #666666">+</span> <span style="color: #666666">10</span>:
-					counter <span style="color: #666666">=</span> <span style="color: #008000">int</span>(time<span style="color: #666666">.</span>time() <span style="color: #666666">-</span> timerStart)
-					<span style="color: #008000; font-weight: bold">if</span> prevCount <span style="color: #666666">!=</span> counter:
-						prevCount <span style="color: #666666">=</span> counter
-						draw_counter(counter)
-
-				<span style="color: #008000; font-weight: bold">else</span>:
-					instruction<span style="color: #666666">.</span>v_tricks <span style="color: #666666">=</span> <span style="color: #008000">False</span>
-					prevCount <span style="color: #666666">=</span> <span style="color: #666666">0</span>
-					party_over<span style="color: #666666">=</span><span style="color: #008000">True</span>
-					updateText <span style="color: #666666">=</span> <span style="color: #008000">False</span>
-				
-
-			<span style="color: #008000; font-weight: bold">if</span> instruction<span style="color: #666666">.</span>word <span style="color: #666666">==</span> <span style="color: #BA2121">&#39;break dance&#39;</span>:
-				move_breakdance()
-				<span style="color: #408080; font-style: italic">#screen.fill(BLACK, textAreaRect)</span>
-				text <span style="color: #666666">=</span> fontLg<span style="color: #666666">.</span>render(<span style="color: #BA2121">&#39;Breakdancing!!!&#39;</span>, <span style="color: #008000">True</span>, WHITE, BLACK)
-				textRect <span style="color: #666666">=</span> text<span style="color: #666666">.</span>get_rect(center<span style="color: #666666">=</span>(<span style="color: #666666">0.5*</span>dispW, <span style="color: #666666">0.75*</span>dispH))
-				screen<span style="color: #666666">.</span>fill(BLACK, textRect<span style="color: #666666">.</span>inflate(<span style="color: #666666">240</span>,<span style="color: #666666">0</span>))
-				screen<span style="color: #666666">.</span>blit(text,textRect)
-				pygame<span style="color: #666666">.</span>display<span style="color: #666666">.</span>update(textRect)
-		
-		<span style="color: #008000; font-weight: bold">if</span> <span style="color: #AA22FF; font-weight: bold">not</span> updateText:
-			<span style="color: #008000; font-weight: bold">if</span> party_over:
-				party_over<span style="color: #666666">=</span><span style="color: #008000">False</span>
-				cv2<span style="color: #666666">.</span>imwrite(<span style="color: #BA2121">&#39;party_time/image_&#39;</span> <span style="color: #666666">+</span> <span style="color: #008000">str</span>(imgCount) <span style="color: #666666">+</span><span style="color: #BA2121">&#39;.jpg&#39;</span>,img)
-				screen<span style="color: #666666">.</span>fill(BLACK, textAreaRect)
-				photo <span style="color: #666666">=</span> cv2<span style="color: #666666">.</span>resize(img,(<span style="color: #666666">120</span>,<span style="color: #666666">73</span>))
-				cv2<span style="color: #666666">.</span>imwrite(<span style="color: #BA2121">&#39;tmp_photo.jpg&#39;</span>,photo)
-				photo <span style="color: #666666">=</span> pygame<span style="color: #666666">.</span>image<span style="color: #666666">.</span>load(<span style="color: #BA2121">&#39;tmp_photo.jpg&#39;</span>)
-				screen<span style="color: #666666">.</span>blit(photo,(<span style="color: #666666">0</span>,<span style="color: #666666">247</span>))
-				pygame<span style="color: #666666">.</span>display<span style="color: #666666">.</span>update(textAreaRect)
-				
-			<span style="color: #408080; font-style: italic">#screen.fill(BLACK, textAreaRect)</span>
-			text <span style="color: #666666">=</span> fontLg<span style="color: #666666">.</span>render(<span style="color: #BA2121">&#39;Sparky is sitting waiting ...&#39;</span>, <span style="color: #008000">True</span>, WHITE, BLACK)
-			textRect <span style="color: #666666">=</span> text<span style="color: #666666">.</span>get_rect(center<span style="color: #666666">=</span>(<span style="color: #666666">0.5*</span>dispW, <span style="color: #666666">0.75*</span>dispH))
-			screen<span style="color: #666666">.</span>fill(BLACK, textRect<span style="color: #666666">.</span>inflate(<span style="color: #666666">260</span>,<span style="color: #666666">0</span>))
-			screen<span style="color: #666666">.</span>blit(text,textRect)
-			pygame<span style="color: #666666">.</span>display<span style="color: #666666">.</span>update(textRect)
-		<span style="color: #408080; font-style: italic"># Aspect Ratios</span>
-		<span style="color: #408080; font-style: italic"># 16/9 = 1280,720 -&gt; 640,360 -&gt; 320,180 -&gt; 160,90 -&gt; 240,135</span>
-		<span style="color: #408080; font-style: italic"># 4/3 = 960,720 -&gt; 720,540 -&gt; 240,180</span>
-		
-		resized<span style="color: #666666">=</span>cv2<span style="color: #666666">.</span>resize(img,(camWs,camHs)) <span style="color: #408080; font-style: italic"># PiTFT Mode (240,180)</span>
-		<span style="color: #408080; font-style: italic"># resized=cv2.resize(img,(360,270)) # Desktop Mode</span>
-		cv2<span style="color: #666666">.</span>imwrite(<span style="color: #BA2121">&#39;tmp.jpg&#39;</span>,resized)
-		image<span style="color: #666666">=</span>pygame<span style="color: #666666">.</span>image<span style="color: #666666">.</span>load(<span style="color: #BA2121">&#39;tmp.jpg&#39;</span>)
-		screen<span style="color: #666666">.</span>blit(image,(<span style="color: #666666">0</span>,<span style="color: #666666">0</span>))
-		pygame<span style="color: #666666">.</span>display<span style="color: #666666">.</span>update(camRect)
-
-
-<span style="color: #008000; font-weight: bold">finally</span>:
-	<span style="color: #008000; font-weight: bold">if</span> _picovoice <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #AA22FF; font-weight: bold">not</span> <span style="color: #008000">None</span>:
-		_picovoice<span style="color: #666666">.</span>delete()
-
-	<span style="color: #008000; font-weight: bold">if</span> audio_stream <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #AA22FF; font-weight: bold">not</span> <span style="color: #008000">None</span>:
-		audio_stream<span style="color: #666666">.</span>close()
-
-	<span style="color: #008000; font-weight: bold">if</span> pa <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #AA22FF; font-weight: bold">not</span> <span style="color: #008000">None</span>:
-		pa<span style="color: #666666">.</span>terminate()
-</pre></td></tr></table></div>
-
+// Hello World.c
+int main(){
+  printf("Hello World.\n");
+}
               </code></pre>
       </div>
 
