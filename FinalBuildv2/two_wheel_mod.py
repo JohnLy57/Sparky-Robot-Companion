@@ -1,6 +1,6 @@
-# Two Wheel (Modified) (Python 3)
+# Two Wheel (Python 3)
 # Author: John Ly (jtl222), Carlos Gutierrez (cag334)
-# Lab 3: October 30, 2020
+# Date: December 17, 2020
 
 # Purpose: Sets up two motors with the motor controller and uses piTFT buttons to control 
 # motors for CW, CCW, and STOP
