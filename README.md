@@ -1,5 +1,6 @@
 # ECE-5725-OpenCV-Robot
-https://pages.github.coecis.cornell.edu/jtl222/ECE-5725-OpenCV-Robot/
+## Developed by John Ly and Carlos Gutierrez
+To read our detailed report, please visit this website: https://johnly57.github.io/Sparky-Robot-Companion/.
 
 
 
