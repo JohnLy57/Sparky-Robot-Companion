@@ -49,12 +49,12 @@
             <li class="active"><a href="#">Home</a></li>
             <li><a href="#obj">Project Objective</a></li>
             <li><a href="#intro">Introduction</a></li>
-            <li><a href="#design">Design and Testing</a></li>
-            <li><a href="#result">Results</a></li>
+            <li><a href="#design-and-testing">Design and Testing</a></li>
+            <li><a href="#results">Results</a></li>
             <li><a href="#conclusion">Conclusion</a></li>
-            <li><a href="#futurework">Future Work</a></li>
+            <li><a href="#future-work">Future Work</a></li>
             <li><a href="#team">Team</a></li>
-            <li><a href="#apendix">Apendixes</a></li>
+            <li><a href="#appendix">Appendix</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -70,7 +70,7 @@
 	<p class="c21"><p class="c5">ECE 5725 Final Project</h1>
 	</p><p class="c51 subtitle" id="h.hpmrc74rl0fj-2">
 	<p class="c20 c49 c5">By: John Ly (jtl22) and Carlos Gutierrez (cag334)</h1>
-      </div>x
+      </div>
 
       <hr>
       <div class="center-block">
@@ -205,7 +205,7 @@
              
       </div>
 
-    <hr id='drawings'>
+    <hr id='design-and-testing'>
 
       <div style="text-align:center;">
               <h2>Drawings</h2>
@@ -214,39 +214,184 @@
 
     <hr id='testing'>
 
-      <div style="text-align:center;">
-              <h2>Testing</h2>
-              <p style="text-align: left;padding: 0px 30px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum lorem nulla, consectetur at leo vel, pretium bibendum nisl. Cras blandit quam a enim ultrices, eu convallis enim posuere. Donec eleifend enim sed purus consectetur, vitae cursus lectus varius. Vivamus consectetur felis nec est venenatis posuere. Phasellus vitae aliquet erat. In laoreet lacinia mollis. Quisque iaculis nisl fermentum pharetra lobortis. Donec rhoncus dui sem, ac molestie leo tristique vel. Phasellus in nibh feugiat, fringilla lectus in, elementum magna. Etiam quis dui condimentum, tempus ex in, dapibus est. Cras ut congue augue. Donec ac enim ex. Ut id tristique risus, vel porttitor quam. Sed ultricies enim eu nibh porttitor, vel sodales enim feugiat. Fusce volutpat venenatis magna ac ultrices. Curabitur eget urna ut nulla mattis convallis non eu diam.</p>
-      </div>
 
-    <hr id='result'>
+
+    <hr id='results'>
 
       <div style="text-align:center;">
-              <h2>Result</h2>
-              <p style="text-align: left;padding: 0px 30px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum lorem nulla, consectetur at leo vel, pretium bibendum nisl. Cras blandit quam a enim ultrices, eu convallis enim posuere. Donec eleifend enim sed purus consectetur, vitae cursus lectus varius. Vivamus consectetur felis nec est venenatis posuere. Phasellus vitae aliquet erat. In laoreet lacinia mollis. Quisque iaculis nisl fermentum pharetra lobortis. Donec rhoncus dui sem, ac molestie leo tristique vel. Phasellus in nibh feugiat, fringilla lectus in, elementum magna. Etiam quis dui condimentum, tempus ex in, dapibus est. Cras ut congue augue. Donec ac enim ex. Ut id tristique risus, vel porttitor quam. Sed ultricies enim eu nibh porttitor, vel sodales enim feugiat. Fusce volutpat venenatis magna ac ultrices. Curabitur eget urna ut nulla mattis convallis non eu diam.</p>
+              <h2>Results</h2>
+              <p style="text-align: left;padding: 0px 30px;">
+                <p class="c6">
+                  <span class="c7">
+                      Overall Sparky performs spectacularly in day to day testing. Sparky is able to detect voices from good ranges away and responds to anyone&rsquo;s voice as long as they follow the pre-trained word models. Even over Zoom,
+                      Sparky is likely to respond. As for motor control, Sparky is able to respond to movement commands consistently and also make his way to the desired target a large part of the time. While not perfect or as fast as we had
+                      initially tested with, the tradeoff for very accurate face recognition seems to be a worthwhile enough limitation on his tracking ability and video processing. While we did not follow the goals we initially set out on to
+                      their entirety, we find that the end result is very satisfying nonetheless. Some of the initial project ideas included, using an Alexa AI to handle voice processing as well as the potential for Sparky to deliver objects to
+                      our targets as a bonus feature. Instead, we turned towards having Sparky do physical tricks with his wheels as well as being able to save photos and add decorations to peoples faces similar to AR Snapchat features.
+                  </span>
+              </p>
+              <p class="c1"><span class="c7"></span></p>  
+              </p>
       </div>
 
-    <hr>
+      <hr id='conclusion'>
+
+    <div style="text-align:center;">
+      <h2>Conclusion</h2>
+      <p style="text-align: left;padding: 0px 30px;">
+        <p class="c6">
+          <span class="c7">
+              We were able to create a fully autonomous robot that is controlled through voice and performs facial recognition for both of the creators as well as the face detection for other persons. All of the processing of voice and
+              facial recognition is done on the Raspberry Pi. The system as a whole ended up being what we set out to do it includes the use of a camera, a microphone, DC motors with motor controller, and TFT display. The end result
+              manifests itself as an interesting robot that behaves much like a pet, your very own desk companion SPARKY!
+          </span>
+      </p>
+      <p class="c1"><span class="c7"></span></p>
+      <p class="c6">
+          <span class="c7">
+              Our biggest challenges we faced when trying to implement the whole system have to be buffer size and the difference in hardware. The buffer size really infringed in the implementation of the project because we really wanted
+              to be able to run both facial recognition and voice together but the size of the buffer did not allow for that when running facial recognition the voice input to the microphone will not be read into the buffer due to
+              overflow. Our way around it was to first turn off the exception caused by the buffer overflow and then after put timers in place when Sparky will go into facial recognition mode. Turning off the overflow exception does
+              diminish to some extent the voice recognition because missed information is now more common. The effect can also be seen with the facial recognition side in the frame rate and pixel density of the video. A larger buffer
+              would&rsquo;ve allowed us to process information a lot more smoothly.
+          </span>
+      </p>
+      <p class="c1"><span class="c7"></span></p>
+      <p class="c6">
+          <span class="c7">
+              Since we built two separate Sparky systems the differences between dc motors, batteries, and driving terrain made us make adjustments to our implementation since many times going from one robot to another we noticed the
+              discrepancy in the movement of sparky. In the case of search mode using facial recognition we opted for making slower and more jittery movements when spinning around looking for faces by stopping before making the next
+              advancement. This was after attempting to use LBPH face recognition which we deemed to be too inaccurate.
+          </span>
+      </p>
+      <h1 class="c42" id="h.a4bs2kbkhmsb"><span class="c41">Future Work</span></h1>
+      <p class="c6">
+          <span class="c7">
+              We are very happy with the features we were able to give Sparky, but as always with more time we could have added much more to our friend. Looking into the possibilities of what could be next we could implement sensors that
+              help Sparky navigate the desk better and keep him on top of it. The next evolution of Sparky should definitely involve a helper arm that can reach for objects around the table as well as an actuated stereo camera for better
+              vision and depth sensing. Another way to help improve Sparky&rsquo;s performance could be by parallelizing the code using threads, scheduling based on priority and conditional variables to help with the heavy tool that voice
+              and face recognition together put on the processor. Lastly, the mechanical design of Sparky could be refined to better handle the weight of the batteries and Raspberry PI
+          </span>
+      </p>
+      </p>
+    </div>
 
     <div class="row" style="text-align:center;">
           <h2>Work Distribution</h2>
+          <p class="c6"><span class="c7">Overall the work for this project was pretty evenly distributed. We worked on the overall design and code development together as well as the final report.</span></p>
           <div style="text-align:center;">
               <img class="img-rounded" src="pics/group.jpg" alt="Generic placeholder image" style="width:80%;">
               <h4>Project group picture</h4>
           </div>
           <div class="col-md-6" style="font-size:16px">
               <img class="img-rounded" src="pics/a.png" alt="Generic placeholder image" width="240" height="240">
-              <h3>Rick</h3>
-              <p class="lead">netid@cornell.edu</p>
-              <p>Designed the overall software architecture (Just being himself).
+              <h3>John Ly</h3>
+              <p class="lead">jtl222@cornell.edu</p>
+              <p> Cornell Electrical and Computer Engineer 2021
+              <p class="col-md-6 text-center"> Responsible for face detection and recognition, motor control functions, face tracking and pursuit mode, party mode effects, and video editing
           </div>
           <div class="col-md-6" style="font-size:16px">
               <img class="img-rounded" src="pics/b.png" alt="Generic placeholder image" width="240" height="240">
-              <h3>Morty</h3>
-              <p class="lead">netid@cornell.edu</p>
-              <p>Tested the overall system.
+              <h3>Carlos Gutierrez</h3>
+              <p class="lead">cag334@cornell.edu</p>
+              <p>Cornell Electrical and Computer Engineer 2021
+              <p class="col-md-6 text-center">Voice detection and processing, voice movement modes, tricks mode, piTFT image display
           </div>
       </div>
+
+      <h1 class="c42" id="h.l3trz6x9tn96"><span class="c41">Team</span></h1>
+      <p class="c6"><span> - Cornell Electrical and Computer Engineer 2021&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jtl222@cornell.edu</span></p>
+      <p class="c1"><span class="c7"></span></p>
+      <p class="c6"><span class="c7"> - Cornell Electrical and Computer Engineer 2021&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cag334@cornell.edu</span></p>
+      <p class="c1"><span class="c7"></span></p>
+      <h1 class="c42" id="h.8bv9wvg0fgwd"><span>Appendix</span></h1>
+      <h2 class="c9" id="h.wgnzbc5cjtjh"><span class="c4">Bill of Materials&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></h2>
+      <a id="t.41f96062d17741918658df300cbb487cfa09eabb"></a><a id="t.3"></a>
+      <table class="c17">
+          <tbody>
+              <tr class="c30">
+                  <td class="c45" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">Product</span></p>
+                  </td>
+                  <td class="c62" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">Cost</span></p>
+                  </td>
+                  <td class="c26" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">Provided?</span></p>
+                  </td>
+              </tr>
+              <tr class="c30">
+                  <td class="c45" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">Raspberry Pi 4 2GB</span></p>
+                  </td>
+                  <td class="c62" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">$35.00</span></p>
+                  </td>
+                  <td class="c26" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">Yes</span></p>
+                  </td>
+              </tr>
+              <tr class="c30">
+                  <td class="c45" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">Adafruit piTFT 2.8&rdquo;</span></p>
+                  </td>
+                  <td class="c62" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">$35.00</span></p>
+                  </td>
+                  <td class="c26" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">Yes</span></p>
+                  </td>
+              </tr>
+              <tr class="c30">
+                  <td class="c45" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">2 DC motors &amp; Chassis </span></p>
+                  </td>
+                  <td class="c62" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">$13.99</span></p>
+                  </td>
+                  <td class="c26" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">Yes</span></p>
+                  </td>
+              </tr>
+              <tr class="c30">
+                  <td class="c45" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">SparkFun Motor Driver - Dual TB6612FNG (1A)</span></p>
+                  </td>
+                  <td class="c62" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">$4.96</span></p>
+                  </td>
+                  <td class="c26" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">Yes</span></p>
+                  </td>
+              </tr>
+              <tr class="c30">
+                  <td class="c45" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">Raspberry Pi Camera Module v2</span></p>
+                      <sup><a href="#cmnt11" id="cmnt_ref11">[k]</a></sup><sup><a href="#cmnt12" id="cmnt_ref12">[l]</a></sup>
+                  </td>
+                  <td class="c62" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">$23.98</span></p>
+                  </td>
+                  <td class="c26" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">Yes (Requested)</span></p>
+                  </td>
+              </tr>
+              <tr class="c30">
+                  <td class="c45" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">USB microphone</span></p>
+                  </td>
+                  <td class="c62" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">$10.00</span></p>
+                  </td>
+                  <td class="c26" colspan="1" rowspan="1">
+                      <p class="c24"><span class="c4">No</span></p>
+                  </td>
+              </tr>
+          </tbody>
+      </table>
+      <p class="c1"><span class="c7"></span></p>
+
+
 
     <hr>
       <div style="font-size:18px">
