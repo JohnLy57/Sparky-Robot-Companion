@@ -2,6 +2,7 @@
 ## Developed by John Ly and Carlos Gutierrez
 To read our detailed report, please visit this website: https://johnly57.github.io/Sparky-Robot-Companion/.
 
+Our final project was one of several for the Fall 2020 Semester: https://skovira.ece.cornell.edu/ece5725-fall-2020-projects/.
 
 
 ### Face Recognition Guide [link](https://www.tomshardware.com/uk/how-to/raspberry-pi-facial-recognition)
